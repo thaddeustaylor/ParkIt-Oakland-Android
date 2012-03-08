@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.pitt.cs1635.tft3.parking_app"
+    package="edu.pitt.designs1635.ParkIt"
     android:versionCode="1"
     android:versionName="1.0" >
 

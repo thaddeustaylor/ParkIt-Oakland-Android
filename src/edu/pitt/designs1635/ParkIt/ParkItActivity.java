@@ -3,7 +3,7 @@ package edu.pitt.designs1635.ParkIt;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 
-import edu.pitt.cs1635.tft3.parking_app.R;
+import edu.pitt.designs1635.ParkIt.R;
 
 import android.os.Bundle;
 
