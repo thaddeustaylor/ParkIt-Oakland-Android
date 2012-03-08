@@ -1,8 +1,7 @@
-bulld.xml
+build.xml
 proguard.cfg
 bin/*
 gen/*
 *.*.swp
 Thumbs.db
 *.keystore
-*.properties
