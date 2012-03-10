@@ -42,9 +42,9 @@ public class dbAdapter
 
 	private static final String DATABASE_CREATE =
 		"create table info (_id integer primary key autoincrement, "
-		+ "lat double not null, lon double not null, type text not null, "
-		+ "name text, payment text, limit integer, notes text, rate float, "
-		+ "ratetime text, grate text, monstart date, monend date, tuestart date, "
+		+ "lat integer not null, lon integer not null, type integer not null, "
+		+ "name text, payment integer, limit integer, notes text, rate float, "
+		+ "ratetime integer, grate text, monstart date, monend date, tuestart date, "
 		+ "tueend date, wedstart date, wedend date, thustart date, thurend date, "
 		+ "fristart date, friend date, satstart date, satend date, "
 		+ "sunstart date, sunend date);";
