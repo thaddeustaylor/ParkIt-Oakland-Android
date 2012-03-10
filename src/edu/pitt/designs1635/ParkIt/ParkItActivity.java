@@ -2,17 +2,21 @@ package edu.pitt.designs1635.ParkIt;
 
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
-
-import edu.pitt.designs1635.ParkIt.R;
+import android.database.Cursor;
 
 import android.os.Bundle;
 
 public class ParkItActivity extends MapActivity {
-    /** Called when the activity is first created. */
+    private dbAdapter mDbHelper;
+    private Cursor mCursor;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        mDbHelper = new dbAdapter(this);
+
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
     }

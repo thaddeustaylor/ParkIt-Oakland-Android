@@ -60,7 +60,7 @@ public class dbAdapter
 	 * 
 	 * @param ctx	Calling application's context
 	 */
-	public subsDbAdapter(Context ctx)
+	public dbAdapter(Context ctx)
 	{
 		this.mCtx = ctx;
 
