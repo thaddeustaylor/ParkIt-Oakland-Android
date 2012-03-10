@@ -1,6 +1,6 @@
 package edu.pitt.designs1635.ParkIt;
 
-public class Location {
+public class ParkingLocation {
 
 	private int 	m_locationID;
 	private double 	m_lat;
@@ -304,7 +304,7 @@ public class Location {
 
 
 
-	public Location()
+	public ParkingLocation()
 	{
 		m_locationID = 0;
 		m_lat = 0.0;
@@ -330,5 +330,70 @@ public class Location {
 		m_rateTime = "";
 		m_garageRate = "";
 	}
+
+
+
+	/**
+	 * Create 
+	 * 
+	 * @param ID - the database ID of this parking location
+	 * @param lat - the latitude of this parking location
+	 * @param lng - the longitude of this parking location
+	 * @param type - the type of parking location - "Meter", "Parking Lot", or "Parking Garage"
+	 * @param payment - the method of payment - "Cash", "Credit", or "Coin"
+	 * @param limit - the length of time you can park at a location.  This is mainly for metered parking.
+	 * @param mondayStart - the start time for the hours of operation on Monday.
+	 * @param mondayEnd - the end time for the hours of operation on Monday.
+	 * @param tuesdayStart - the start time for the hours of operation on Tuesday.
+	 * @param tuesdayEnd - the end time for the hours of operation on Tuesday.
+	 * @param wednesdayStart - the start time for the hours of operation on Wednesday.
+	 * @param wednesdayEnd - the start time for the hours of operation on Monday.
+	 * @param thursdayStart - the start time for the hours of operation on Monday.
+	 * @param thursdayEnd - the start time for the hours of operation on Monday.
+	 * @param fridayStart - the start time for the hours of operation on Monday.
+	 * @param fridayEnd - the start time for the hours of operation on Monday.
+	 * @param saturdayStart - the start time for the hours of operation on Monday.
+	 * @param saturdayEnd - the start time for the hours of operation on Monday.
+	 * @param sundayStart - the start time for the hours of operation on Monday.
+	 * @param sundayEnd - the start time for the hours of operation on Monday.
+	 * @param rate - the rate.
+	 * @param rateTime - the time increment of the rate(ie hourly, daily)
+	 * @param garageRate - a complex string that stores rates for garages. (format TBD)
+	 */
+	public ParkingLocation(int ID, double lat, double lng,
+			String type, String payment, int limit, int mondayStart,
+			int mondayEnd, int tuesdayStart, int tuesdayEnd,
+			int wednesdayStart, int wednesdayEnd, int thursdayStart,
+			int thursdayEnd, int fridayStart, int fridayEnd,
+			int saturdayStart, int saturdayEnd, int sundayStart,
+			int sundayEnd, float rate, String rateTime,
+			String garageRate) {
+
+		this.m_locationID = ID;
+		this.m_lat = lat;
+		this.m_lng = lng;
+		this.m_type = type;
+		this.m_payment = payment;
+		this.m_limit = limit;
+		this.m_mondayStart = mondayStart;
+		this.m_mondayEnd = mondayEnd;
+		this.m_tuesdayStart = tuesdayStart;
+		this.m_tuesdayEnd = tuesdayEnd;
+		this.m_wednesdayStart = wednesdayStart;
+		this.m_wednesdayEnd = wednesdayEnd;
+		this.m_thursdayStart = thursdayStart;
+		this.m_thursdayEnd = thursdayEnd;
+		this.m_fridayStart = fridayStart;
+		this.m_fridayEnd = fridayEnd;
+		this.m_saturdayStart = saturdayStart;
+		this.m_saturdayEnd = saturdayEnd;
+		this.m_sundayStart = sundayStart;
+		this.m_sundayEnd = sundayEnd;
+		this.m_rate = rate;
+		this.m_rateTime = rateTime;
+		this.m_garageRate = garageRate;
+	}
+
+	
 	
 }

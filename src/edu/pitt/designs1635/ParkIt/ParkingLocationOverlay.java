@@ -10,11 +10,11 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-public class LocationOverlay extends Overlay {
+public class ParkingLocationOverlay extends Overlay {
 
 	GeoPoint m_point;
 	
-	public LocationOverlay(GeoPoint p)
+	public ParkingLocationOverlay(GeoPoint p)
 	{
 		m_point = p;
 	}
