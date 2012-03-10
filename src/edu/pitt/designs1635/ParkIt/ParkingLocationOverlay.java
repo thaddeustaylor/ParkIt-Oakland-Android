@@ -12,11 +12,13 @@ import com.google.android.maps.Overlay;
 
 public class ParkingLocationOverlay extends Overlay {
 
-	GeoPoint m_point;
+	private GeoPoint m_point;
+	public ParkingLocation info;
 	
-	public ParkingLocationOverlay(GeoPoint p)
+	public ParkingLocationOverlay(ParkingLocation loc)
 	{
-		m_point = p;
+		info = loc;
+		m_point = new GeoPoint(info.getLatitude(), info.getLongitude());
 	}
 	
 	

@@ -7,6 +7,8 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
+import edu.pitt.designs1635.ParkIt.ParkingLocation.PAYMENT_TYPE;
+
 public class ParkItActivity extends MapActivity {
     /** Called when the activity is first created. */
     @Override
@@ -26,6 +28,9 @@ public class ParkItActivity extends MapActivity {
         mapCtrl.animateTo(center);
         mapCtrl.setZoom(17);
         mapView.invalidate();
+        
+        ParkingLocation pl;
+        PAYMENT_TYPE t = PAYMENT_TYPE.CASH;
     }
 
 	@Override
