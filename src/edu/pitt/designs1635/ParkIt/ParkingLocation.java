@@ -29,78 +29,178 @@ public class ParkingLocation {
 	public static enum RATE_TIME 
 	{ 
 		HOURLY, 
-		DAILY 
+		DAILY; 
+		
+		public String toString()
+		{
+			String val;
+			
+			switch(this)
+			{
+				case HOURLY: val = "Hourly"; break;
+				case DAILY: val = "Daily"; break;
+				default: val = ""; break;
+			}
+			
+			return val;
+			
+		}
 	};
 	
 	public static enum PAYMENT_TYPE 
 	{ 
 		CASH, 
 		CREDIT,
-		COIN
+		COIN;
+		
+		public String toString()
+		{
+			String val;
+			
+			switch(this)
+			{
+				case CASH: val = "Cash"; break;
+				case CREDIT: val = "Debit/Credit"; break;
+				case COIN: val = "Coin"; break;
+				default: val = ""; break;
+			}
+			
+			return val;
+			
+		}
 	};
 	
 	public static enum TYPE 
 	{ 
 		METER, 
 		PARKING_LOT,
-		PARKING_GARAGE
+		PARKING_GARAGE;
+		
+		public String toString()
+		{
+			String val;
+			
+			switch(this)
+			{
+				case METER: val = "Meter"; break;
+				case PARKING_LOT: val = "Parking Lot"; break;
+				case PARKING_GARAGE: val = "Parking Garage"; break;
+				default: val = ""; break;
+			}
+			
+			return val;
+			
+		}
 	};
 
 	
+	/**
+	 * Gets the database ID of this parking location.
+	 * 
+	 * @return the database ID.
+	 */
 	public int getID() {
 		return m_locationID;
 	}
 
 
-
+	/**
+	 * Sets the database ID of this parking location.
+	 * 
+	 * @param ID - the database ID.
+	 *
+	 */
 	public void setID(int ID) {
 		this.m_locationID = ID;
 	}
 
-
+	/**
+	 * Gets the latitude of this parking location.  This is in micro-latitude. To convert this to
+	 * latitude divide by 1e6.
+	 * 
+	 * @return the micro latitude.
+	 *
+	 */
 
 	public int getLatitude() {
 		return m_uLat;
 	}
 
-
-
+	/**
+	 * Sets the latitude of this parking location.  This is in micro-latitude. To do this take
+	 * the latitude and multiple it by 1e6.
+	 * 
+	 * @param latitude - the micro latitude.
+	 */
 	public void setLatitude(int latitude) {
 		this.m_uLat = latitude;
 	}
 
 
 
+	/**
+	 * Gets the longitude of this parking location.  This is in micro-longitude. To convert this to
+	 * longitude divide by 1e6.
+	 * 
+	 * @return the micro longitude.
+	 *
+	 */
 	public int getLongitude() {
 		return m_uLng;
 	}
 
 
 
+	/**
+	 * Sets the longitude of this parking location.  This is in micro-longitude. To do this take
+	 * the longitude and multiple it by 1e6.
+	 * 
+	 * @param longitude - the micro longitude.
+	 */
 	public void setLongitude(int longitude) {
 		this.m_uLng = longitude;
 	}
 
 
 
+	/**
+	 * Gets the type of parking location. TYPE.METER, TYPE.PARKING_LOT, or TYPE.PARKING_GARAGE.
+	 * 
+	 * @return the type
+	 */
 	public TYPE getType() {
 		return m_type;
 	}
 
 
 
+	/**
+	 * Sets the type of parking location. TYPE.METER, TYPE.PARKING_LOT, or TYPE.PARKING_GARAGE.
+	 * 
+	 * @param type - the type.
+	 */
 	public void setType(TYPE type) {
 		this.m_type = type;
 	}
 
 
 
+	/**
+	 * Gets the payment type for this parking location. PAYMENT_TYPE.CASH, PAYMENT_TYPE.CREDIT, or PAYMENT_TYPE.COIN
+	 * 
+	 * @return the payment type.
+	 */
 	public PAYMENT_TYPE getPayment() {
 		return m_payment;
 	}
 
 
 
+	/**
+	 * Sets the payment type for this parking location. PAYMENT_TYPE.CASH, PAYMENT_TYPE.CREDIT, or PAYMENT_TYPE.COIN
+	 * 
+	 * @param payment - the payment type.
+	 */
 	public void setPayment(PAYMENT_TYPE payment) {
 		this.m_payment = payment;
 	}
@@ -110,7 +210,7 @@ public class ParkingLocation {
 	/**
 	 * Sets the length of time that the parking location can be used.  This is mainly for metered parking. In hours.
 	 * 
-	 * @return limit - the time limit.
+	 * @return the time limit.
 	 * 
 	 */
 	public int getLimit() {
@@ -522,10 +622,10 @@ public class ParkingLocation {
 
 	/**
 	 * Constructor with all member fields. To convert latitude and longitude to 
-	 * micro-latitude and micro-longitude multiple by 1E6(100,000).
+	 * micro-latitude and micro-longitude multiple by 1e6.
 	 * 
 	 * Example: lat = 40.444282;
-	 * 			uLat = lat * 1E6;
+	 * 			uLat = lat * 1e6;
 	 * 
 	 * @param ID - the database ID of this parking location.
 	 * @param ulat - the micro latitude of this parking location.

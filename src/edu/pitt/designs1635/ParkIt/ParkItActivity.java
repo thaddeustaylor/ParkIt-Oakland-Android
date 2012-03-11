@@ -37,7 +37,7 @@ public class ParkItActivity extends MapActivity {
         mapView.invalidate();
         
         ParkingLocation pl;
-        PAYMENT_TYPE t = PAYMENT_TYPE.CASH;
+        System.out.println(PAYMENT_TYPE.CASH);
     }
 
 	@Override
