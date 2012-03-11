@@ -737,8 +737,6 @@ public class ParkingLocation {
 		this.m_uLng = longitude;
 	
 		m_locationID = 0;
-		m_uLat = 0;
-		m_uLng = 0;
 		m_type = TYPE.METER;
 		m_payment = PAYMENT_TYPE.COIN;
 		m_limit = 0;
