@@ -6,15 +6,22 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import edu.pitt.designs1635.ParkIt.ParkingLocation.*;
+import android.database.Cursor;
+import android.os.Bundle;
 
-import edu.pitt.designs1635.ParkIt.ParkingLocation.PAYMENT_TYPE;
 
 public class ParkItActivity extends MapActivity {
-    /** Called when the activity is first created. */
+    private dbAdapter mDbHelper;
+    private Cursor mCursor;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        mDbHelper = new dbAdapter(this);
+
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
     
