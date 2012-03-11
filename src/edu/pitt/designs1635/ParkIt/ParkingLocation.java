@@ -1,30 +1,33 @@
 package edu.pitt.designs1635.ParkIt;
 
+import com.google.android.maps.GeoPoint;
+
 public class ParkingLocation {
 
-	private int 			m_locationID;
-	private int 			m_uLat; //micro Latitude
-	private int 			m_uLng; //micro Longitude
-	private TYPE 			m_type;
-	private PAYMENT_TYPE 	m_payment;
-	private int 			m_limit;
-	private int				m_mondayStart;
-	private int				m_mondayEnd;
-	private int				m_tuesdayStart;
-	private int				m_tuesdayEnd;
-	private int				m_wednesdayStart;
-	private int				m_wednesdayEnd;
-	private int				m_thursdayStart;
-	private int				m_thursdayEnd;
-	private int				m_fridayStart;
-	private int				m_fridayEnd;
-	private int				m_saturdayStart;
-	private int				m_saturdayEnd;
-	private int				m_sundayStart;
-	private int				m_sundayEnd;
-	private float			m_rate;
-	private RATE_TIME		m_rateTime;
-	private String			m_garageRate;
+	private int m_locationID;
+	private int m_uLat; //micro Latitude
+	private int m_uLng; //micro Longitude
+	private TYPE m_type;
+	private PAYMENT_TYPE m_payment;
+	private int m_limit;
+	private int	m_mondayStart;
+	private int	m_mondayEnd;
+	private int	m_tuesdayStart;
+	private int	m_tuesdayEnd;
+	private int	m_wednesdayStart;
+	private int	m_wednesdayEnd;
+	private int	m_thursdayStart;
+	private int	m_thursdayEnd;
+	private int	m_fridayStart;
+	private int	m_fridayEnd;
+	private int	m_saturdayStart;
+	private int	m_saturdayEnd;
+	private int	m_sundayStart;
+	private int	m_sundayEnd;
+	private float m_rate;
+	private RATE_TIME m_rateTime;
+	private String m_garageRate;
+	private String m_name;
 	
 	public static enum RATE_TIME 
 	{ 
@@ -569,7 +572,9 @@ public class ParkingLocation {
 
 
 	/**
-	 * @return a string that has the parking rates if this parking location is a garage.
+	 * Gets the rate for a garage that doesn't have a straight forward hourly or daily rate.
+	 * 
+	 * @return the string with the parking rates.
 	 */
 	public String getGarageRate() {
 		return m_garageRate;
@@ -587,6 +592,27 @@ public class ParkingLocation {
 	}
 
 
+	/**
+	 * Gets the name of this parking location.
+	 * 
+	 * @return the name.
+	 */
+	public String getName()
+	{
+		return m_name;
+	}
+	
+	
+	
+	/**
+	 * Sets the name of this parking location.
+	 * 
+	 * @param name - the name.
+	 */
+	public void setName(String name)
+	{
+		this.m_name = name;
+	}
 
 	/**
 	 * Default constructor. Sets all member fields to 0 and "" depending on the field type.
@@ -596,8 +622,8 @@ public class ParkingLocation {
 		m_locationID = 0;
 		m_uLat = 0;
 		m_uLng = 0;
-		m_type = "";
-		m_payment = "";
+		m_type = TYPE.METER;
+		m_payment = PAYMENT_TYPE.COIN;
 		m_limit = 0;
 		m_mondayStart = 0;
 		m_mondayEnd = 0;
@@ -614,8 +640,9 @@ public class ParkingLocation {
 		m_sundayStart = 0;
 		m_sundayEnd = 0;
 		m_rate = 0.0f;
-		m_rateTime = "";
+		m_rateTime = RATE_TIME.HOURLY;
 		m_garageRate = "";
+		m_name = "";
 	}
 
 
@@ -650,15 +677,16 @@ public class ParkingLocation {
 	 * @param rate - the rate.
 	 * @param rateTime - the time increment of the rate(ie hourly, daily)
 	 * @param garageRate - a complex string that stores rates for garages. (format TBD)
+	 * @param name - the name of the parking location.
 	 */
 	public ParkingLocation(int ID, int ulat, int ulng,
-			String type, String payment, int limit, int mondayStart,
+			TYPE type, PAYMENT_TYPE payment, int limit, int mondayStart,
 			int mondayEnd, int tuesdayStart, int tuesdayEnd,
 			int wednesdayStart, int wednesdayEnd, int thursdayStart,
 			int thursdayEnd, int fridayStart, int fridayEnd,
 			int saturdayStart, int saturdayEnd, int sundayStart,
-			int sundayEnd, float rate, String rateTime,
-			String garageRate) {
+			int sundayEnd, float rate, RATE_TIME rateTime,
+			String garageRate, String name) {
 
 		this.m_locationID = ID;
 		this.m_uLat = ulat;
@@ -683,8 +711,55 @@ public class ParkingLocation {
 		this.m_rate = rate;
 		this.m_rateTime = rateTime;
 		this.m_garageRate = garageRate;
+		this.m_name = name;
 	}
 
 	
+	/**
+	 * Helper method to return the lat/long as a GeoPoint.
+	 * 
+	 * @return the GeoPoint of this location.
+	 */
+	public GeoPoint getGeoPoint()
+	{
+		return new GeoPoint(m_uLat, m_uLng);
+	}
+	
+	/**
+	 * Constructor to create a Parking Location with just a point.
+	 * 
+	 * @param latitude - the micro latitude.
+	 * @param longitude - the micro longitude.
+	 */
+	public ParkingLocation(int latitude, int longitude)
+	{
+		this.m_uLat = latitude;
+		this.m_uLng = longitude;
+	
+		m_locationID = 0;
+		m_uLat = 0;
+		m_uLng = 0;
+		m_type = TYPE.METER;
+		m_payment = PAYMENT_TYPE.COIN;
+		m_limit = 0;
+		m_mondayStart = 0;
+		m_mondayEnd = 0;
+		m_tuesdayStart = 0;
+		m_tuesdayEnd = 0;
+		m_wednesdayStart  = 0;
+		m_wednesdayEnd  = 0;
+		m_thursdayStart  = 0;
+		m_thursdayEnd = 0;
+		m_fridayStart = 0;
+		m_fridayEnd = 0;
+		m_saturdayStart = 0;
+		m_saturdayEnd = 0;
+		m_sundayStart = 0;
+		m_sundayEnd = 0;
+		m_rate = 0.0f;
+		m_rateTime = RATE_TIME.HOURLY;
+		m_garageRate = "";
+		m_name = "";
+	}
 	
 }

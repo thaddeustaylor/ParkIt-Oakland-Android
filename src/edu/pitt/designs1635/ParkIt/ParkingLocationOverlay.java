@@ -39,6 +39,7 @@ public class ParkingLocationOverlay extends Overlay {
         Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.pushpin);            
         canvas.drawBitmap(bmp, screenPts.x, screenPts.y-50, null);         
         return true;
+        
     }
 	
 }
