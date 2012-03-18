@@ -1,23 +1,26 @@
 package edu.pitt.designs1635.ParkIt;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 public class ParkingLocationOverlay extends Overlay {
 
-	private Resources m_res;
+	private Context m_context;
 	private ParkingLocation m_info;
 	
 	
-	public ParkingLocationOverlay(Resources res, ParkingLocation loc)
+	public ParkingLocationOverlay(Context context, ParkingLocation loc)
 	{
-		m_res = res;
+		m_context = context;
 		m_info = loc;	
 	}
 	
@@ -36,13 +39,22 @@ public class ParkingLocationOverlay extends Overlay {
         mapView.getProjection().toPixels(m_info.getGeoPoint(), screenPts);
 
         //---add the marker---
-        Bitmap bmp = BitmapFactory.decodeResource(m_res, R.drawable.pushpin_small); 
+        Bitmap bmp = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.pushpin_small); 
         
         canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);         
         return true;
         
     }
 	
+    @Override
+    public boolean onTouchEvent(MotionEvent event, MapView mapView) 
+    {
+    	Toast.makeText(m_context, "hi", Toast.LENGTH_SHORT).show();
+    	
+		return true;   
+    	
+    }
+    
     
     public ParkingLocation getLocationInfo()
     {

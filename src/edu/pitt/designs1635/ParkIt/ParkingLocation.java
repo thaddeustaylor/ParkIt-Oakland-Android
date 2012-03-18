@@ -48,6 +48,7 @@ public class ParkingLocation {
 			return val;
 			
 		}
+		
 	};
 	
 	public static enum PAYMENT_TYPE 
