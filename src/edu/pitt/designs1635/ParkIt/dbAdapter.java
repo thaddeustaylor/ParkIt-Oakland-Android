@@ -100,12 +100,50 @@ public class dbAdapter
 		return this;
 	}
 
+	public void addDummyData()
+	{
+		ContentValues steps = new ContentValues();
+		int lat, lon, type;
+		float rate;
+		String name;
+
+		lat = 40444282;
+		lon = -79953108;
+		type = 0;
+		rate = 0.75F;
+		name = "Cathedral of Learning";
+
+		steps.put(KEY_LAT, lat);
+		steps.put(KEY_LON, lon);
+		steps.put(KEY_TYPE, type);
+		steps.put(KEY_RATE, rate);
+		steps.put(KEY_NAME, name);
+
+		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+			mDb.insert(INFO_TABLE, null, steps);
+
+		lat = 40465282;
+		lon = -79924608;
+		type = 1;
+		rate = 0.50F;
+		name = "Somewhere else";
+
+		steps.put(KEY_LAT, lat);
+		steps.put(KEY_LON, lon);
+		steps.put(KEY_TYPE, type);
+		steps.put(KEY_RATE, rate);
+		steps.put(KEY_NAME, name);
+
+		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_LAT +"=? and " +KEY_LON +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+			mDb.insert(INFO_TABLE, null, steps);
+	}
+
 	public void close()
 	{
 		mDbHelper.close();
 	}
 
-	public Cursor fetchRows()
+	public Cursor fetchAllRows()
 	{
 		return mDb.query(INFO_TABLE, null, null, null, null, null, null);
 	}

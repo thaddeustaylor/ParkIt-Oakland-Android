@@ -8,6 +8,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.content.Context;
+
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -25,6 +30,8 @@ import android.os.Bundle;
 public class ParkItActivity extends MapActivity {
     private dbAdapter mDbHelper;
     private Cursor mCursor;
+    MapView mapView;
+    ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,44 +40,63 @@ public class ParkItActivity extends MapActivity {
 
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
-        mCursor = mDbHelper.fetchRows();
+        mDbHelper.addDummyData();
+        mCursor = mDbHelper.fetchAllRows();
+        mCursor.moveToFirst();
 
-        
-
-        MapView mapView = (MapView) findViewById(R.id.mapview);
+        mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.g_icon);
+        gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+        drawable = getResources().getDrawable(R.drawable.l_icon);
+        lItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+        drawable = getResources().getDrawable(R.drawable.m_icon);
+        mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+
+        OverlayItem overlayItem;
+        GeoPoint point;
 
         MapController mapCtrl = mapView.getController();
 
-        //Dummy point - Cathedral of Learning
-        double lat = 40.444282;
-        double lng = -79.953108;
- 
-        //A ParkingLocation for the dummy point
-        ParkingLocation pl = new ParkingLocation((int) (lat * 1E6), (int) (lng * 1E6));
-        
-        //center on the geoPoint in the 
-        mapCtrl.animateTo(pl.getGeoPoint());
-        mapCtrl.setZoom(17);
+        //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
+        if(mCursor.getCount() > 0)
+        {
+            do{
+                if(mCursor.getInt(3) == 0)
+                {
+                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    "Rate: "+mCursor.getFloat(8));
+                    gItemizedOverlay.addOverlay(overlayItem);
+                }
+                else if(mCursor.getInt(3) == 1)
+                {
+                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    "Rate: "+mCursor.getFloat(8));
+                    lItemizedOverlay.addOverlay(overlayItem);
+                }
 
-        Drawable drawable = getResources().getDrawable(R.drawable.g_icon);
-        ParkingLocationItemizedOverlay itemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
-        
-        GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-        OverlayItem overlayItem = new OverlayItem(point, "Cathedral of Learning", 
-                "Learning.....yeah right.");
-        itemizedOverlay.addOverlay(overlayItem);
-
-        lat = 40.5;
-        lng = -80;
-        point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-        overlayItem = new OverlayItem(point, "Some Place", 
-                "stuff");
-        itemizedOverlay.addOverlay(overlayItem);
+                mCursor.moveToNext();
+            }while(!mCursor.isLast());
+        }
 
         List<Overlay> points = mapView.getOverlays();
         points.clear();
-        points.add(itemizedOverlay);
+        points.add(gItemizedOverlay);
+        points.add(lItemizedOverlay);
+        //point.add(mItemizedOverlay);
+
+        //This will attempt to grab the current location and have the map automatically center to there
+        //Buuuuut it doesn't use the current location yet. It uses the LAST known location...
+        LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationListener mLocListener = new MyLocationListener();
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
+        Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
+        mapCtrl.setZoom(17);
     }
 
 	@Override
