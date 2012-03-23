@@ -150,4 +150,24 @@ public class dbAdapter
 	{
 		return mDb.query(INFO_TABLE, null, null, null, null, null, null);
 	}
+	
+public int addPoint(int lat, int lon, int type) {
+		
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(KEY_LAT, lat);
+		initialValues.put(KEY_LON, lon);
+				
+		if (mDb.query(INFO_TABLE,
+						new String[] {KEY_ROWID},
+						KEY_LAT +"=? and " +KEY_LON +"=? and "+KEY_TYPE+"=?",
+						new String[] {Integer.toString(lat), Integer.toString(lon), Integer.toString(type)},
+						null,
+						null,
+						KEY_ROWID).getCount() != 0)
+		{
+		return -1;
+		}
+		else
+		return mDb.insert(INFO_TABLE, null, initialValues);
+	}
 }
