@@ -28,6 +28,15 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	    populate();
 	}
 	
+	public void addOverlay(ParkingLocation location) {
+	    
+		OverlayItem overlay = new OverlayItem(location.getGeoPoint(), location.getName(), 
+ 				location.getRate() + "");
+		m_overlays.add(overlay);
+	    populate();
+	}
+	
+	
 	@Override
 	protected OverlayItem createItem(int i) {
 		return m_overlays.get(i);
