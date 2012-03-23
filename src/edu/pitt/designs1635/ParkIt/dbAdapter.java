@@ -95,66 +95,7 @@ public class dbAdapter
 			//If we ever need to update the db
 		}
 	}
-	
-	public void addData()
-	{
-		ContentValues steps = new ContentValues();
-	
-		
-		int uLat = 40444834; 
-		int uLng = -79955543; 
-		TYPE type = TYPE.PARKING_GARAGE;
-		PAYMENT_TYPE payment = PAYMENT_TYPE.CREDIT;
-		int limit = 0;
-		int	mondayStart = 0600;
-		int	mondayEnd = 2400;
-		int	tuesdayStart = 0600;
-		int	tuesdayEnd = 2400;
-		int	wednesdayStart = 0600;
-		int	wednesdayEnd = 2400;
-		int	thursdayStart = 0600;
-		int	thursdayEnd = 2400;
-		int	fridayStart = 0600;
-		int	fridayEnd = 2400;
-		int	saturdayStart = 800;
-		int	saturdayEnd = 2400;
-		int	sundayStart = 800;
-		int	sundayEnd = 2400;
-		float rate = 0;
-		RATE_TIME rateTime = RATE_TIME.HOURLY;
-		String garageRate = "0-1:4,1-2:5,2-4:7,4-6:8,6-8:10,8-10:12,10-:14";
-		String name = "Soldiers and Sailors Garage";
-		String notes = "";		
-		
-		steps.put(KEY_LAT, uLat);
-		steps.put(KEY_LON, uLng);
-		steps.put(KEY_TYPE, type.ordinal());
-		steps.put(KEY_NAME, name);
-		steps.put(KEY_PAYMENT, payment.ordinal());
-		steps.put(KEY_LIMIT, limit);
-		steps.put(KEY_NOTES, notes);
-		steps.put(KEY_RATE, rate);
-		steps.put(KEY_RATETIME, rateTime.ordinal());
-		steps.put(KEY_GRATE, garageRate);
-		steps.put(KEY_MONSTART, mondayStart);
-		steps.put(KEY_MONEND, mondayEnd);
-		steps.put(KEY_TUESTART, tuesdayStart);
-		steps.put(KEY_TUEEND, tuesdayEnd);
-		steps.put(KEY_WEDSTART, wednesdayStart);
-		steps.put(KEY_WEDEND, wednesdayEnd);
-		steps.put(KEY_THUSTART, thursdayStart);
-		steps.put(KEY_THUEND, thursdayEnd);
-		steps.put(KEY_FRISTART, fridayStart);
-		steps.put(KEY_FRIEND, fridayEnd);
-		steps.put(KEY_SATSTART, saturdayStart);
-		steps.put(KEY_SATEND, saturdayEnd);
-		steps.put(KEY_SUNSTART, sundayStart);
-		steps.put(KEY_SUNEND, sundayEnd);
 
-		if (mDb.query(INFO_TABLE, new String[] {KEY_NAME}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
-			mDb.insert(INFO_TABLE, null, steps);
-
-<<<<<<< HEAD
 	public dbAdapter open() throws SQLException
 	{
 		mDbHelper = new DatabaseHelper(mCtx);
@@ -209,8 +150,4 @@ public class dbAdapter
 	{
 		return mDb.query(INFO_TABLE, null, null, null, null, null, null);
 	}
-
-=======
-	}
->>>>>>> thaddeus-dev
 }

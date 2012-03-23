@@ -1,7 +1,7 @@
 package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
-import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.content.Context;
