@@ -2,22 +2,20 @@ package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.content.Context;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+
 import android.database.Cursor;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,17 +23,18 @@ import android.view.MenuInflater;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-import android.os.Bundle;
 
 public class ParkItActivity extends MapActivity {
-    private dbAdapter mDbHelper;
+    
+	private dbAdapter mDbHelper;
     private Cursor mCursor;
     MapView mapView;
     ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        
+    	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
         mDbHelper = new dbAdapter(this);

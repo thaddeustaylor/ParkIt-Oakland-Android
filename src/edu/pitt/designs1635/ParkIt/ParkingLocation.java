@@ -437,12 +437,6 @@ public class ParkingLocation {
 		this.m_fridayEnd = fridayEnd;
 	}
 
-
-
-
-
-
-
 	/**
 	 * Gets the time that this parking location opens on Saturday. This is based on the 24hr clock.
 	 * 

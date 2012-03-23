@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.maps.MapView;
@@ -13,6 +14,7 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
 	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
+	private ArrayList<ParkingLocation> m_locations = new ArrayList<ParkingLocation>();
 	private Context c;
 	
 	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView) 
@@ -31,6 +33,8 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 		return m_overlays.get(i);
 	}
 
+	
+	
 	@Override
 	public int size() {
 		return m_overlays.size();
@@ -39,6 +43,12 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	@Override
 	protected boolean onBalloonTap(int index, OverlayItem item) {
 		Toast.makeText(c, "onBalloonTap for overlay index " + index,
+				Toast.LENGTH_LONG).show();
+		return true;
+	}
+	
+	protected boolean onNextClick(int index, OverlayItem item) {
+		Toast.makeText(c, "onNextClick for overlay index " + index,
 				Toast.LENGTH_LONG).show();
 		return true;
 	}

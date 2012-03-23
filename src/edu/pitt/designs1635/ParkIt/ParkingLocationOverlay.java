@@ -11,17 +11,17 @@ import android.content.Context;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.GeoPoint;
 
-public class ParkingLocationOverlay extends Overlay{
+public class ParkingLocationOverlay extends Overlay {
 
+	private Context m_context;
 	private ParkingLocation m_info;
-    private Context m_context;	
 	
-	public ParkingLocationOverlay(ParkingLocation loc, Context cx)
+	
+	public ParkingLocationOverlay(Context context, ParkingLocation loc)
 	{
-		this.m_info = loc;
-        this.m_context = cx;
+		m_context = context;
+		m_info = loc;	
 	}
 	
 	
@@ -42,19 +42,20 @@ public class ParkingLocationOverlay extends Overlay{
         Bitmap bmp = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.pushpin_small); 
         
         canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);         
-        return true;   
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) 
-    {
-        Toast.makeText(m_context, "hi", Toast.LENGTH_SHORT).show();
-        
         return true;
         
     }
 	
-    
+    @Override
+    public boolean onTouchEvent(MotionEvent event, MapView mapView) 
+    {
+    	Toast.makeText(m_context, "hi", Toast.LENGTH_SHORT).show();
+    	
+		return true;   
+    	
+    }
+        
     public ParkingLocation getLocationInfo()
     {
     	return m_info;
