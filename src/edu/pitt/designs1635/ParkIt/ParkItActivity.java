@@ -59,8 +59,12 @@ public class ParkItActivity extends MapActivity {
  		ParkingLocationItemizedOverlay itemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
  		
  		GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+ 		
+ 		
  		OverlayItem overlayItem = new OverlayItem(point, "Cathedral of Learning", 
- 				"Learning.....yeah right.");
+ 				"Learning.....yeah right.\nLook at the birds!");
+ 		
+ 		
  		itemizedOverlay.addOverlay(overlayItem);
         //A this is for to display a push pin image for the dummy point.
         //ParkingLocationOverlay plo = new ParkingLocationOverlay(this, pl);    
