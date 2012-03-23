@@ -35,6 +35,8 @@ public class ParkItActivity extends MapActivity {
         mDbHelper.open();
         mCursor = mDbHelper.fetchRows();
 
+        
+
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
@@ -51,12 +53,19 @@ public class ParkItActivity extends MapActivity {
         mapCtrl.animateTo(pl.getGeoPoint());
         mapCtrl.setZoom(17);
 
-        Drawable drawable = getResources().getDrawable(R.drawable.pushpin_small);
+        Drawable drawable = getResources().getDrawable(R.drawable.g_icon);
         ParkingLocationItemizedOverlay itemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
         
         GeoPoint point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
         OverlayItem overlayItem = new OverlayItem(point, "Cathedral of Learning", 
                 "Learning.....yeah right.");
+        itemizedOverlay.addOverlay(overlayItem);
+
+        lat = 40.5;
+        lng = -80;
+        point = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+        overlayItem = new OverlayItem(point, "Some Place", 
+                "stuff");
         itemizedOverlay.addOverlay(overlayItem);
 
         List<Overlay> points = mapView.getOverlays();
