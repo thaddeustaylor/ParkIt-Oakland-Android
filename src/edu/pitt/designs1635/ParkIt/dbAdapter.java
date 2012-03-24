@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 public class dbAdapter 
 {
-
 	public static final String KEY_ROWID = "_id";
 	public static final String KEY_LAT = "lat";
 	public static final String KEY_LON = "lon";
@@ -137,7 +136,7 @@ public class dbAdapter
 		steps.put(KEY_RATE, rate);
 		steps.put(KEY_NAME, name);
 
-		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_LAT +"=? and " +KEY_LON +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME + "=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
 			mDb.insert(INFO_TABLE, null, steps);
 	}
 

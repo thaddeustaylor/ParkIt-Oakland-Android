@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.content.Context;
+import android.util.Log;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,7 +46,7 @@ public class ParkItActivity extends MapActivity {
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-
+        
         Drawable drawable = getResources().getDrawable(R.drawable.g_icon);
         gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
         drawable = getResources().getDrawable(R.drawable.l_icon);
@@ -78,6 +79,7 @@ public class ParkItActivity extends MapActivity {
                 }
 
                 mCursor.moveToNext();
+                Log.i("PARRRRRKKKKKIT", "AFter MAPSHIT");
             }while(!mCursor.isLast());
         }
 
@@ -89,13 +91,13 @@ public class ParkItActivity extends MapActivity {
 
         //This will attempt to grab the current location and have the map automatically center to there
         //Buuuuut it doesn't use the current location yet. It uses the LAST known location...
-        LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        LocationListener mLocListener = new MyLocationListener();
-        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
-        Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        //LocationListener mLocListener = new MyLocationListener();
+        //mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
+        //Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
-        mapCtrl.setZoom(17);
+        //mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
+        //mapCtrl.setZoom(17);
     }
 
 	@Override

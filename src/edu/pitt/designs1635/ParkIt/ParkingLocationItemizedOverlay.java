@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -48,8 +49,7 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	}
 	
 	protected boolean onNextClick(int index, OverlayItem item) {
-		Toast.makeText(c, "onNextClick for overlay index " + index,
-				Toast.LENGTH_LONG).show();
+		c.startActivity(new Intent(c, Information.class));
 		return true;
 	}
 }
