@@ -1,6 +1,5 @@
 package edu.pitt.designs1635.ParkIt;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.view.MotionEvent;
 import android.widget.Toast;
+import android.content.Context;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -42,6 +42,7 @@ public class ParkingLocationOverlay extends Overlay {
         Bitmap bmp = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.pushpin_small); 
         
         canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);         
+
         return true;
         
     }
@@ -54,8 +55,7 @@ public class ParkingLocationOverlay extends Overlay {
 		return true;   
     	
     }
-    
-    
+        
     public ParkingLocation getLocationInfo()
     {
     	return m_info;
