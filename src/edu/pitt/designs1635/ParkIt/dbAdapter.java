@@ -1,15 +1,12 @@
 package edu.pitt.designs1635.ParkIt;
 
-import edu.pitt.designs1635.ParkIt.ParkingLocation.PAYMENT_TYPE;
-import edu.pitt.designs1635.ParkIt.ParkingLocation.RATE_TIME;
-import edu.pitt.designs1635.ParkIt.ParkingLocation.TYPE;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.util.Log;
 
 public class dbAdapter 
 {
@@ -137,7 +134,7 @@ public class dbAdapter
 		steps.put(KEY_RATE, rate);
 		steps.put(KEY_NAME, name);
 
-		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_LAT +"=? and " +KEY_LON +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
 			mDb.insert(INFO_TABLE, null, steps);
 	}
 
@@ -156,18 +153,23 @@ public int addPoint(int lat, int lon, int type) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_LAT, lat);
 		initialValues.put(KEY_LON, lon);
+		initialValues.put(KEY_TYPE, type);
 				
 		if (mDb.query(INFO_TABLE,
 						new String[] {KEY_ROWID},
-						KEY_LAT +"=? and " +KEY_LON +"=? and "+KEY_TYPE+"=?",
+						KEY_LAT + "=? and " + KEY_LON +"=? and " + KEY_TYPE + "=?",
 						new String[] {Integer.toString(lat), Integer.toString(lon), Integer.toString(type)},
 						null,
 						null,
 						KEY_ROWID).getCount() != 0)
 		{
-		return -1;
+			Log.d("dbAdapter", "Point exists.  Do not insert.");
+			return -1;
 		}
 		else
-		return mDb.insert(INFO_TABLE, null, initialValues);
+		{
+			Log.d("dbAdapter", "Should insert.");
+			return (int) mDb.insert(INFO_TABLE, null, initialValues);
+		}
 	}
 }

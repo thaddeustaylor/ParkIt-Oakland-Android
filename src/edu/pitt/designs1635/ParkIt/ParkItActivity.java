@@ -40,6 +40,7 @@ public class ParkItActivity extends MapActivity {
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
         mDbHelper.addDummyData();
+        mDbHelper.addPoint(40456482, -79942604, 1);
         mCursor = mDbHelper.fetchAllRows();
         mCursor.moveToFirst();
 
@@ -80,6 +81,8 @@ public class ParkItActivity extends MapActivity {
                 mCursor.moveToNext();
             }while(!mCursor.isLast());
         }
+        
+        mDbHelper.close();
 
         List<Overlay> points = mapView.getOverlays();
         points.clear();
@@ -88,7 +91,7 @@ public class ParkItActivity extends MapActivity {
         //point.add(mItemizedOverlay);
 
         //This will attempt to grab the current location and have the map automatically center to there
-        //Buuuuut it doesn't use the current location yet. It uses the LAST known location...
+        /* Buuuuut it doesn't use the current location yet. It uses the LAST known location...
         LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         LocationListener mLocListener = new MyLocationListener();
         mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
@@ -96,6 +99,21 @@ public class ParkItActivity extends MapActivity {
 
         mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
         mapCtrl.setZoom(17);
+        */
+    }
+    
+    @Override
+    protected void onStop()
+    {
+	    super.onStop();
+	    mDbHelper.close();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+	    super.onResume();
+	    mDbHelper.open();
     }
 
 	@Override
