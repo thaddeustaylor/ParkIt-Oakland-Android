@@ -63,6 +63,7 @@ public class ParkItActivity extends MapActivity {
         if(mCursor.getCount() > 0)
         {
             do{
+                Log.i("PARKING STUFOSIDFOUT", "CURRENTLY AT POSITION: "+mCursor.getPosition());
                 if(mCursor.getInt(3) == 0)
                 {
                     point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
@@ -77,10 +78,16 @@ public class ParkItActivity extends MapActivity {
                     "Rate: "+mCursor.getFloat(8));
                     lItemizedOverlay.addOverlay(overlayItem);
                 }
+                else
+                {
+                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    "Rate: "+mCursor.getFloat(8));
+                    mItemizedOverlay.addOverlay(overlayItem);
+                }
 
                 mCursor.moveToNext();
-                Log.i("PARRRRRKKKKKIT", "AFter MAPSHIT");
-            }while(!mCursor.isLast());
+            }while(!mCursor.isAfterLast());
         }
 
         List<Overlay> points = mapView.getOverlays();

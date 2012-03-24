@@ -22,14 +22,16 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	{
 		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
-		setShadow(shadow);
+		populate();
+		//setShadow(shadow);
 	}
 
 	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView) 
 	{
 		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
-		setShadow(false);
+		populate();
+		//setShadow(false);
 	}
 	
 	public void addOverlay(OverlayItem overlay) {
@@ -66,7 +68,7 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	}
 	
 	protected boolean onNextClick(int index, OverlayItem item) {
-		c.startActivity(new Intent(c, Information.class));
+		//c.startActivity(new Intent(c, Information.class));
 		return true;
 	}
 }

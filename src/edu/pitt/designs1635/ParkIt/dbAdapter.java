@@ -9,7 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.util.Log;
 
 public class dbAdapter 
 {
@@ -121,11 +121,14 @@ public class dbAdapter
 		steps.put(KEY_RATE, rate);
 		steps.put(KEY_NAME, name);
 
-		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)
+		{			  
 			mDb.insert(INFO_TABLE, null, steps);
+			Log.i("DATABASE SSETJROFOSIDJFO", name);
+		}
 
-		lat = 40465282;
-		lon = -79924608;
+		lat = 40445282;
+		lon = -79943108;
 		type = 1;
 		rate = 0.50F;
 		name = "Somewhere else";
@@ -137,7 +140,10 @@ public class dbAdapter
 		steps.put(KEY_NAME, name);
 
 		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME + "=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
+		{	
 			mDb.insert(INFO_TABLE, null, steps);
+			Log.i("DATABASE SSETJROFOSIDJFO", name);
+		}
 	}
 
 	public void close()

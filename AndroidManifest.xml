@@ -21,10 +21,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="Information"
-            android:label="@string/info_name" />    
+        </activity>   
     </application>
 
 </manifest>

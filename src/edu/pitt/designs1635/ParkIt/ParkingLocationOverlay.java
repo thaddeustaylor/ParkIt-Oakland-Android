@@ -36,7 +36,11 @@ public class ParkingLocationOverlay extends Overlay {
 
         //---translate the GeoPoint to screen pixels---
         Point screenPts = new Point();
-        mapView.getProjection().toPixels(m_info.getGeoPoint(), screenPts);      
+        mapView.getProjection().toPixels(m_info.getGeoPoint(), screenPts);    
+
+        Bitmap bmp = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.g_icon); 
+        
+        canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);   
 
         return true;
         
