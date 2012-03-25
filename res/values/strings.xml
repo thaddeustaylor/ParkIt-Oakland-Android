@@ -4,4 +4,16 @@
     <string name="menu_alarm">Alarm</string>
     <string name="menu_settings">Settings</string>
     <string name="info_name">Information</string>
+    <string name="timer1">Time on meter:</string>
+    <string name="interval_prompt">Select number of minutes</string>
+    <string-array name="intervals">
+    	<item>120</item>
+		<item>90</item>
+    	<item>60</item>
+		<item>45</item>
+		<item>30</item>
+		<item>15</item>
+		<item>10</item>
+		<item>5</item>
+	</string-array>
 </resources>

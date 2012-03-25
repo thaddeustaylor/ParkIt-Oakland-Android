@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.content.Context;
 import android.util.Log;
+import android.content.Intent;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -126,11 +127,9 @@ public class ParkItActivity extends MapActivity {
     {
         switch (item.getItemId())
         {
-            /*
             case R.id.menu_alarm:
-                startActivity(new Intent(this, alarm .class));
+                startActivity(new Intent(this, Timer.class));
                 return true;
-            */
         }
         return super.onMenuItemSelected(featureId, item);
     }

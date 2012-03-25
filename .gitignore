@@ -5,3 +5,4 @@ gen/*
 *.*.swp
 Thumbs.db
 *.keystore
+*.properties
