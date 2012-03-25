@@ -1,8 +1,11 @@
 package edu.pitt.designs1635.ParkIt;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.maps.GeoPoint;
 
-public class ParkingLocation {
+public class ParkingLocation implements Parcelable {
 
 	private int m_locationID;
 	private int m_uLat; //micro Latitude
@@ -812,5 +815,83 @@ public class ParkingLocation {
 		m_garageRate = "";
 		m_name = "";
 	}
+
+
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public void writeToParcel(Parcel p, int flags) {
+		p.writeInt(m_locationID);
+		p.writeInt( m_uLat ); //micro Latitude
+		p.writeInt(m_uLng ); //micro Longitude
+		p.writeInt( m_type.ordinal() ) ;
+		p.writeInt( m_payment.ordinal() );
+		p.writeInt( m_limit );
+		p.writeInt(	m_mondayStart );
+		p.writeInt(	m_mondayEnd );
+		p.writeInt(	m_tuesdayStart );
+		p.writeInt(	m_tuesdayEnd );
+		p.writeInt(	m_wednesdayStart );
+		p.writeInt(	m_wednesdayEnd );
+		p.writeInt(	m_thursdayStart );
+		p.writeInt(	m_thursdayEnd );
+		p.writeInt(	m_fridayStart );
+		p.writeInt(	m_fridayEnd );
+		p.writeInt(	m_saturdayStart );
+		p.writeInt(	m_saturdayEnd );
+		p.writeInt(	m_sundayStart );
+		p.writeInt(	m_sundayEnd );
+		p.writeFloat( m_rate );
+		p.writeInt( m_rateTime.ordinal() );
+		p.writeString( m_garageRate );
+		p.writeString(  m_name );
+		
+		
+	}
 	
+	public static final Parcelable.Creator<ParkingLocation> CREATOR
+    					= new Parcelable.Creator<ParkingLocation>() 
+    					{
+							public ParkingLocation createFromParcel(Parcel in) 
+							{
+								return new ParkingLocation(in);
+							}
+
+							public ParkingLocation[] newArray(int size) {
+								return new ParkingLocation[size];
+							}
+    					
+    					
+    					};
+    private ParkingLocation(Parcel in)
+	{
+		m_locationID = in.readInt();
+		m_uLat = in.readInt();
+		m_uLng = in.readInt();
+		this.setType(in.readInt());
+		this.setPayment(in.readInt());
+		m_limit = in.readInt();
+		m_mondayStart = in.readInt();
+		m_mondayEnd = in.readInt();
+		m_tuesdayStart = in.readInt();
+		m_tuesdayEnd = in.readInt();
+		m_wednesdayStart  = in.readInt();
+		m_wednesdayEnd  = in.readInt();
+		m_thursdayStart  = in.readInt();
+		m_thursdayEnd = in.readInt();
+		m_fridayStart = in.readInt();
+		m_fridayEnd = in.readInt();
+		m_saturdayStart = in.readInt();
+		m_saturdayEnd = in.readInt();
+		m_sundayStart = in.readInt();
+		m_sundayEnd = in.readInt();
+		m_rate = in.readFloat();
+		this.setRateTime(in.readInt());
+		m_garageRate = in.readString();
+		m_name = in.readString();
+	}
+
 }

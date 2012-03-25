@@ -8,20 +8,18 @@ import android.content.Context;
 import android.util.Log;
 import android.content.Intent;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-
-import android.database.Cursor;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuInflater;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -42,9 +40,11 @@ public class ParkItActivity extends MapActivity {
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
         mDbHelper.addDummyData();
+        mDbHelper.addPoint(40456482, -79942604, 1);
         mCursor = mDbHelper.fetchAllRows();
         mCursor.moveToFirst();
-
+        
+        
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
@@ -63,33 +63,41 @@ public class ParkItActivity extends MapActivity {
         //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
         if(mCursor.getCount() > 0)
         {
-            do{
-                Log.i("PARKING STUFOSIDFOUT", "CURRENTLY AT POSITION: "+mCursor.getPosition());
+            do{                
+            	ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
+            	
+            	pl.setName(mCursor.getString(4));
+            	pl.setRate(mCursor.getFloat(8));
+            	
                 if(mCursor.getInt(3) == 0)
                 {
+
                     point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
                     overlayItem = new OverlayItem(point, mCursor.getString(4), 
                     "Rate: "+mCursor.getFloat(8));
-                    gItemizedOverlay.addOverlay(overlayItem);
+                    gItemizedOverlay.addOverlay(pl);
                 }
                 else if(mCursor.getInt(3) == 1)
                 {
                     point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
                     overlayItem = new OverlayItem(point, mCursor.getString(4), 
                     "Rate: "+mCursor.getFloat(8));
-                    lItemizedOverlay.addOverlay(overlayItem);
+                    lItemizedOverlay.addOverlay(pl);
                 }
                 else
                 {
                     point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
                     overlayItem = new OverlayItem(point, mCursor.getString(4), 
                     "Rate: "+mCursor.getFloat(8));
-                    mItemizedOverlay.addOverlay(overlayItem);
+                    mItemizedOverlay.addOverlay(pl);
                 }
+
 
                 mCursor.moveToNext();
             }while(!mCursor.isAfterLast());
         }
+        
+        mDbHelper.close();
 
         List<Overlay> points = mapView.getOverlays();
         points.clear();
@@ -98,14 +106,29 @@ public class ParkItActivity extends MapActivity {
         //point.add(mItemizedOverlay);
 
         //This will attempt to grab the current location and have the map automatically center to there
-        //Buuuuut it doesn't use the current location yet. It uses the LAST known location...
-        //LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        //LocationListener mLocListener = new MyLocationListener();
-        //mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
-        //Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        /* Buuuuut it doesn't use the current location yet. It uses the LAST known location...
+        LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationListener mLocListener = new MyLocationListener();
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
+        Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        //mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
-        //mapCtrl.setZoom(17);
+        mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
+        mapCtrl.setZoom(17);
+        */
+    }
+    
+    @Override
+    protected void onStop()
+    {
+	    super.onStop();
+	    mDbHelper.close();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+	    super.onResume();
+	    mDbHelper.open();
     }
 
 	@Override

@@ -68,7 +68,12 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	}
 	
 	protected boolean onNextClick(int index, OverlayItem item) {
-		//c.startActivity(new Intent(c, Information.class));
+		Intent info = new Intent(c, Information.class);
+		
+		info.putExtra("edu.pitt.designs1635.ParkIt.location", m_locations.get(index));
+		
+		c.startActivity(info);
+		
 		return true;
 	}
 }
