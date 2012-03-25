@@ -40,7 +40,6 @@ public class ParkItActivity extends MapActivity {
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
         mDbHelper.addDummyData();
-        mDbHelper.addPoint(40456482, -79942604, 1);
         mCursor = mDbHelper.fetchAllRows();
         mCursor.moveToFirst();
         
@@ -150,6 +149,9 @@ public class ParkItActivity extends MapActivity {
     {
         switch (item.getItemId())
         {
+            case R.id.menu_add:
+                startActivity(new Intent(this, Add.class));
+                return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
                 return true;

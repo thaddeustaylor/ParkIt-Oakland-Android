@@ -28,6 +28,8 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name="Edit" 
             android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name="Add"
+            android:theme="@android:style/Theme.NoTitleBar" />
     </application>
 
 </manifest>

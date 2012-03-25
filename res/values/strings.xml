@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ParkIt</string>
+    <string name="menu_add">Add</string>
     <string name="menu_alarm">Alarm</string>
     <string name="menu_settings">Settings</string>
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
     <string name="info_goto">Go to...</string>
     <string name="info_save">Save</string>
+    <string name="name">Name: </string>
+    <string name="parking_type">Parking Type: </string>
+    <string name="payment_type">Payment Type: </string>
+    <string name="rate">Rate: </string>
+    <string name="time_limit">Time Limit: </string>
     <string name="edit_local">Save only to phone</string>
     <string name="edit_remote">Save to server</string>
     <string name="timer1">Time on meter:</string>

@@ -17,7 +17,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Name: " />    
+            android:text="@string/name" />    
         <TextView 
             android:id="@+id/namevalue"
             android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Parking Type: " />
+            android:text="@string/parking_type" />
         <TextView
             android:id="@+id/typevalue"
             android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Payment Type: " />
+            android:text="@string/payment_type" />
         <TextView
             android:id="@+id/paytypevalue"
             android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Time Limit: " />
+            android:text="@string/time_limit" />
         <TextView
             android:id="@+id/limitvalue"
             android:layout_width="wrap_content"
@@ -155,7 +155,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="Rate: " />
+            android:text="@string/rate" />
        <TextView
             android:id="@+id/ratevalue"
             android:layout_width="wrap_content"

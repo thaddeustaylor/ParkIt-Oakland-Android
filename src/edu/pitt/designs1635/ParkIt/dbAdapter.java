@@ -153,7 +153,7 @@ public class dbAdapter
 		return mDb.query(INFO_TABLE, null, null, null, null, null, null);
 	}
 	
-public int addPoint(int lat, int lon, int type) {
+	public int addPoint(int lat, int lon, int type) {
 		
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_LAT, lat);
@@ -174,5 +174,51 @@ public int addPoint(int lat, int lon, int type) {
 		{
 			return (int) mDb.insert(INFO_TABLE, null, initialValues);
 		}
+	}
+
+	public int addPoint(ParkingLocation pl)
+	{
+		ContentValues vals = new ContentValues();
+		vals.put(KEY_LAT, pl.getLatitude());
+		vals.put(KEY_LON, pl.getLongitude());
+		vals.put(KEY_TYPE, pl.getType().toString());
+		vals.put(KEY_NAME, pl.getName());
+		vals.put(KEY_PAYMENT, pl.getPayment().toString());
+		vals.put(KEY_LIMIT, ""+pl.getLimit());
+		//vals.put(KEY_NOTES, pl.getNotes());
+		vals.put(KEY_RATE, ""+pl.getRate());
+		vals.put(KEY_RATETIME, pl.getRateTime().toString());
+		vals.put(KEY_GRATE, pl.getGarageRate());
+
+		vals.put(KEY_MONSTART, ""+pl.getMondayStart());
+		vals.put(KEY_MONEND, ""+pl.getMondayEnd());
+		vals.put(KEY_TUESTART, ""+pl.getTuesdayStart());
+		vals.put(KEY_TUEEND, ""+pl.getTuesdayEnd());
+		vals.put(KEY_WEDSTART, ""+pl.getWednesdayStart());
+		vals.put(KEY_WEDEND, ""+pl.getWednesdayEnd());
+		vals.put(KEY_THUSTART, ""+pl.getThursdayStart());
+		vals.put(KEY_THUEND, ""+pl.getThursdayEnd());
+		vals.put(KEY_FRISTART, ""+pl.getFridayStart());
+		vals.put(KEY_FRIEND, ""+pl.getFridayEnd());
+		vals.put(KEY_SATSTART, ""+pl.getSaturdayStart());
+		vals.put(KEY_SATEND, ""+pl.getSaturdayEnd());
+		vals.put(KEY_SUNSTART, ""+pl.getSundayStart());
+		vals.put(KEY_SUNEND, ""+pl.getSundayEnd());
+
+		if (mDb.query(INFO_TABLE,
+						new String[] {KEY_ROWID},
+						KEY_LAT + "=? and " + KEY_LON +"=? and " + KEY_TYPE + "=?",
+						new String[] {Integer.toString(pl.getLatitude()), Integer.toString(pl.getLongitude()), Integer.toString(pl.getType().toInt())},
+						null,
+						null,
+						KEY_ROWID).getCount() != 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return (int) mDb.insert(INFO_TABLE, null, vals);
+		}
+
 	}
 }

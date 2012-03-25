@@ -96,9 +96,20 @@ public class ParkingLocation implements Parcelable {
 				case PARKING_GARAGE: val = "Parking Garage"; break;
 				default: val = ""; break;
 			}
-			
 			return val;
-			
+		}
+
+		public int toInt()
+		{
+			int val;
+			switch(this)
+			{
+				case METER: val = 0; break;
+				case PARKING_LOT: val = 1; break;
+				case PARKING_GARAGE: val = 2; break;
+				default: val=-1; break;
+			}
+			return val;
 		}
 	};
 
