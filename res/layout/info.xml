@@ -12,13 +12,32 @@
             android:id="@+id/nameview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Name: " />    
         <TextView 
             android:id="@+id/namevalue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/nameview" />
+        <EditText 
+            android:id="@+id/namevalue_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="invisible"
             android:layout_toRightOf="@id/nameview" />
         
         <TextView
@@ -26,14 +45,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/nameview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Parking Type: " />
         <TextView
             android:id="@+id/typevalue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/nameview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/typeview" />
+        <EditText
+            android:id="@+id/typevalue_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameview"
+            android:textSize="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="invisible"
             android:layout_toRightOf="@id/typeview" />
         
         <TextView
@@ -41,14 +80,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/typeview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Payment Type: " />
         <TextView
             android:id="@+id/paytypevalue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/typeview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/paytypeview" />
+        <EditText
+            android:id="@+id/paytypevalue_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/typeview"
+            android:textSize="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="invisible"
             android:layout_toRightOf="@id/paytypeview" />
         
         <TextView
@@ -56,14 +115,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/paytypeview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Time Limit: " />
         <TextView
             android:id="@+id/limitvalue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/limitview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_below="@id/paytypeview" />
+        <EditText
+            android:id="@+id/limitvalue_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/limitview"
+            android:textSize="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="invisible"
             android:layout_below="@id/paytypeview" />
         
         <TextView
@@ -71,14 +150,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/limitview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Rate: " />
        <TextView
             android:id="@+id/ratevalue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/limitview"
-            android:textSize="20dp"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/rateview" />
+        <EditText
+            android:id="@+id/ratevalue_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/limitview"
+            android:textSize="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="invisible"
             android:layout_toRightOf="@id/rateview" />
     </RelativeLayout>
 
@@ -93,11 +192,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/info_edit" />
+        <Button android:id="@+id/save_button"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/info_save" />
         <Button android:id="@+id/goto_button"
             android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:enabled="false"
             android:text="@string/info_goto" />
     </LinearLayout>
    

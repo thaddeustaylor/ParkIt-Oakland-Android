@@ -26,6 +26,8 @@
           <activity 
             android:name="Information"
             android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name="Edit" 
+            android:theme="@android:style/Theme.NoTitleBar" />
     </application>
 
 </manifest>

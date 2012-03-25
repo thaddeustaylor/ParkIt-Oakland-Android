@@ -6,6 +6,9 @@
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
     <string name="info_goto">Go to...</string>
+    <string name="info_save">Save</string>
+    <string name="edit_local">Save only to phone</string>
+    <string name="edit_remote">Save to server</string>
     <string name="timer1">Time on meter:</string>
     <string name="interval_prompt">Select number of minutes</string>
     <string-array name="intervals">
