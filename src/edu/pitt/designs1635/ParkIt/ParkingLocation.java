@@ -1,8 +1,11 @@
 package edu.pitt.designs1635.ParkIt;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.maps.GeoPoint;
 
-public class ParkingLocation {
+public class ParkingLocation implements Parcelable {
 
 	private int m_locationID;
 	private int m_uLat; //micro Latitude
@@ -48,7 +51,10 @@ public class ParkingLocation {
 			return val;
 			
 		}
+		
 	};
+	
+	
 	
 	public static enum PAYMENT_TYPE 
 	{ 
@@ -104,6 +110,7 @@ public class ParkingLocation {
 	 */
 	public int getID() {
 		return m_locationID;
+		
 	}
 
 
@@ -115,6 +122,7 @@ public class ParkingLocation {
 	 */
 	public void setID(int ID) {
 		this.m_locationID = ID;
+
 	}
 
 	/**
@@ -186,7 +194,25 @@ public class ParkingLocation {
 		this.m_type = type;
 	}
 
+	/**
+	 * Sets the type of parking location. <br />
+	 * TYPE.METER = 0 <br />
+	 * TYPE.PARKING_LOT = 1 <br />
+	 * TYPE.PARKING_GARAGE = 2 <br />
+	 * 
+	 * @param type - the type as an integer.
+	 */
+	public void setType(int type) {
+		
+		switch(type)
+		{
+			case 0: this.m_type = TYPE.METER; break;
+			case 1: this.m_type = TYPE.PARKING_LOT; break;
+			case 2: this.m_type = TYPE.PARKING_GARAGE; break;
+			default: this.m_type = null; break; 
 
+		}
+	}
 
 	/**
 	 * Gets the payment type for this parking location. PAYMENT_TYPE.CASH, PAYMENT_TYPE.CREDIT, or PAYMENT_TYPE.COIN
@@ -208,7 +234,27 @@ public class ParkingLocation {
 		this.m_payment = payment;
 	}
 
+	/**
+	 * Sets the payment type for this parking location. <br />
+	 * PAYMENT_TYPE.CASH = 0 <br />
+	 * PAYMENT_TYPE.CREDIT = 1 <br />
+	 * PAYMENT_TYPE.COIN = 2 <br />
+	 * 
+	 * @param payment - the payment type as an integer.
+	 */
+	public void setPayment(int payment) {
+		switch(payment)
+		{
+			case 0: this.m_payment = PAYMENT_TYPE.CASH; break;
+			case 1: this.m_payment = PAYMENT_TYPE.CREDIT; break;
+			case 2: this.m_payment = PAYMENT_TYPE.COIN; break;
+			default: this.m_payment = null; break; 
 
+		}
+		
+	}
+	
+	
 
 	/**
 	 * Sets the length of time that the parking location can be used.  This is mainly for metered parking. In hours.
@@ -558,11 +604,27 @@ public class ParkingLocation {
 	 * @param rateTime - the rate increment. 
 	 */
 	public void setRateTime(RATE_TIME rateTime) {
-		
-		
 		this.m_rateTime = rateTime;
 	}
 
+	/**
+	 * Sets the rate increment. 
+	 * HOURLY = 0
+	 * DAILY = 1
+	 * 
+	 * @param rateTime - the rate increment as an integer. 
+	 */
+	public void setRateTime(int rateTime) {
+		switch(rateTime)
+		{
+			case 0: this.m_rateTime = RATE_TIME.HOURLY; break;
+			case 1: this.m_rateTime = RATE_TIME.DAILY; break;
+			default: this.m_rateTime = null; break; 
+
+		}
+		
+		
+	}
 
 
 	/**
@@ -753,5 +815,86 @@ public class ParkingLocation {
 		m_garageRate = "";
 		m_name = "";
 	}
+
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void writeToParcel(Parcel p, int flags) {
+		p.writeInt(m_locationID);
+		p.writeInt( m_uLat ); //micro Latitude
+		p.writeInt(m_uLng ); //micro Longitude
+		p.writeInt( m_type.ordinal() ) ;
+		p.writeInt( m_payment.ordinal() );
+		p.writeInt( m_limit );
+		p.writeInt(	m_mondayStart );
+		p.writeInt(	m_mondayEnd );
+		p.writeInt(	m_tuesdayStart );
+		p.writeInt(	m_tuesdayEnd );
+		p.writeInt(	m_wednesdayStart );
+		p.writeInt(	m_wednesdayEnd );
+		p.writeInt(	m_thursdayStart );
+		p.writeInt(	m_thursdayEnd );
+		p.writeInt(	m_fridayStart );
+		p.writeInt(	m_fridayEnd );
+		p.writeInt(	m_saturdayStart );
+		p.writeInt(	m_saturdayEnd );
+		p.writeInt(	m_sundayStart );
+		p.writeInt(	m_sundayEnd );
+		p.writeFloat( m_rate );
+		p.writeInt( m_rateTime.ordinal() );
+		p.writeString( m_garageRate );
+		p.writeString(  m_name );
+		
+		
+	}
 	
+	public static final Parcelable.Creator<ParkingLocation> CREATOR
+    					= new Parcelable.Creator<ParkingLocation>() 
+    					{
+							public ParkingLocation createFromParcel(Parcel in) 
+							{
+								return new ParkingLocation(in);
+							}
+
+							@Override
+							public ParkingLocation[] newArray(int size) {
+								return new ParkingLocation[size];
+							}
+    					
+    					
+    					};
+    private ParkingLocation(Parcel in)
+	{
+		m_locationID = in.readInt();
+		m_uLat = in.readInt();
+		m_uLng = in.readInt();
+		this.setType(in.readInt());
+		this.setPayment(in.readInt());
+		m_limit = in.readInt();
+		m_mondayStart = in.readInt();
+		m_mondayEnd = in.readInt();
+		m_tuesdayStart = in.readInt();
+		m_tuesdayEnd = in.readInt();
+		m_wednesdayStart  = in.readInt();
+		m_wednesdayEnd  = in.readInt();
+		m_thursdayStart  = in.readInt();
+		m_thursdayEnd = in.readInt();
+		m_fridayStart = in.readInt();
+		m_fridayEnd = in.readInt();
+		m_saturdayStart = in.readInt();
+		m_saturdayEnd = in.readInt();
+		m_sundayStart = in.readInt();
+		m_sundayEnd = in.readInt();
+		m_rate = in.readFloat();
+		this.setRateTime(in.readInt());
+		m_garageRate = in.readString();
+		m_name = in.readString();
+	}
+
 }

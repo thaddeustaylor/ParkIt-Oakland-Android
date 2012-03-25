@@ -1,11 +1,12 @@
+
 package edu.pitt.designs1635.ParkIt;
 
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -17,14 +18,33 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	private ArrayList<ParkingLocation> m_locations = new ArrayList<ParkingLocation>();
 	private Context c;
 	
-	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView) 
+	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView, boolean shadow) 
 	{
-		super(boundCenter(defaultMarker), mapView);
+		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
+		populate();
+		//setShadow(shadow);
 	}
 
+	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView) 
+	{
+		super(boundCenterBottom(defaultMarker), mapView);
+		c = mapView.getContext();
+		populate();
+		//setShadow(false);
+	}
+	
 	public void addOverlay(OverlayItem overlay) {
 	    m_overlays.add(overlay);
+	    populate();
+	}
+	
+	public void addOverlay(ParkingLocation pl) {
+	    
+		OverlayItem overlay = new OverlayItem(pl.getGeoPoint(), pl.getName(),	
+                "Rate: "+pl.getRate());
+		m_locations.add(pl);
+		m_overlays.add(overlay);
 	    populate();
 	}
 	
@@ -48,8 +68,13 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	}
 	
 	protected boolean onNextClick(int index, OverlayItem item) {
-		Toast.makeText(c, "onNextClick for overlay index " + index,
-				Toast.LENGTH_LONG).show();
+		Intent info = new Intent(c, Information.class);
+		
+		info.putExtra("edu.pitt.designs1635.ParkIt.location", m_locations.get(index));
+		
+		c.startActivity(info);
+		
 		return true;
 	}
 }
+
