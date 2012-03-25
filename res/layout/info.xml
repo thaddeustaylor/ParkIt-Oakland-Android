@@ -1,69 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
     
-    <TextView
-        android:id="@+id/nameview"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/nameview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="Name: " />    
+        <TextView 
+            android:id="@+id/namevalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:layout_toRightOf="@id/nameview" />
+        
+        <TextView
+            android:id="@+id/typeview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameview"
+            android:textSize="20dp"
+            android:text="Parking Type: " />
+        <TextView
+            android:id="@+id/typevalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameview"
+            android:textSize="20dp"
+            android:layout_toRightOf="@id/typeview" />
+        
+        <TextView
+            android:id="@+id/paytypeview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/typeview"
+            android:textSize="20dp"
+            android:text="Payment Type: " />
+        <TextView
+            android:id="@+id/paytypevalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/typeview"
+            android:textSize="20dp"
+            android:layout_toRightOf="@id/paytypeview" />
+        
+        <TextView
+            android:id="@+id/limitview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paytypeview"
+            android:textSize="20dp"
+            android:text="Time Limit: " />
+        <TextView
+            android:id="@+id/limitvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/limitview"
+            android:textSize="20dp"
+            android:layout_below="@id/paytypeview" />
+        
+        <TextView
+            android:id="@+id/rateview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/limitview"
+            android:textSize="20dp"
+            android:text="Rate: " />
+       <TextView
+            android:id="@+id/ratevalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/limitview"
+            android:textSize="20dp"
+            android:layout_toRightOf="@id/rateview" />
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Name:" />    
-    <TextView 
-        android:id="@+id/namevalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/nameview" />
-    
-    <TextView
-        android:id="@+id/typeview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nameview"
-        android:text="Parking Type:" />
-    <TextView
-        android:id="@+id/typevalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nameview"
-        android:layout_toRightOf="@id/typeview" />
-    
-    <TextView
-        android:id="@+id/paytypeview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/typeview"
-        android:text="Payment Type:" />
-    <TextView
-        android:id="@+id/paytypevalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/typeview"
-        android:layout_toRightOf="@id/paytypeview" />
-    
-    <TextView
-        android:id="@+id/limitview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/paytypeview"
-        android:text="Time Limit:" />
-    <TextView
-        android:id="@+id/limitvalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/limitview"
-        android:layout_below="@id/paytypeview" />
-    
-    <TextView
-        android:id="@+id/rateview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/limitview"
-        android:text="Rate:" />
-   <TextView
-        android:id="@+id/ratevalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/limitview"
-        android:layout_toRightOf="@id/rateview" />
+        android:orientation="horizontal"
+        style="@android:style/ButtonBar">
+        <Button android:id="@+id/edit_button"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/info_edit" />
+        <Button android:id="@+id/goto_button"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/info_goto" />
+    </LinearLayout>
    
-</RelativeLayout>
+</LinearLayout>

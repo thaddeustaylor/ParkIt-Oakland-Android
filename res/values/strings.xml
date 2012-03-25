@@ -4,6 +4,8 @@
     <string name="menu_alarm">Alarm</string>
     <string name="menu_settings">Settings</string>
     <string name="info_name">Information</string>
+    <string name="info_edit">Edit</string>
+    <string name="info_goto">Go to...</string>
     <string name="timer1">Time on meter:</string>
     <string name="interval_prompt">Select number of minutes</string>
     <string-array name="intervals">

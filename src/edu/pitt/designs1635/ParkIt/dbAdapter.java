@@ -168,12 +168,10 @@ public int addPoint(int lat, int lon, int type) {
 						null,
 						KEY_ROWID).getCount() != 0)
 		{
-			Log.d("dbAdapter", "Point exists.  Do not insert.");
 			return -1;
 		}
 		else
 		{
-			Log.d("dbAdapter", "Should insert.");
 			return (int) mDb.insert(INFO_TABLE, null, initialValues);
 		}
 	}
