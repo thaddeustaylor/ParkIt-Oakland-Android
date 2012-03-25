@@ -21,7 +21,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>   
+        </activity>
+        
+          <activity 
+            android:name=".Information"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            
+        </activity>
+        
     </application>
 
 </manifest>

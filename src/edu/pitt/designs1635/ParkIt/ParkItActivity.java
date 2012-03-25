@@ -1,26 +1,19 @@
 package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.content.Context;
-import android.util.Log;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-
-import android.database.Cursor;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuInflater;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -43,7 +36,8 @@ public class ParkItActivity extends MapActivity {
         mDbHelper.addDummyData();
         mCursor = mDbHelper.fetchAllRows();
         mCursor.moveToFirst();
-
+        
+        
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
@@ -64,27 +58,35 @@ public class ParkItActivity extends MapActivity {
         {
             do{
                 Log.i("PARKING STUFOSIDFOUT", "CURRENTLY AT POSITION: "+mCursor.getPosition());
+                
+            	ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
+            	
+            	pl.setName(mCursor.getString(4));
+            	pl.setRate(mCursor.getFloat(8));
+            	
                 if(mCursor.getInt(3) == 0)
                 {
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
-                    gItemizedOverlay.addOverlay(overlayItem);
+
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
+                    gItemizedOverlay.addOverlay(pl);
                 }
                 else if(mCursor.getInt(3) == 1)
                 {
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
-                    lItemizedOverlay.addOverlay(overlayItem);
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
+                    lItemizedOverlay.addOverlay(pl);
                 }
                 else
                 {
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
-                    mItemizedOverlay.addOverlay(overlayItem);
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
+                    mItemizedOverlay.addOverlay(pl);
                 }
+
 
                 mCursor.moveToNext();
             }while(!mCursor.isAfterLast());
