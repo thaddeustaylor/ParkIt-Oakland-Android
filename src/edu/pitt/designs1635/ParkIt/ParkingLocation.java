@@ -817,14 +817,12 @@ public class ParkingLocation implements Parcelable {
 	}
 
 
-	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
-	@Override
 	public void writeToParcel(Parcel p, int flags) {
 		p.writeInt(m_locationID);
 		p.writeInt( m_uLat ); //micro Latitude
@@ -862,7 +860,6 @@ public class ParkingLocation implements Parcelable {
 								return new ParkingLocation(in);
 							}
 
-							@Override
 							public ParkingLocation[] newArray(int size) {
 								return new ParkingLocation[size];
 							}

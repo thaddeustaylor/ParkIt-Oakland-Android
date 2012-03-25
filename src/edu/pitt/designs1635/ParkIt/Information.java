@@ -20,10 +20,19 @@ public class Information extends Activity
         
         pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.location");
         
-        TextView tv = (TextView) this.findViewById(R.id.name_info);
-        EditText et;
+        TextView tv1 = (TextView) this.findViewById(R.id.namevalue);
+        TextView tv2 = (TextView) this.findViewById(R.id.typevalue);
+        TextView tv3 = (TextView) this.findViewById(R.id.paytypevalue);
+        TextView tv4 = (TextView) this.findViewById(R.id.limitvalue);
+        TextView tv5 = (TextView) this.findViewById(R.id.ratevalue);
         
-        tv.setText(tv.getText() + pl.getName());
+        //tv.setText(tv.getText() + pl.getName());
+        
+        tv1.setText(pl.getName());
+        tv2.setText(pl.getType().toString());
+        tv3.setText(pl.getPayment().toString());
+        tv4.setText(""+pl.getLimit());
+        tv5.setText(String.valueOf(pl.getRate()));
         
         //System.out.println(pl.getName());
     }

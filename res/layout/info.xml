@@ -1,41 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-	
-	<TextView android:id="@+id/name_info"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="Name: "
-		android:textSize="30dp" />
-
-	<TextView android:id="@+id/rate_info"
-		android:layout_below="@id/name_info"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="Rate: "
-		android:textSize="30dp" />
-
-	<TextView android:id="@+id/limit_info"
-		android:layout_below="@id/rate_info"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="Limit: "
-		android:textSize="30dp" />
-
-	<TextView android:id="@+id/payment_info"
-		android:layout_below="@id/limit_info"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="Payment Type: "
-		android:textSize="30dp" />
-
-	<TextView android:id="@+id/notes_info"
-		android:layout_below="@id/payment_info"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="Notes: "
-		android:textSize="30dp" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView
+        android:id="@+id/nameview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:" />    
+    <TextView 
+        android:id="@+id/namevalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/nameview" />
+    
+    <TextView
+        android:id="@+id/typeview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameview"
+        android:text="Parking Type:" />
+    <TextView
+        android:id="@+id/typevalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameview"
+        android:layout_toRightOf="@id/typeview" />
+    
+    <TextView
+        android:id="@+id/paytypeview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/typeview"
+        android:text="Payment Type:" />
+    <TextView
+        android:id="@+id/paytypevalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/typeview"
+        android:layout_toRightOf="@id/paytypeview" />
+    
+    <TextView
+        android:id="@+id/limitview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/paytypeview"
+        android:text="Time Limit:" />
+    <TextView
+        android:id="@+id/limitvalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/limitview"
+        android:layout_below="@id/paytypeview" />
+    
+    <TextView
+        android:id="@+id/rateview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/limitview"
+        android:text="Rate:" />
+   <TextView
+        android:id="@+id/ratevalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/limitview"
+        android:layout_toRightOf="@id/rateview" />
+   
 </RelativeLayout>
-
