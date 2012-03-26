@@ -71,23 +71,23 @@ public class ParkItActivity extends MapActivity {
                 if(mCursor.getInt(3) == 0)
                 {
 
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
                     gItemizedOverlay.addOverlay(pl);
                 }
                 else if(mCursor.getInt(3) == 1)
                 {
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
                     lItemizedOverlay.addOverlay(pl);
                 }
                 else
                 {
-                    point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
-                    overlayItem = new OverlayItem(point, mCursor.getString(4), 
-                    "Rate: "+mCursor.getFloat(8));
+                    //point = new GeoPoint(mCursor.getInt(1), mCursor.getInt(2));
+                    //overlayItem = new OverlayItem(point, mCursor.getString(4), 
+                    //"Rate: "+mCursor.getFloat(8));
                     mItemizedOverlay.addOverlay(pl);
                 }
 
@@ -98,10 +98,14 @@ public class ParkItActivity extends MapActivity {
         
         mDbHelper.close();
 
+        TouchLocationOverlay plo = new TouchLocationOverlay(this);
+        	
         List<Overlay> points = mapView.getOverlays();
         points.clear();
+        points.add(plo);
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
+        
         //point.add(mItemizedOverlay);
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -150,7 +154,7 @@ public class ParkItActivity extends MapActivity {
         switch (item.getItemId())
         {
             case R.id.menu_add:
-                startActivity(new Intent(this, Add.class));
+                //startActivity(new Intent(this, Add.class));
                 return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));

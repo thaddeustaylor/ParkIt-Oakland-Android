@@ -5,9 +5,6 @@ gen/*
 *.*.swp
 Thumbs.db
 *.keystore
-<<<<<<< HEAD
 *.properties
-=======
 .settings/
-*.properties
->>>>>>> 6f25d7b51026e8924540d8cb5278f06a5da7596f
+lint.xml
