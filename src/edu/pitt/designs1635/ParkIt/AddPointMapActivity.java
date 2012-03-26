@@ -41,9 +41,6 @@ public class AddPointMapActivity extends MapActivity {
         
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-
-        
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
@@ -82,12 +79,7 @@ public class AddPointMapActivity extends MapActivity {
         points.add(plo);
 
         mapCtrl.animateTo(center);
-        mapCtrl.setZoom(17);
-        
-        
-        
-
-        
+        mapCtrl.setZoom(17);        
     }
     
     

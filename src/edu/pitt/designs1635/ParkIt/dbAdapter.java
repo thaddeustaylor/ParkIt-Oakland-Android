@@ -48,7 +48,7 @@ public class dbAdapter
 		+ "lat integer not null, lon integer not null, type integer not null, "
 		+ "name text, payment integer, limits integer, notes text, rate float, "
 		+ "ratetime integer, grate text, monstart date, monend date, tuestart date, "
-		+ "tueend date, wedstart date, wedend date, thustart date, thurend date, "
+		+ "tueend date, wedstart date, wedend date, thustart date, thuend date, "
 		+ "fristart date, friend date, satstart date, satend date, "
 		+ "sunstart date, sunend date);";
 
@@ -213,10 +213,12 @@ public class dbAdapter
 						null,
 						KEY_ROWID).getCount() != 0)
 		{
+			Log.i("PARKIT DATABASE", "ADD DIDN'T WORK BRO");
 			return -1;
 		}
 		else
 		{
+			Log.i("PARKIT DATABASE", "ADD WORKED! CELEBRATE!");
 			return (int) mDb.insert(INFO_TABLE, null, vals);
 		}
 
