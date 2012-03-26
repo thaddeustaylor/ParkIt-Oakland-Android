@@ -1,6 +1,8 @@
 package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
+
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -24,12 +28,16 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 
+
 public class ParkItActivity extends MapActivity {
     
 	private dbAdapter mDbHelper;
     private Cursor mCursor;
     MapView mapView;
     ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
+    
+    
+    public final int ADD_ACTIVITY = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,11 +106,11 @@ public class ParkItActivity extends MapActivity {
         
         mDbHelper.close();
 
-        TouchLocationOverlay plo = new TouchLocationOverlay(this);
+        //TouchLocationOverlay plo = new TouchLocationOverlay(this);
         	
         List<Overlay> points = mapView.getOverlays();
         points.clear();
-        points.add(plo);
+        //points.add(plo);
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
         
@@ -154,7 +162,14 @@ public class ParkItActivity extends MapActivity {
         switch (item.getItemId())
         {
             case R.id.menu_add:
-                //startActivity(new Intent(this, Add.class));
+            	Intent intent = new Intent(this, AddPointMapActivity.class);
+            	
+            	GeoPoint p = mapView.getMapCenter();
+            	
+            	intent.putExtra("edu.pitt.designs1635.ParkIt.center.lat", p.getLatitudeE6());
+            	intent.putExtra("edu.pitt.designs1635.ParkIt.center.long", p.getLongitudeE6());
+            	
+                this.startActivityForResult(intent, ADD_ACTIVITY);
                 return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
@@ -162,4 +177,41 @@ public class ParkItActivity extends MapActivity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
+    
+    
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch (requestCode)
+		{
+		case ADD_ACTIVITY:
+			Bundle extras = data.getExtras();
+		
+			GeoPoint newPoint = new GeoPoint(extras.getInt("edu.pitt.designs1635.ParkIt.Add.lat"),
+											extras.getInt("edu.pitt.designs1635.ParkIt.Add.long"));
+			
+			switch(resultCode)
+			{
+			case AddPointMapActivity.SAVE_TO_PHONE:
+				Toast.makeText(this, "Save point to Phone " + newPoint.getLatitudeE6() + ", " +
+								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+				break;
+			case AddPointMapActivity.SAVE_TO_SERVER:
+				Toast.makeText(this, "Save point to the server " + newPoint.getLatitudeE6() + ", " +
+								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+				break;
+			default:
+				Toast.makeText(this, "I don't know where to save it " + newPoint.getLatitudeE6() + ", " +
+								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+				break;
+			}
+			
+			
+			break;
+		default:
+			break;
+		}
+		
+		
+		
+	}
 }

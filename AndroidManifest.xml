@@ -30,6 +30,10 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name="Add"
             android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name="AddPointMapActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        
+        
     </application>
 
 </manifest>
