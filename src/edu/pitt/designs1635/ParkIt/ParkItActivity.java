@@ -28,6 +28,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -120,6 +123,7 @@ public class ParkItActivity extends MapActivity {
                 mDbHelper.open();
                 mDbHelper.abandonShip();
                 mDbHelper.close();
+                refreshAllPoints();
                 return true;
         }
         return super.onMenuItemSelected(featureId, item);
