@@ -117,14 +117,10 @@ public class Add extends Activity
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
-				Toast.makeText(this, "Save point to the server " + newPoint.getLatitudeE6() + ", " +
-								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
 				mDbHelper.close();
 				finish();
 				break;
 			default:
-				Toast.makeText(this, "I don't know where to save it " + newPoint.getLatitudeE6() + ", " +
-								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
 				mDbHelper.close();
 				break;
 			}

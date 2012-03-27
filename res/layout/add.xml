@@ -107,7 +107,7 @@
             android:text="@string/rate" />
         <EditText
             android:id="@+id/rv_add"
-            android:layout_width="fill_parent"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/lv"
             android:textSize="17dp"
@@ -119,6 +119,19 @@
             android:inputType="number"
             android:singleLine="true"
             android:layout_toRightOf="@id/rv" />
+      <TextView
+            android:id="@+id/rv_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lv"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/rv_add"
+            android:text="per hour" />
+
     </RelativeLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

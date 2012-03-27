@@ -57,7 +57,6 @@ public class Information extends Activity
 		nameValue.setText(pl.getName());
 		typeValue.setText(pl.getType().toString());
 		paymentValue.setText(pl.getPayment().toString());
-		Toast.makeText(getApplicationContext(), "Loading Point: " + pl.getLimit(),	Toast.LENGTH_LONG).show();
 		if(pl.getLimit() == 0)
 			limitValue.setText("No limit recorded");
 		else
@@ -145,6 +144,8 @@ public class Information extends Activity
 
 				edit.setEnabled(true);
 				save.setEnabled(false);
+				mDbHelper.close();
+				finish();
 			}
 		});
 	}
