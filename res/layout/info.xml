@@ -38,6 +38,9 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="invisible"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:inputType="textCapSentences"
             android:layout_toRightOf="@id/nameview" />
         
         <TextView
@@ -73,6 +76,9 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="invisible"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:inputType="textCapSentences"
             android:layout_toRightOf="@id/typeview" />
         
         <TextView
@@ -108,6 +114,9 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="invisible"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:inputType="textCapSentences"
             android:layout_toRightOf="@id/paytypeview" />
         
         <TextView
@@ -143,6 +152,9 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="invisible"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:singleLine="true"
             android:layout_below="@id/paytypeview" />
         
         <TextView
@@ -178,6 +190,9 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="invisible"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:singleLine="true"
             android:layout_toRightOf="@id/rateview" />
     </RelativeLayout>
 

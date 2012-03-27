@@ -73,9 +73,19 @@ public class ParkingLocation implements Parcelable {
 				case COIN: val = "Coin"; break;
 				default: val = ""; break;
 			}
-			
 			return val;
-			
+		}
+		public int toInt()
+		{
+			int val;
+			switch(this)
+			{
+				case CASH: val = 0; break;
+				case CREDIT: val = 1; break;
+				case COIN: val = 2; break;
+				default: val=-1; break;
+			}
+			return val;
 		}
 	};
 	
@@ -225,6 +235,16 @@ public class ParkingLocation implements Parcelable {
 		}
 	}
 
+	public void setType(String type)
+	{
+		if(type.compareTo("Meter") == 0)
+			this.m_type = TYPE.METER;
+		else if(type.compareTo("Parking Lot") == 0)
+			this.m_type = TYPE.PARKING_LOT;
+		else
+			this.m_type = TYPE.PARKING_GARAGE;
+	}
+
 	/**
 	 * Gets the payment type for this parking location. PAYMENT_TYPE.CASH, PAYMENT_TYPE.CREDIT, or PAYMENT_TYPE.COIN
 	 * 
@@ -262,7 +282,16 @@ public class ParkingLocation implements Parcelable {
 			default: this.m_payment = null; break; 
 
 		}
-		
+	}
+
+	public void setPayment(String payment)
+	{
+		if(payment.compareTo("Coin") == 0)
+			this.m_payment = PAYMENT_TYPE.COIN;
+		else if(payment.compareTo("Cash") == 0)
+			this.m_payment = PAYMENT_TYPE.CASH;
+		else
+			this.m_payment = PAYMENT_TYPE.CREDIT;
 	}
 	
 	

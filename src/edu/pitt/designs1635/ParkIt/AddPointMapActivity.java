@@ -17,6 +17,9 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -26,7 +29,7 @@ import com.google.android.maps.Overlay;
 import edu.pitt.designs1635.ParkIt.TouchLocationOverlay.TapListener;
 
 
-public class AddPointMapActivity extends MapActivity {
+public class AddPointMapActivity extends SherlockMapActivity {
     
 
     MapView mapView;
@@ -41,6 +44,9 @@ public class AddPointMapActivity extends MapActivity {
         
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        ActionBar ab = getSupportActionBar();
+		ab.setTitle(R.string.add_title);
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);

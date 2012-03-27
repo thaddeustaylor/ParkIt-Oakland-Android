@@ -52,17 +52,13 @@ public class ParkItActivity extends MapActivity {
 
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
-        //mDbHelper.addDummyData();
         mCursor = mDbHelper.fetchAllRows();
         mCursor.moveToFirst();
         mDbHelper.close();
         
-        
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         
-        //point.add(mItemizedOverlay);
-
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -120,6 +116,11 @@ public class ParkItActivity extends MapActivity {
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
                 return true;
+            case R.id.menu_settings:
+                mDbHelper.open();
+                mDbHelper.abandonShip();
+                mDbHelper.close();
+                return true;
         }
         return super.onMenuItemSelected(featureId, item);
     }
@@ -151,19 +152,16 @@ public class ParkItActivity extends MapActivity {
                 
                 pl.setName(mCursor.getString(4));
                 pl.setRate(mCursor.getFloat(8));
+                pl.setType(mCursor.getInt(3));
+                pl.setPayment(mCursor.getInt(5));
+                pl.setLimit(mCursor.getInt(6));
                 
                 if(mCursor.getInt(3) == 0)
-                {
-                    gItemizedOverlay.addOverlay(pl);
-                }
-                else if(mCursor.getInt(3) == 1)
-                {
-                    lItemizedOverlay.addOverlay(pl);
-                }
-                else
-                {
                     mItemizedOverlay.addOverlay(pl);
-                }
+                else if(mCursor.getInt(3) == 1)
+                    lItemizedOverlay.addOverlay(pl);
+                else
+                    gItemizedOverlay.addOverlay(pl);
                 mCursor.moveToNext();
             }while(!mCursor.isAfterLast());
         }
@@ -174,6 +172,7 @@ public class ParkItActivity extends MapActivity {
         points.clear();
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
+        points.add(mItemizedOverlay);
     }
     
 }

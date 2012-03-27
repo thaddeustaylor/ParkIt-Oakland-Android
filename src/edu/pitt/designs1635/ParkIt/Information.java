@@ -6,6 +6,8 @@ import android.widget.Button;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.Intent;
+import android.widget.Toast;
+import android.util.Log;
 
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ public class Information extends Activity
 	private TextView nameValue, typeValue, paymentValue, limitValue, rateValue;
 	private EditText nameValueEdit, typeValueEdit, paymentValueEdit, limitValueEdit, rateValueEdit;
 	private Button edit, save;
+	private dbAdapter mDbHelper;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -41,14 +44,15 @@ public class Information extends Activity
 		nameValue.setText(pl.getName());
 		typeValue.setText(pl.getType().toString());
 		paymentValue.setText(pl.getPayment().toString());
+		Toast.makeText(getApplicationContext(), "Loading Point: " + pl.getLimit(),	Toast.LENGTH_LONG).show();
 		if(pl.getLimit() == 0)
-		limitValue.setText("No limit recorded");
+			limitValue.setText("No limit recorded");
 		else
-		limitValue.setText(""+pl.getLimit());
+			limitValue.setText(String.valueOf(pl.getRate()));
 		if(pl.getRate() == 0)
-		rateValue.setText("No rate recorded");
+			rateValue.setText("No rate recorded");
 		else
-		rateValue.setText(String.valueOf(pl.getRate()));
+			rateValue.setText(String.valueOf(pl.getRate()));
 
 		edit = (Button) findViewById(R.id.edit_button);
 		save = (Button) findViewById(R.id.save_button);
@@ -80,8 +84,37 @@ public class Information extends Activity
 			}
 		});
 
+		mDbHelper = new dbAdapter(this);
+		mDbHelper.open();
+
 		save.setOnClickListener(new View.OnClickListener(){
-			public void onClick(View v){
+			public void onClick(View v)
+			{
+				ParkingLocation newPl = new ParkingLocation();
+				newPl.setName(nameValueEdit.getText().toString());
+				newPl.setType(0);
+				newPl.setPayment(0);
+				if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
+				{
+					newPl.setLimit(Integer.parseInt(limitValueEdit.getText().toString()));
+					limitValue.setText(limitValueEdit.getText().toString());
+				}
+				if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
+				{
+					newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
+					rateValue.setText(rateValueEdit.getText().toString());
+				}
+				newPl.setLatitude(pl.getLatitude());
+				newPl.setLongitude(pl.getLongitude());
+
+				if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
+					Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
+				else
+					Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
+
+				mDbHelper.addPoint(newPl);
+
+				nameValue.setText(nameValueEdit.getText().toString());
 				nameValue.setVisibility(View.VISIBLE);
 				nameValueEdit.setVisibility(View.INVISIBLE);
 
@@ -102,4 +135,25 @@ public class Information extends Activity
 			}
 		});
 	}
+
+	@Override
+    protected void onStop()
+    {
+	    super.onStop();
+        mDbHelper.close();
+    }
+
+    @Override
+    protected void onPause()
+    {
+	    super.onPause();
+        mDbHelper.close();
+    }
+
+    @Override
+    protected void onResume()
+    {
+	    super.onResume();
+        mDbHelper.open();
+    }
 }

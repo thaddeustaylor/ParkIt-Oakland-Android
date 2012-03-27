@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class dbAdapter 
 {
@@ -45,11 +46,11 @@ public class dbAdapter
 
 	private static final String DATABASE_CREATE =
 		"create table info (_id integer primary key autoincrement, "
-		+ "lat integer not null, lon integer not null, type integer not null, "
-		+ "name text, payment integer, limits integer, notes text, rate float, "
-		+ "ratetime integer, grate text, monstart date, monend date, tuestart date, "
-		+ "tueend date, wedstart date, wedend date, thustart date, thuend date, "
-		+ "fristart date, friend date, satstart date, satend date, "
+		+ "lat integer not null, lon integer not null, type integer not null,"
+		+ "name text, payment integer, limits integer, notes text, rate float,"
+		+ "ratetime integer, grate text, monstart date, monend date, tuestart date,"
+		+ "tueend date, wedstart date, wedend date, thustart date, thuend date,"
+		+ "fristart date, friend date, satstart date, satend date,"
 		+ "sunstart date, sunend date);";
 
 	private static final String DATABASE_NAME = "data";
@@ -176,15 +177,28 @@ public class dbAdapter
 		}
 	}
 
+	public boolean deletePoint(int lat, int lon)
+	{
+		String whereClause = KEY_LAT +"='" +lat +"'" +" AND "
+					+KEY_LON +"='" +lon+"'";
+
+		return mDb.delete(INFO_TABLE, whereClause, null) > 0;
+	}
+
+	public boolean abandonShip()
+	{
+		return mDb.delete(INFO_TABLE, null, null) > 0;
+	}
+
 	public int addPoint(ParkingLocation pl)
 	{
 		ContentValues vals = new ContentValues();
 		vals.put(KEY_LAT, pl.getLatitude());
 		vals.put(KEY_LON, pl.getLongitude());
-		vals.put(KEY_TYPE, pl.getType().toString());
+		vals.put(KEY_TYPE, pl.getType().toInt());
 		vals.put(KEY_NAME, pl.getName());
-		vals.put(KEY_PAYMENT, pl.getPayment().toString());
-		vals.put(KEY_LIMIT, ""+pl.getLimit());
+		vals.put(KEY_PAYMENT, pl.getPayment().toInt());
+		vals.put(KEY_LIMIT, pl.getLimit());
 		//vals.put(KEY_NOTES, pl.getNotes());
 		vals.put(KEY_RATE, ""+pl.getRate());
 		vals.put(KEY_RATETIME, pl.getRateTime().toString());

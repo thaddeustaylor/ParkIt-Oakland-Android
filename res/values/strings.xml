@@ -18,6 +18,19 @@
     <string name="edit_remote">Save to server</string>
     <string name="timer1">Time on meter:</string>
     <string name="interval_prompt">Select number of minutes</string>
+    <string name="add_title">Tap map to add point</string>
+    <string name="type_prompt">Select the type of parking:</string>
+    <string name="payment_prompt">Select the type of payment:</string>
+    <string-array name="park_type">
+        <item>Meter</item>
+        <item>Garage</item>
+        <item>Parking Lot</item>
+    </string-array>
+    <string-array name="park_pay_type">
+        <item>Coin</item>
+        <item>Cash</item>
+        <item>Credit Card</item>
+    </string-array>
     <string-array name="intervals">
     	<item>120</item>
 		<item>90</item>
