@@ -2,15 +2,9 @@ package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
 
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.content.Context;
-import android.util.Log;
-import android.content.Intent;
 import android.app.Activity;
-
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -66,7 +58,7 @@ public class ParkItActivity extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
-        //getRemotePoints();        
+        getRemotePoints();        
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -92,6 +84,7 @@ public class ParkItActivity extends MapActivity {
     protected void onResume()
     {
 	    super.onResume();
+	    Log.i("PARKIT ACTIVITY YO YO YO", "[ParkItActivity].OnResume()");
         refreshAllPoints();
     }
 
@@ -121,6 +114,9 @@ public class ParkItActivity extends MapActivity {
                 editor.commit();
             	startActivity(new Intent(this, Add.class));
                 return true;
+            case R.id.menu_refresh:
+                getRemotePoints();
+                return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
                 return true;
@@ -139,12 +135,12 @@ public class ParkItActivity extends MapActivity {
         Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
         ParseQuery query = new ParseQuery("Points");
         query.findInBackground(new FindCallback() {
-        public void done(List<ParseObject> objects, ParseException e) {
-            if (e == null) {
-                pointsProcessing(objects);
-            } else {
-                Log.i("GETTING REMOTE POINTS", "FAILED");
-            }
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    pointsProcessing(objects);
+                } else {
+                    Log.i("GETTING REMOTE POINTS", "FAILED");
+                }
             }
         });
     }
@@ -164,6 +160,7 @@ public class ParkItActivity extends MapActivity {
     {
         mDbHelper.open();
         mCursor = mDbHelper.fetchAllRows();
+        startManagingCursor(mCursor);
         mCursor.moveToFirst();
         drawable = getResources().getDrawable(R.drawable.g_icon);
         gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
@@ -172,6 +169,11 @@ public class ParkItActivity extends MapActivity {
         drawable = getResources().getDrawable(R.drawable.m_icon);
         mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
 
+        gItemizedOverlay.hideAllBalloons();
+        lItemizedOverlay.hideAllBalloons();
+        mItemizedOverlay.hideAllBalloons();
+        
+        
         OverlayItem overlayItem;
         GeoPoint point;
 

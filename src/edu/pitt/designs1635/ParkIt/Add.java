@@ -1,23 +1,18 @@
 package edu.pitt.designs1635.ParkIt;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.widget.Button;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import com.google.android.maps.GeoPoint;
-import android.widget.Toast;
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.widget.Spinner;
 import android.content.Intent;
-
-import android.widget.EditText;
-import android.text.TextWatcher;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.text.Editable;
-import android.widget.TextView;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.google.android.maps.GeoPoint;
 
 public class Add extends Activity
 {
@@ -117,10 +112,12 @@ public class Add extends Activity
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
+
 				mDbHelper.close();
 				finish();
 				break;
 			default:
+
 				mDbHelper.close();
 				break;
 			}

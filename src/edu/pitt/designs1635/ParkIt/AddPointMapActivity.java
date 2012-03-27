@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -103,7 +104,7 @@ public class AddPointMapActivity extends SherlockMapActivity {
     
     protected Dialog onCreateDialog(int id, Bundle b)
     {
-    	Toast.makeText(this, "in dialog " + id, Toast.LENGTH_SHORT).show();
+    	//Toast.makeText(this, "in dialog " + id, Toast.LENGTH_SHORT).show();
 		
     	switch(id)
     	{
@@ -128,8 +129,15 @@ public class AddPointMapActivity extends SherlockMapActivity {
 	                       }
 	                       
 	               });
-	        return builder.create();
+	        AlertDialog ad = builder.create();
 	       
+	        ad.setOnShowListener(new OnShowListener() {				
+	        	 public void onShow(DialogInterface dialog) {
+	        		 ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+	        	 }
+	        	});
+	        
+	        return ad;
     	}
 	    
     	return null;
@@ -182,18 +190,18 @@ public class AddPointMapActivity extends SherlockMapActivity {
 					//return true;
 					//break;
 				
-				case MotionEvent.ACTION_UP:		
+				//case MotionEvent.ACTION_UP:		
 					//mdv.endLine();
-					m_point = mapView.getProjection().fromPixels( (int) event.getX(),
-							 (int) event.getY());
+					//m_point = mapView.getProjection().fromPixels( (int) event.getX(),
+					//		 (int) event.getY());
 					
 					//Toast.makeText(view.getContext(), "From AddPointMApActivity " + m_point.getLatitudeE6() + ", " +
 					//		m_point.getLongitudeE6(),	Toast.LENGTH_LONG).show();
 		
 					
-					showDialog(SAVE_DIALOG);
+					//showDialog(SAVE_DIALOG);
 					
-					return true;
+					//return true;
 					//break;
 				
 			}

@@ -1,6 +1,7 @@
 
 package edu.pitt.designs1635.ParkIt;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -17,21 +18,31 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
 	private ArrayList<ParkingLocation> m_locations = new ArrayList<ParkingLocation>();
 	private Context c;
+	private NumberFormat nf;
+	
 	
 	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView, boolean shadow) 
 	{
 		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
-		populate();
+		setBalloonBottomOffset(defaultMarker.getIntrinsicHeight());
 		//setShadow(shadow);
+	
+		
+		populate();
+		
+		nf = NumberFormat.getCurrencyInstance();
 	}
 
 	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView) 
 	{
 		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
+		setBalloonBottomOffset(defaultMarker.getIntrinsicHeight());
+		//setShadow(true);
 		populate();
-		//setShadow(false);
+		
+		nf = NumberFormat.getCurrencyInstance();
 	}
 	
 	public void addOverlay(OverlayItem overlay) {
@@ -42,12 +53,13 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	public void addOverlay(ParkingLocation pl) {
 	    
 		OverlayItem overlay = new OverlayItem(pl.getGeoPoint(), pl.getName(),	
-                "Rate: "+pl.getRate());
+                "Rate: "+ nf.format(pl.getRate()) + " " + pl.getRateTime() + "\n" +
+				"Tuesday Hours: 9-6");
 		m_locations.add(pl);
 		m_overlays.add(overlay);
 	    populate();
 	}
-	
+
 	@Override
 	protected OverlayItem createItem(int i) {
 		return m_overlays.get(i);
@@ -62,8 +74,8 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 
 	@Override
 	protected boolean onBalloonTap(int index, OverlayItem item) {
-		Toast.makeText(c, "onBalloonTap for overlay index " + index,
-				Toast.LENGTH_LONG).show();
+		//Toast.makeText(c, "onBalloonTap for overlay index " + index,
+		//		Toast.LENGTH_LONG).show();
 		return true;
 	}
 	
@@ -76,5 +88,7 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 		
 		return true;
 	}
+	
+	
 }
 

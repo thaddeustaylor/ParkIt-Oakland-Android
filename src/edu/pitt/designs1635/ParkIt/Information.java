@@ -1,12 +1,19 @@
 package edu.pitt.designs1635.ParkIt;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.content.DialogInterface;
 import android.content.Intent;
+
+import android.content.DialogInterface.OnShowListener;
+
 import android.widget.ArrayAdapter;
+
 import android.widget.Toast;
 import android.util.Log;
 import android.widget.Spinner;
@@ -23,6 +30,10 @@ public class Information extends Activity
 	private Button edit, save;
 	private dbAdapter mDbHelper;
 
+    public static final int SAVE_TO_PHONE = 10;
+    public static final int SAVE_TO_SERVER = 11;
+    public final int SAVE_DIALOG = 1;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -97,55 +108,11 @@ public class Information extends Activity
 		});
 
 		mDbHelper = new dbAdapter(this);
-		mDbHelper.open();
 
 		save.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v)
 			{
-				ParkingLocation newPl = new ParkingLocation();
-				newPl.setName(nameValueEdit.getText().toString());
-				newPl.setType(typeValueEdit.getSelectedItem().toString());
-				newPl.setPayment(paymentValueEdit.getSelectedItem().toString());
-				if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
-				{
-					newPl.setLimit(Integer.parseInt(limitValueEdit.getText().toString()));
-					limitValue.setText(limitValueEdit.getText().toString());
-				}
-				if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
-				{
-					newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
-					rateValue.setText(rateValueEdit.getText().toString());
-				}
-				newPl.setLatitude(pl.getLatitude());
-				newPl.setLongitude(pl.getLongitude());
-
-				if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
-					Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
-				else
-					Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
-
-				mDbHelper.addPoint(newPl);
-
-				nameValue.setText(nameValueEdit.getText().toString());
-				nameValue.setVisibility(View.VISIBLE);
-				nameValueEdit.setVisibility(View.INVISIBLE);
-
-				typeValue.setVisibility(View.VISIBLE);
-				typeValueEdit.setVisibility(View.INVISIBLE);
-
-				paymentValue.setVisibility(View.VISIBLE);
-				paymentValueEdit.setVisibility(View.INVISIBLE);
-
-				limitValue.setVisibility(View.VISIBLE);
-				limitValueEdit.setVisibility(View.INVISIBLE);
-
-				rateValue.setVisibility(View.VISIBLE);
-				rateValueEdit.setVisibility(View.INVISIBLE);
-
-				edit.setEnabled(true);
-				save.setEnabled(false);
-				mDbHelper.close();
-				finish();
+				showDialog(SAVE_DIALOG);			
 			}
 		});
 	}
@@ -169,5 +136,85 @@ public class Information extends Activity
     {
 	    super.onResume();
         mDbHelper.open();
+    }
+    
+    protected Dialog onCreateDialog(int id, Bundle b)
+    {
+    	//Toast.makeText(this, "in dialog " + id, Toast.LENGTH_SHORT).show();
+		
+    	switch(id)
+    	{
+    	case SAVE_DIALOG:
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        
+	        builder.setMessage("Do you want to save the changes to your phone only or to the public server?")
+	               .setCancelable(false)
+	               .setPositiveButton("Phone", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                        saveChanges(SAVE_TO_PHONE);
+	                   }
+	               })
+	               .setNegativeButton("Server", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   saveChanges(SAVE_TO_SERVER);
+	                   }
+	               })
+	               .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+	                       public void onClick(DialogInterface dialog, int id) {
+	                            dialog.cancel();
+	                       }
+	                       
+	               });
+	        AlertDialog ad = builder.create();
+	       
+	        ad.setOnShowListener(new OnShowListener() {				
+	        	 public void onShow(DialogInterface dialog) {
+	        		 ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+	        	 }
+	        	});
+	        
+	        return ad;
+    	}
+	    
+    	return null;
+    	
+    }
+    
+    private void saveChanges(int whereToSave)
+    {
+    	mDbHelper.open();
+    	
+    	switch(whereToSave)
+    	{
+    	case SAVE_TO_PHONE:
+			ParkingLocation newPl = new ParkingLocation();
+			newPl.setName(nameValueEdit.getText().toString());
+			newPl.setType(typeValueEdit.getSelectedItem().toString());
+			newPl.setPayment(paymentValueEdit.getSelectedItem().toString());
+			if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
+			{
+				newPl.setLimit((int)Float.parseFloat(limitValueEdit.getText().toString()));
+			}
+			if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
+			{
+				newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
+			}
+			newPl.setLatitude(pl.getLatitude());
+			newPl.setLongitude(pl.getLongitude());
+
+			if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
+				Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
+			else
+				Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
+
+			mDbHelper.addPoint(newPl);
+			break;
+    	case SAVE_TO_SERVER:
+			break;
+    	default:
+			break;
+    	}
+    	mDbHelper.close();
+    	finish();
     }
 }

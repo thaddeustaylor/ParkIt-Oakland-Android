@@ -53,9 +53,9 @@ public class Timer extends Activity
 		spinner2 = (Spinner) findViewById(R.id.spinner2);
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
 			this, R.array.intervals, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner2.setAdapter(adapter2);
+		spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				if(parent.getItemAtPosition(pos).toString().compareTo("120") == 0)
 					timerVal = 120;
@@ -79,9 +79,9 @@ public class Timer extends Activity
 		spinner3 = (Spinner) findViewById(R.id.spinner3);
 		ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
 			this, R.array.intervals, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner3.setAdapter(adapter3);
+		spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				if(parent.getItemAtPosition(pos).toString().compareTo("120") == 0)
 					timerVal = 120;

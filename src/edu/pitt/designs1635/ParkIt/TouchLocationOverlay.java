@@ -1,9 +1,6 @@
 package edu.pitt.designs1635.ParkIt;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
