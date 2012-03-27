@@ -108,33 +108,11 @@ public class Information extends Activity
 		});
 
 		mDbHelper = new dbAdapter(this);
-		mDbHelper.open();
 
 		save.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v)
 			{
-				showDialog(SAVE_DIALOG);
-				
-				nameValue.setText(nameValueEdit.getText().toString());
-				nameValue.setVisibility(View.VISIBLE);
-				nameValueEdit.setVisibility(View.INVISIBLE);
-
-				typeValue.setVisibility(View.VISIBLE);
-				typeValueEdit.setVisibility(View.INVISIBLE);
-
-				paymentValue.setVisibility(View.VISIBLE);
-				paymentValueEdit.setVisibility(View.INVISIBLE);
-
-				limitValue.setVisibility(View.VISIBLE);
-				limitValueEdit.setVisibility(View.INVISIBLE);
-
-				rateValue.setVisibility(View.VISIBLE);
-				rateValueEdit.setVisibility(View.INVISIBLE);
-
-				edit.setEnabled(true);
-				save.setEnabled(false);
-				mDbHelper.close();
-				
+				showDialog(SAVE_DIALOG);			
 			}
 		});
 	}
@@ -209,34 +187,32 @@ public class Information extends Activity
     	switch(whereToSave)
     	{
     	case SAVE_TO_PHONE:
-							ParkingLocation newPl = new ParkingLocation();
-							newPl.setName(nameValueEdit.getText().toString());
-							newPl.setType(0);
-							newPl.setPayment(0);
-							if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
-							{
-								newPl.setLimit((int)Float.parseFloat(limitValueEdit.getText().toString()));
-								limitValue.setText(limitValueEdit.getText().toString());
-							}
-							if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
-							{
-								newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
-								rateValue.setText(rateValueEdit.getText().toString());
-							}
-							newPl.setLatitude(pl.getLatitude());
-							newPl.setLongitude(pl.getLongitude());
-				
-							if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
-								Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
-							else
-								Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
-				
-							mDbHelper.addPoint(newPl);
-    						break;
+			ParkingLocation newPl = new ParkingLocation();
+			newPl.setName(nameValueEdit.getText().toString());
+			newPl.setType(typeValueEdit.getSelectedItem().toString());
+			newPl.setPayment(paymentValueEdit.getSelectedItem().toString());
+			if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
+			{
+				newPl.setLimit((int)Float.parseFloat(limitValueEdit.getText().toString()));
+			}
+			if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
+			{
+				newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
+			}
+			newPl.setLatitude(pl.getLatitude());
+			newPl.setLongitude(pl.getLongitude());
+
+			if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
+				Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
+			else
+				Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
+
+			mDbHelper.addPoint(newPl);
+			break;
     	case SAVE_TO_SERVER:
-							break;
+			break;
     	default:
-    						break;
+			break;
     	}
     	mDbHelper.close();
 

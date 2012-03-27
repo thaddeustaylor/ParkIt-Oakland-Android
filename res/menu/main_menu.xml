@@ -5,6 +5,8 @@
 	<item android:id="@+id/menu_alarm"
 		android:title="@string/menu_alarm"
 		android:icon="@android:drawable/ic_menu_recent_history" />
+	<item android:id="@+id/menu_refresh"
+		android:title="@string/menu_refresh"/>
 	<item android:id="@+id/menu_settings"
 		android:title="@string/menu_settings"
 		android:icon="@android:drawable/ic_menu_preferences" />

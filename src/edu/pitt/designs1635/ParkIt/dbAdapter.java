@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 public class dbAdapter 
 {
 	public static final String KEY_ROWID = "_id";
@@ -190,8 +193,82 @@ public class dbAdapter
 		return mDb.delete(INFO_TABLE, null, null) > 0;
 	}
 
+	public int addPoint(ParseObject obj)
+	{
+		ContentValues vals = new ContentValues();
+		vals.put(KEY_LAT, obj.getInt("lat"));
+		vals.put(KEY_LON,obj.getInt("lon"));
+		vals.put(KEY_TYPE, obj.getInt("type"));
+		vals.put(KEY_NAME, obj.getString("name"));
+		vals.put(KEY_PAYMENT, obj.getInt("payment"));
+		vals.put(KEY_LIMIT, obj.getInt("limits"));
+		vals.put(KEY_NOTES, obj.getString("notes"));
+		vals.put(KEY_RATE, obj.getDouble("rate"));
+		vals.put(KEY_RATETIME, obj.getInt("ratetime"));
+		vals.put(KEY_GRATE, obj.getString("grate"));
+		/*
+		vals.put(KEY_MONSTART, ""+pl.getMondayStart());
+		vals.put(KEY_MONEND, ""+pl.getMondayEnd());
+		vals.put(KEY_TUESTART, ""+pl.getTuesdayStart());
+		vals.put(KEY_TUEEND, ""+pl.getTuesdayEnd());
+		vals.put(KEY_WEDSTART, ""+pl.getWednesdayStart());
+		vals.put(KEY_WEDEND, ""+pl.getWednesdayEnd());
+		vals.put(KEY_THUSTART, ""+pl.getThursdayStart());
+		vals.put(KEY_THUEND, ""+pl.getThursdayEnd());
+		vals.put(KEY_FRISTART, ""+pl.getFridayStart());
+		vals.put(KEY_FRIEND, ""+pl.getFridayEnd());
+		vals.put(KEY_SATSTART, ""+pl.getSaturdayStart());
+		vals.put(KEY_SATEND, ""+pl.getSaturdayEnd());
+		vals.put(KEY_SUNSTART, ""+pl.getSundayStart());
+		vals.put(KEY_SUNEND, ""+pl.getSundayEnd());*/
+
+		if (mDb.query(INFO_TABLE,
+						new String[] {KEY_ROWID},
+						KEY_LAT + "=? and " + KEY_LON +"=? and " + KEY_TYPE + "=?",
+						new String[] {Integer.toString(obj.getInt("lat")), Integer.toString(obj.getInt("lon")), Integer.toString(obj.getInt("type"))},
+						null,
+						null,
+						KEY_ROWID).getCount() != 0)
+		{
+			Log.i("PARKIT DATABASE", "ADD DIDN'T WORK BRO");
+			return -1;
+		}
+		else
+		{
+			Log.i("PARKIT DATABASE", "ADD WORKED! CELEBRATE!");
+			return (int) mDb.insert(INFO_TABLE, null, vals);
+		}
+	}
+
 	public int addPoint(ParkingLocation pl)
 	{
+		Parse.initialize(mCtx, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+		ParseObject dataVals = new ParseObject("Points");
+		dataVals.put("lat", pl.getLatitude());
+		dataVals.put("lon", pl.getLongitude());
+		dataVals.put("type", pl.getType().toInt());
+		dataVals.put("name", pl.getName());
+		dataVals.put("payment", pl.getPayment().toInt());
+		dataVals.put("limits", pl.getLimit());
+		dataVals.put("notes", "Empty");
+		dataVals.put("rate", pl.getRate());
+		dataVals.put("ratetime", pl.getRateTime().toString());
+		dataVals.put("grate", pl.getGarageRate());
+		dataVals.put("monstart", pl.getMondayStart());
+		dataVals.put("monend", pl.getMondayEnd());
+		dataVals.put("tuestart", pl.getTuesdayStart());
+		dataVals.put("tueend", pl.getTuesdayEnd());
+		dataVals.put("wedstart", pl.getWednesdayStart());
+		dataVals.put("wedend", pl.getWednesdayEnd());
+		dataVals.put("thustart", pl.getThursdayStart());
+		dataVals.put("thuend", pl.getThursdayEnd());
+		dataVals.put("fristart", pl.getFridayStart());
+		dataVals.put("friend", pl.getFridayEnd());
+		dataVals.put("satstart", pl.getSaturdayStart());
+		dataVals.put("satend", pl.getSaturdayEnd());
+		dataVals.put("sunstart", pl.getSundayStart());
+		dataVals.put("sunend", pl.getSundayEnd());
+
 		ContentValues vals = new ContentValues();
 		vals.put(KEY_LAT, pl.getLatitude());
 		vals.put(KEY_LON, pl.getLongitude());
@@ -203,7 +280,6 @@ public class dbAdapter
 		vals.put(KEY_RATE, ""+pl.getRate());
 		vals.put(KEY_RATETIME, pl.getRateTime().toString());
 		vals.put(KEY_GRATE, pl.getGarageRate());
-
 		vals.put(KEY_MONSTART, ""+pl.getMondayStart());
 		vals.put(KEY_MONEND, ""+pl.getMondayEnd());
 		vals.put(KEY_TUESTART, ""+pl.getTuesdayStart());
@@ -218,6 +294,8 @@ public class dbAdapter
 		vals.put(KEY_SATEND, ""+pl.getSaturdayEnd());
 		vals.put(KEY_SUNSTART, ""+pl.getSundayStart());
 		vals.put(KEY_SUNEND, ""+pl.getSundayEnd());
+
+        dataVals.saveInBackground();
 
 		if (mDb.query(INFO_TABLE,
 						new String[] {KEY_ROWID},

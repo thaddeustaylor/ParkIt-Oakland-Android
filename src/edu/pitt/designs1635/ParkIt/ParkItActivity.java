@@ -20,6 +20,16 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseException;
+import com.parse.FindCallback;
+
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
 public class ParkItActivity extends MapActivity {
     
 	private dbAdapter mDbHelper;
@@ -47,7 +57,8 @@ public class ParkItActivity extends MapActivity {
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-        
+
+        getRemotePoints();        
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -103,6 +114,9 @@ public class ParkItActivity extends MapActivity {
                 editor.commit();
             	startActivity(new Intent(this, Add.class));
                 return true;
+            case R.id.menu_refresh:
+                getRemotePoints();
+                return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
                 return true;
@@ -110,9 +124,36 @@ public class ParkItActivity extends MapActivity {
                 mDbHelper.open();
                 mDbHelper.abandonShip();
                 mDbHelper.close();
+                refreshAllPoints();
                 return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    public void getRemotePoints()
+    {
+        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+        ParseQuery query = new ParseQuery("Points");
+        query.findInBackground(new FindCallback() {
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    pointsProcessing(objects);
+                } else {
+                    Log.i("GETTING REMOTE POINTS", "FAILED");
+                }
+            }
+        });
+    }
+
+    public void pointsProcessing(List<ParseObject> objs)
+    {
+        mDbHelper.open(); 
+        for(int i=0; i < objs.size(); i++)
+        {
+            mDbHelper.addPoint(objs.get(i));
+        }
+        mDbHelper.close();
+        refreshAllPoints();
     }
 
     public void refreshAllPoints()
