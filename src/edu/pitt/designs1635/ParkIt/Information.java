@@ -134,7 +134,7 @@ public class Information extends Activity
 				edit.setEnabled(true);
 				save.setEnabled(false);
 				mDbHelper.close();
-				finish();
+				
 			}
 		});
 	}
@@ -204,6 +204,8 @@ public class Information extends Activity
     
     private void saveChanges(int whereToSave)
     {
+    	mDbHelper.open();
+    	
     	switch(whereToSave)
     	{
     	case SAVE_TO_PHONE:
@@ -236,5 +238,7 @@ public class Information extends Activity
     	default:
     						break;
     	}
+    	mDbHelper.close();
+    	finish();
     }
 }
