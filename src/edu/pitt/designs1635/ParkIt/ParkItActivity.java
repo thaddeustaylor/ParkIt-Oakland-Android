@@ -53,6 +53,7 @@ public class ParkItActivity extends MapActivity {
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
         mCursor = mDbHelper.fetchAllRows();
+        startManagingCursor(mCursor);
         mCursor.moveToFirst();
         mDbHelper.close();
         
@@ -84,6 +85,7 @@ public class ParkItActivity extends MapActivity {
     protected void onResume()
     {
 	    super.onResume();
+	    Log.i("PARKIT ACTIVITY YO YO YO", "[ParkItActivity].OnResume()");
         refreshAllPoints();
     }
 
@@ -129,6 +131,7 @@ public class ParkItActivity extends MapActivity {
     {
         mDbHelper.open();
         mCursor = mDbHelper.fetchAllRows();
+        startManagingCursor(mCursor);
         mCursor.moveToFirst();
         drawable = getResources().getDrawable(R.drawable.g_icon);
         gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
@@ -137,6 +140,11 @@ public class ParkItActivity extends MapActivity {
         drawable = getResources().getDrawable(R.drawable.m_icon);
         mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
 
+        gItemizedOverlay.hideAllBalloons();
+        lItemizedOverlay.hideAllBalloons();
+        mItemizedOverlay.hideAllBalloons();
+        
+        
         OverlayItem overlayItem;
         GeoPoint point;
 

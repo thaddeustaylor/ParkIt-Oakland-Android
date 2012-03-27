@@ -95,7 +95,7 @@ public class Add extends Activity
 			case AddPointMapActivity.SAVE_TO_PHONE:
 				newPl.setName(name.getText().toString());
 				newPl.setType(type.getSelectedItem().toString());
-				Toast.makeText(this, "Point type: "+newPl.getType().toString(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, "Point type: "+newPl.getType().toString(), Toast.LENGTH_LONG).show();
 				newPl.setPayment(payment.getSelectedItem().toString());
 				newPl.setLimit(Integer.parseInt(limit.getText().toString()));
 				newPl.setRate(Float.parseFloat(rate.getText().toString()));
@@ -114,14 +114,14 @@ public class Add extends Activity
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
-				Toast.makeText(this, "Save point to the server " + newPoint.getLatitudeE6() + ", " +
-								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, "Save point to the server " + newPoint.getLatitudeE6() + ", " +
+				//				newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
 				mDbHelper.close();
 				finish();
 				break;
 			default:
-				Toast.makeText(this, "I don't know where to save it " + newPoint.getLatitudeE6() + ", " +
-								newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, "I don't know where to save it " + newPoint.getLatitudeE6() + ", " +
+				//				newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
 				mDbHelper.close();
 				break;
 			}
