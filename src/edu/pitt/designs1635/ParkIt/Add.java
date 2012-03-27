@@ -95,10 +95,11 @@ public class Add extends Activity
 			case AddPointMapActivity.SAVE_TO_PHONE:
 				newPl.setName(name.getText().toString());
 				newPl.setType(type.getSelectedItem().toString());
-				Toast.makeText(this, "Point type: "+newPl.getType().toString(), Toast.LENGTH_LONG).show();
 				newPl.setPayment(payment.getSelectedItem().toString());
-				newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				newPl.setRate(Float.parseFloat(rate.getText().toString()));
+				if(limit.getText().toString().compareTo("") != 0)
+					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
+				if(rate.getText().toString().compareTo("") != 0)
+					newPl.setRate(Float.parseFloat(rate.getText().toString()));
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
@@ -109,8 +110,10 @@ public class Add extends Activity
 				newPl.setName(name.getText().toString());
 				newPl.setType(type.getSelectedItem().toString());
 				newPl.setPayment(payment.getSelectedItem().toString());
-				newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				newPl.setRate(Float.parseFloat(rate.getText().toString()));
+				if(limit.getText().toString().compareTo("") != 0)
+					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
+				if(rate.getText().toString().compareTo("") != 0)
+					newPl.setRate(Float.parseFloat(rate.getText().toString()));
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);

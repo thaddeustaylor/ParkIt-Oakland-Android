@@ -65,21 +65,13 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_toRightOf="@id/typeview" />
-        <EditText
-            android:id="@+id/typevalue_edit"
+        <Spinner android:id="@+id/tv_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/nameview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/typeview"
             android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:inputType="textCapSentences"
-            android:layout_toRightOf="@id/typeview" />
+            android:prompt="@string/type_prompt" />
         
         <TextView
             android:id="@+id/paytypeview"
@@ -103,21 +95,13 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_toRightOf="@id/paytypeview" />
-        <EditText
-            android:id="@+id/paytypevalue_edit"
+        <Spinner android:id="@+id/ptv_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/typeview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/paytypeview"
             android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:inputType="textCapSentences"
-            android:layout_toRightOf="@id/paytypeview" />
+            android:prompt="@string/payment_prompt" />
         
         <TextView
             android:id="@+id/limitview"

@@ -142,8 +142,6 @@ public class ParkItActivity extends MapActivity {
 
         MapController mapCtrl = mapView.getController();
 
-        Log.i("PARKIT ACTIVITY YO YO YO", "DATABASE HAS THIS MANY RECORDS: "+mCursor.getCount());
-
         //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
         if(mCursor.getCount() > 0)
         {
