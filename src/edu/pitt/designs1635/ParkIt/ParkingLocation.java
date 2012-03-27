@@ -36,7 +36,6 @@ public class ParkingLocation implements Parcelable {
 	{ 
 		HOURLY, 
 		DAILY; 
-		
 		public String toString()
 		{
 			String val;
@@ -47,11 +46,8 @@ public class ParkingLocation implements Parcelable {
 				case DAILY: val = "Daily"; break;
 				default: val = ""; break;
 			}
-			
 			return val;
-			
 		}
-		
 	};
 	
 	
@@ -61,11 +57,9 @@ public class ParkingLocation implements Parcelable {
 		CASH, 
 		CREDIT,
 		COIN;
-		
 		public String toString()
 		{
 			String val;
-			
 			switch(this)
 			{
 				case CASH: val = "Cash"; break;

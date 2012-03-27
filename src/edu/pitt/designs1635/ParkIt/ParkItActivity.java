@@ -2,15 +2,9 @@ package edu.pitt.designs1635.ParkIt;
 
 import java.util.List;
 
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.content.Context;
-import android.util.Log;
-import android.content.Intent;
 import android.app.Activity;
-
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -27,10 +19,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public class ParkItActivity extends MapActivity {
     
@@ -149,8 +137,6 @@ public class ParkItActivity extends MapActivity {
         GeoPoint point;
 
         MapController mapCtrl = mapView.getController();
-
-        Log.i("PARKIT ACTIVITY YO YO YO", "DATABASE HAS THIS MANY RECORDS: "+mCursor.getCount());
 
         //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
         if(mCursor.getCount() > 0)

@@ -12,7 +12,7 @@
     <string name="name">Name: </string>
     <string name="parking_type">Parking Type: </string>
     <string name="payment_type">Payment Type: </string>
-    <string name="rate">Rate: </string>
+    <string name="rate">Rate:  $</string>
     <string name="time_limit">Time Limit: </string>
     <string name="edit_local">Save only to phone</string>
     <string name="edit_remote">Save to server</string>

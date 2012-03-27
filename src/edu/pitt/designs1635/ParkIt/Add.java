@@ -1,23 +1,18 @@
 package edu.pitt.designs1635.ParkIt;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.widget.Button;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import com.google.android.maps.GeoPoint;
-import android.widget.Toast;
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.widget.Spinner;
 import android.content.Intent;
-
-import android.widget.EditText;
-import android.text.TextWatcher;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.text.Editable;
-import android.widget.TextView;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.google.android.maps.GeoPoint;
 
 public class Add extends Activity
 {
@@ -95,10 +90,11 @@ public class Add extends Activity
 			case AddPointMapActivity.SAVE_TO_PHONE:
 				newPl.setName(name.getText().toString());
 				newPl.setType(type.getSelectedItem().toString());
-				//Toast.makeText(this, "Point type: "+newPl.getType().toString(), Toast.LENGTH_LONG).show();
 				newPl.setPayment(payment.getSelectedItem().toString());
-				newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				newPl.setRate(Float.parseFloat(rate.getText().toString()));
+				if(limit.getText().toString().compareTo("") != 0)
+					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
+				if(rate.getText().toString().compareTo("") != 0)
+					newPl.setRate(Float.parseFloat(rate.getText().toString()));
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
@@ -109,19 +105,19 @@ public class Add extends Activity
 				newPl.setName(name.getText().toString());
 				newPl.setType(type.getSelectedItem().toString());
 				newPl.setPayment(payment.getSelectedItem().toString());
-				newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				newPl.setRate(Float.parseFloat(rate.getText().toString()));
+				if(limit.getText().toString().compareTo("") != 0)
+					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
+				if(rate.getText().toString().compareTo("") != 0)
+					newPl.setRate(Float.parseFloat(rate.getText().toString()));
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
-				//Toast.makeText(this, "Save point to the server " + newPoint.getLatitudeE6() + ", " +
-				//				newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+
 				mDbHelper.close();
 				finish();
 				break;
 			default:
-				//Toast.makeText(this, "I don't know where to save it " + newPoint.getLatitudeE6() + ", " +
-				//				newPoint.getLongitudeE6(),	Toast.LENGTH_LONG).show();
+
 				mDbHelper.close();
 				break;
 			}

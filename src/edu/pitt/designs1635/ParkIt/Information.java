@@ -239,7 +239,7 @@ public class Information extends Activity
     						break;
     	}
     	mDbHelper.close();
-    	
+
     	finish();
     }
 }
