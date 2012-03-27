@@ -30,6 +30,9 @@ import com.google.android.maps.OverlayItem;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseException;
+import com.parse.FindCallback;
 
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
@@ -56,12 +59,14 @@ public class ParkItActivity extends MapActivity {
         mDbHelper = new dbAdapter(this);
         mDbHelper.open();
         mCursor = mDbHelper.fetchAllRows();
+        startManagingCursor(mCursor);
         mCursor.moveToFirst();
         mDbHelper.close();
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-        
+
+        //getRemotePoints();        
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -127,6 +132,32 @@ public class ParkItActivity extends MapActivity {
                 return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    public void getRemotePoints()
+    {
+        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+        ParseQuery query = new ParseQuery("Points");
+        query.findInBackground(new FindCallback() {
+        public void done(List<ParseObject> objects, ParseException e) {
+            if (e == null) {
+                pointsProcessing(objects);
+            } else {
+                Log.i("GETTING REMOTE POINTS", "FAILED");
+            }
+            }
+        });
+    }
+
+    public void pointsProcessing(List<ParseObject> objs)
+    {
+        mDbHelper.open(); 
+        for(int i=0; i < objs.size(); i++)
+        {
+            mDbHelper.addPoint(objs.get(i));
+        }
+        mDbHelper.close();
+        refreshAllPoints();
     }
 
     public void refreshAllPoints()
