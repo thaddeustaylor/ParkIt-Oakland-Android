@@ -65,21 +65,13 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_toRightOf="@id/typeview" />
-        <EditText
-            android:id="@+id/typevalue_edit"
+        <Spinner android:id="@+id/tv_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/nameview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/typeview"
             android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:inputType="textCapSentences"
-            android:layout_toRightOf="@id/typeview" />
+            android:prompt="@string/type_prompt" />
         
         <TextView
             android:id="@+id/paytypeview"
@@ -103,21 +95,13 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_toRightOf="@id/paytypeview" />
-        <EditText
-            android:id="@+id/paytypevalue_edit"
+        <Spinner android:id="@+id/ptv_edit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/typeview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/paytypeview"
             android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:inputType="textCapSentences"
-            android:layout_toRightOf="@id/paytypeview" />
+            android:prompt="@string/payment_prompt" />
         
         <TextView
             android:id="@+id/limitview"
@@ -170,7 +154,7 @@
             android:text="@string/rate" />
        <TextView
             android:id="@+id/ratevalue"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/limitview"
             android:textSize="23dp"
@@ -181,7 +165,7 @@
             android:layout_toRightOf="@id/rateview" />
         <EditText
             android:id="@+id/ratevalue_edit"
-            android:layout_width="fill_parent"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/limitview"
             android:textSize="17dp"
@@ -194,6 +178,18 @@
             android:inputType="number"
             android:singleLine="true"
             android:layout_toRightOf="@id/rateview" />
+      <TextView
+            android:id="@+id/rv_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="23dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_toRightOf="@id/ratevalue"
+            android:layout_below="@id/limitview"
+            android:text="per hour" />
     </RelativeLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

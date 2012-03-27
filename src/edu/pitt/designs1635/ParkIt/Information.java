@@ -9,9 +9,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.DialogInterface;
 import android.content.Intent;
+
 import android.content.DialogInterface.OnShowListener;
+
+import android.widget.ArrayAdapter;
+
 import android.widget.Toast;
 import android.util.Log;
+import android.widget.Spinner;
 
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,7 +25,8 @@ public class Information extends Activity
 {
 	private ParkingLocation pl;
 	private TextView nameValue, typeValue, paymentValue, limitValue, rateValue;
-	private EditText nameValueEdit, typeValueEdit, paymentValueEdit, limitValueEdit, rateValueEdit;
+	private EditText nameValueEdit, limitValueEdit, rateValueEdit;
+	private Spinner typeValueEdit, paymentValueEdit;
 	private Button edit, save;
 	private dbAdapter mDbHelper;
 
@@ -41,18 +47,27 @@ public class Information extends Activity
 		nameValue = (TextView) this.findViewById(R.id.namevalue);
 		nameValueEdit = (EditText) findViewById(R.id.namevalue_edit);
 		typeValue = (TextView) this.findViewById(R.id.typevalue);
-		typeValueEdit = (EditText) findViewById(R.id.typevalue_edit);
 		paymentValue = (TextView) this.findViewById(R.id.paytypevalue);
-		paymentValueEdit = (EditText) findViewById(R.id.paytypevalue_edit);
 		limitValue = (TextView) this.findViewById(R.id.limitvalue);
 		limitValueEdit = (EditText) findViewById(R.id.limitvalue_edit);
 		rateValue = (TextView) this.findViewById(R.id.ratevalue);
 		rateValueEdit = (EditText) findViewById(R.id.ratevalue_edit);
 
+		typeValueEdit = (Spinner) findViewById(R.id.tv_edit);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+			this, R.array.park_type, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		typeValueEdit.setAdapter(adapter);
+
+		paymentValueEdit = (Spinner) findViewById(R.id.ptv_edit);
+		ArrayAdapter<CharSequence> payment_adapter = ArrayAdapter.createFromResource(
+			this, R.array.park_pay_type, android.R.layout.simple_spinner_item);
+		payment_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		paymentValueEdit.setAdapter(payment_adapter);
+
 		nameValue.setText(pl.getName());
 		typeValue.setText(pl.getType().toString());
 		paymentValue.setText(pl.getPayment().toString());
-		//Toast.makeText(getApplicationContext(), "Loading Point: " + pl.getLimit(),	Toast.LENGTH_LONG).show();
 		if(pl.getLimit() == 0)
 			limitValue.setText("No limit recorded");
 		else
@@ -73,11 +88,11 @@ public class Information extends Activity
 
 				typeValue.setVisibility(View.INVISIBLE);
 				typeValueEdit.setVisibility(View.VISIBLE);
-				typeValueEdit.setText(typeValue.getText());
+				//typeValueEdit.setText(typeValue.getText());
 
 				paymentValue.setVisibility(View.INVISIBLE);
 				paymentValueEdit.setVisibility(View.VISIBLE);
-				paymentValueEdit.setText(paymentValue.getText());
+				//paymentValueEdit.setText(paymentValue.getText());
 
 				limitValue.setVisibility(View.INVISIBLE);
 				limitValueEdit.setVisibility(View.VISIBLE);
@@ -118,6 +133,8 @@ public class Information extends Activity
 
 				edit.setEnabled(true);
 				save.setEnabled(false);
+				mDbHelper.close();
+				finish();
 			}
 		});
 	}
