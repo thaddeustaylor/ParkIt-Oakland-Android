@@ -130,13 +130,6 @@ public class AddPointMapActivity extends SherlockMapActivity {
 	                       
 	               });
 	        AlertDialog ad = builder.create();
-	       
-	        ad.setOnShowListener(new OnShowListener() {				
-	        	 public void onShow(DialogInterface dialog) {
-	        		 ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
-	        	 }
-	        	});
-	        
 	        return ad;
     	}
 	    

@@ -22,12 +22,15 @@ public class Add extends Activity
     private SharedPreferences prefs;
     private EditText name, limit, rate;
     private Spinner type, payment;
+    private dbAdapter mDbHelper;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add);
+		mDbHelper = new dbAdapter(this);
 
 		prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
 
@@ -74,17 +77,16 @@ public class Add extends Activity
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		mDbHelper.open();
 		switch (requestCode)
 		{
-		case ADD_ACTIVITY:
+			case ADD_ACTIVITY:
 			Bundle extras = data.getExtras();
 		
 			GeoPoint newPoint = new GeoPoint(extras.getInt("edu.pitt.designs1635.ParkIt.Add.lat"),
 											extras.getInt("edu.pitt.designs1635.ParkIt.Add.long"));
 			
 			ParkingLocation newPl = new ParkingLocation();
-			dbAdapter mDbHelper = new dbAdapter(this);
-       		mDbHelper.open();
 			switch(resultCode)
 			{
 			case AddPointMapActivity.SAVE_TO_PHONE:
@@ -98,7 +100,6 @@ public class Add extends Activity
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
 				mDbHelper.addPoint(newPl);
-				mDbHelper.close();
 				finish();
 				break;
 			case AddPointMapActivity.SAVE_TO_SERVER:
@@ -111,24 +112,36 @@ public class Add extends Activity
 					newPl.setRate(Float.parseFloat(rate.getText().toString()));
 				newPl.setLatitude(newPoint.getLatitudeE6());
 				newPl.setLongitude(newPoint.getLongitudeE6());
-				mDbHelper.addPoint(newPl);
-
-				mDbHelper.close();
+				mDbHelper.addRemotePoint(newPl);
 				finish();
 				break;
 			default:
-
-				mDbHelper.close();
 				break;
 			}
-			
-			
 			break;
 		default:
 			break;
 		}
-		
-		
-		
 	}
+
+	@Override
+    protected void onStop()
+    {
+	    super.onStop();
+        mDbHelper.close();
+    }
+    
+    @Override
+    protected void onResume()
+    {
+	    super.onResume();
+        mDbHelper.open();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mDbHelper.close();
+    }
 }
