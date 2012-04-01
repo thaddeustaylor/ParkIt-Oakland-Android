@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 
 import android.content.DialogInterface.OnShowListener;
 
@@ -29,6 +30,7 @@ public class Information extends Activity
 	private Spinner typeValueEdit, paymentValueEdit;
 	private Button edit, save;
 	private dbAdapter mDbHelper;
+	private ArrayAdapter<CharSequence> adapter, payment_adapter;
 
     public static final int SAVE_TO_PHONE = 10;
     public static final int SAVE_TO_SERVER = 11;
@@ -54,13 +56,13 @@ public class Information extends Activity
 		rateValueEdit = (EditText) findViewById(R.id.ratevalue_edit);
 
 		typeValueEdit = (Spinner) findViewById(R.id.tv_edit);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+		adapter = ArrayAdapter.createFromResource(
 			this, R.array.park_type, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		typeValueEdit.setAdapter(adapter);
 
 		paymentValueEdit = (Spinner) findViewById(R.id.ptv_edit);
-		ArrayAdapter<CharSequence> payment_adapter = ArrayAdapter.createFromResource(
+		payment_adapter = ArrayAdapter.createFromResource(
 			this, R.array.park_pay_type, android.R.layout.simple_spinner_item);
 		payment_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		paymentValueEdit.setAdapter(payment_adapter);
@@ -88,11 +90,9 @@ public class Information extends Activity
 
 				typeValue.setVisibility(View.INVISIBLE);
 				typeValueEdit.setVisibility(View.VISIBLE);
-				//typeValueEdit.setText(typeValue.getText());
 
 				paymentValue.setVisibility(View.INVISIBLE);
 				paymentValueEdit.setVisibility(View.VISIBLE);
-				//paymentValueEdit.setText(paymentValue.getText());
 
 				limitValue.setVisibility(View.INVISIBLE);
 				limitValueEdit.setVisibility(View.VISIBLE);
@@ -102,12 +102,16 @@ public class Information extends Activity
 				rateValueEdit.setVisibility(View.VISIBLE);
 				rateValueEdit.setText(rateValue.getText());
 
+				typeValueEdit.setSelection(adapter.getPosition(typeValue.getText()));
+				paymentValueEdit.setSelection(payment_adapter.getPosition(paymentValue.getText()));
+
 				save.setEnabled(true);
 				edit.setEnabled(false);
 			}
 		});
 
 		mDbHelper = new dbAdapter(this);
+		mDbHelper.open();
 
 		save.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v)
@@ -137,6 +141,13 @@ public class Information extends Activity
 	    super.onResume();
         mDbHelper.open();
     }
+
+    @Override
+    protected void onDestroy()
+    {
+    	super.onDestroy();
+    	mDbHelper.close();
+    }
     
     protected Dialog onCreateDialog(int id, Bundle b)
     {
@@ -165,14 +176,7 @@ public class Information extends Activity
 	                       }
 	                       
 	               });
-	        AlertDialog ad = builder.create();
-	       
-	        ad.setOnShowListener(new OnShowListener() {				
-	        	 public void onShow(DialogInterface dialog) {
-	        		 ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
-	        	 }
-	        	});
-	        
+	        AlertDialog ad = builder.create();	        
 	        return ad;
     	}
 	    
@@ -182,40 +186,39 @@ public class Information extends Activity
     
     private void saveChanges(int whereToSave)
     {
-    	mDbHelper.open();
+      	ParkingLocation newPl = new ParkingLocation();
+		newPl.setName(nameValueEdit.getText().toString());
+		newPl.setType(typeValueEdit.getSelectedItem().toString());
+		newPl.setPayment(paymentValueEdit.getSelectedItem().toString());
+		if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
+		{
+			newPl.setLimit((int)Float.parseFloat(limitValueEdit.getText().toString()));
+		}
+		if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
+		{
+			newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
+		}
+		newPl.setLatitude(pl.getLatitude());
+		newPl.setLongitude(pl.getLongitude());
+
+		if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
+			Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
+		else
+			Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
     	
     	switch(whereToSave)
     	{
     	case SAVE_TO_PHONE:
-			ParkingLocation newPl = new ParkingLocation();
-			newPl.setName(nameValueEdit.getText().toString());
-			newPl.setType(typeValueEdit.getSelectedItem().toString());
-			newPl.setPayment(paymentValueEdit.getSelectedItem().toString());
-			if(limitValueEdit.getText().toString().compareTo("No limit recorded") != 0)
-			{
-				newPl.setLimit((int)Float.parseFloat(limitValueEdit.getText().toString()));
-			}
-			if(rateValueEdit.getText().toString().compareTo("No rate recorded") != 0)
-			{
-				newPl.setRate(Float.parseFloat(rateValueEdit.getText().toString()));
-			}
-			newPl.setLatitude(pl.getLatitude());
-			newPl.setLongitude(pl.getLongitude());
-
-			if(mDbHelper.deletePoint(pl.getLatitude(), pl.getLongitude()))
-				Log.i("PARKIT INFO", "DELETE SUCCESSFUL");
-			else
-				Log.i("PARKIT INFO", "DELETE FAILUREEEEE");
-
 			mDbHelper.addPoint(newPl);
 			break;
     	case SAVE_TO_SERVER:
+    		mDbHelper.addRemotePoint(newPl);
 			break;
     	default:
 			break;
     	}
-    	mDbHelper.close();
 
+    	mDbHelper.close();
     	finish();
     }
 }

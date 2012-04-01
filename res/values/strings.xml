@@ -28,7 +28,7 @@
     <string name="payment_prompt">Select the type of payment:</string>
     <string-array name="park_type">
         <item>Meter</item>
-        <item>Garage</item>
+        <item>Parking Garage</item>
         <item>Parking Lot</item>
     </string-array>
     <string-array name="park_pay_type">

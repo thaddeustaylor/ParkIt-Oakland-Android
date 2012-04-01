@@ -53,12 +53,12 @@ public class ParkItActivity extends MapActivity {
         mCursor = mDbHelper.fetchAllRows();
         startManagingCursor(mCursor);
         mCursor.moveToFirst();
-        mDbHelper.close();
+        
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
-        getRemotePoints();        
+        //getRemotePoints();        
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there
@@ -84,8 +84,15 @@ public class ParkItActivity extends MapActivity {
     protected void onResume()
     {
 	    super.onResume();
-	    Log.i("PARKIT ACTIVITY YO YO YO", "[ParkItActivity].OnResume()");
+        mDbHelper.open();
         refreshAllPoints();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mDbHelper.close();
     }
 
 	@Override
@@ -121,9 +128,7 @@ public class ParkItActivity extends MapActivity {
                 startActivity(new Intent(this, Timer.class));
                 return true;
             case R.id.menu_settings:
-                mDbHelper.open();
                 mDbHelper.abandonShip();
-                mDbHelper.close();
                 refreshAllPoints();
                 return true;
         }
@@ -138,8 +143,6 @@ public class ParkItActivity extends MapActivity {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
                     pointsProcessing(objects);
-                } else {
-                    Log.i("GETTING REMOTE POINTS", "FAILED");
                 }
             }
         });
@@ -147,18 +150,15 @@ public class ParkItActivity extends MapActivity {
 
     public void pointsProcessing(List<ParseObject> objs)
     {
-        mDbHelper.open(); 
         for(int i=0; i < objs.size(); i++)
         {
             mDbHelper.addPoint(objs.get(i));
         }
-        mDbHelper.close();
         refreshAllPoints();
     }
 
     public void refreshAllPoints()
     {
-        mDbHelper.open();
         mCursor = mDbHelper.fetchAllRows();
         startManagingCursor(mCursor);
         mCursor.moveToFirst();
@@ -201,7 +201,6 @@ public class ParkItActivity extends MapActivity {
             }while(!mCursor.isAfterLast());
         }
         
-        mDbHelper.close();
             
         List<Overlay> points = mapView.getOverlays();
         points.clear();

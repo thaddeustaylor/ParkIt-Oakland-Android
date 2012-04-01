@@ -8,9 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
+import java.util.List;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseException;
+import com.parse.FindCallback;
 
 public class dbAdapter 
 {
@@ -39,10 +43,6 @@ public class dbAdapter
 	public static final String KEY_SATEND = "satend";
 	public static final String KEY_SUNSTART = "sunstart";
 	public static final String KEY_SUNEND = "sunend";
-	public static final String[] ALL_COLS = {KEY_ROWID, KEY_LAT, KEY_LON, KEY_TYPE, KEY_NAME,
-		KEY_PAYMENT, KEY_LIMIT, KEY_NOTES, KEY_RATE, KEY_RATETIME, KEY_GRATE, KEY_MONSTART,
-		KEY_MONEND, KEY_TUESTART, KEY_TUEEND, KEY_WEDSTART, KEY_WEDEND, KEY_THUSTART, KEY_THUEND,
-		KEY_FRISTART, KEY_FRIEND, KEY_SATSTART, KEY_SATEND, KEY_SUNSTART, KEY_SUNEND};
 
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
@@ -103,50 +103,6 @@ public class dbAdapter
 		return this;
 	}
 
-	public void addDummyData()
-	{
-		ContentValues steps = new ContentValues();
-		int lat, lon, type;
-		float rate;
-		String name;
-
-		lat = 40444282;
-		lon = -79953108;
-		type = 0;
-		rate = 0.75F;
-		name = "Cathedral of Learning";
-
-		steps.put(KEY_LAT, lat);
-		steps.put(KEY_LON, lon);
-		steps.put(KEY_TYPE, type);
-		steps.put(KEY_RATE, rate);
-		steps.put(KEY_NAME, name);
-
-		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)
-		{			  
-			mDb.insert(INFO_TABLE, null, steps);
-			Log.i("DATABASE SSETJROFOSIDJFO", name);
-		}
-
-		lat = 40445282;
-		lon = -79943108;
-		type = 1;
-		rate = 0.50F;
-		name = "Somewhere else";
-
-		steps.put(KEY_LAT, lat);
-		steps.put(KEY_LON, lon);
-		steps.put(KEY_TYPE, type);
-		steps.put(KEY_RATE, rate);
-		steps.put(KEY_NAME, name);
-
-		if (mDb.query(INFO_TABLE, new String[] {KEY_ROWID}, KEY_NAME +"=?", new String[] {name}, null, null, KEY_ROWID).getCount() == 0)			  
-		{	
-			mDb.insert(INFO_TABLE, null, steps);
-			Log.i("DATABASE SSETJROFOSIDJFO", name);
-		}
-	}
-
 	public void close()
 	{
 		mDbHelper.close();
@@ -155,29 +111,6 @@ public class dbAdapter
 	public Cursor fetchAllRows()
 	{
 		return mDb.query(INFO_TABLE, null, null, null, null, null, null);
-	}
-	
-	public int addPoint(int lat, int lon, int type) {
-		
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_LAT, lat);
-		initialValues.put(KEY_LON, lon);
-		initialValues.put(KEY_TYPE, type);
-				
-		if (mDb.query(INFO_TABLE,
-						new String[] {KEY_ROWID},
-						KEY_LAT + "=? and " + KEY_LON +"=? and " + KEY_TYPE + "=?",
-						new String[] {Integer.toString(lat), Integer.toString(lon), Integer.toString(type)},
-						null,
-						null,
-						KEY_ROWID).getCount() != 0)
-		{
-			return -1;
-		}
-		else
-		{
-			return (int) mDb.insert(INFO_TABLE, null, initialValues);
-		}
 	}
 
 	public boolean deletePoint(int lat, int lon)
@@ -240,35 +173,60 @@ public class dbAdapter
 		}
 	}
 
+	private boolean isNotEmpty;
+	public boolean addRemotePoint(ParkingLocation pl)
+	{
+		isNotEmpty = true;
+		Parse.initialize(mCtx, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+		ParseQuery query = new ParseQuery("Points");
+		query.whereEqualTo("lat", pl.getLatitude());
+		query.whereEqualTo("lon", pl.getLongitude());
+        query.findInBackground(new FindCallback() {
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() == 0) {
+                    isNotEmpty = true;
+                }
+            }
+        });
+
+		if(addPoint(pl) != -1 && isNotEmpty)
+		{
+			
+			ParseObject dataVals = new ParseObject("Points");
+			dataVals.put("lat", pl.getLatitude());
+			dataVals.put("lon", pl.getLongitude());
+			dataVals.put("type", pl.getType().toInt());
+			dataVals.put("name", pl.getName());
+			dataVals.put("payment", pl.getPayment().toInt());
+			dataVals.put("limits", pl.getLimit());
+			dataVals.put("notes", "Empty");
+			dataVals.put("rate", pl.getRate());
+			dataVals.put("ratetime", pl.getRateTime().toString());
+			dataVals.put("grate", pl.getGarageRate());
+			dataVals.put("monstart", pl.getMondayStart());
+			dataVals.put("monend", pl.getMondayEnd());
+			dataVals.put("tuestart", pl.getTuesdayStart());
+			dataVals.put("tueend", pl.getTuesdayEnd());
+			dataVals.put("wedstart", pl.getWednesdayStart());
+			dataVals.put("wedend", pl.getWednesdayEnd());
+			dataVals.put("thustart", pl.getThursdayStart());
+			dataVals.put("thuend", pl.getThursdayEnd());
+			dataVals.put("fristart", pl.getFridayStart());
+			dataVals.put("friend", pl.getFridayEnd());
+			dataVals.put("satstart", pl.getSaturdayStart());
+			dataVals.put("satend", pl.getSaturdayEnd());
+			dataVals.put("sunstart", pl.getSundayStart());
+			dataVals.put("sunend", pl.getSundayEnd());
+	        dataVals.saveInBackground();
+
+	        return true;
+	    }
+	    return false;
+
+	}
+
 	public int addPoint(ParkingLocation pl)
 	{
-		Parse.initialize(mCtx, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
-		ParseObject dataVals = new ParseObject("Points");
-		dataVals.put("lat", pl.getLatitude());
-		dataVals.put("lon", pl.getLongitude());
-		dataVals.put("type", pl.getType().toInt());
-		dataVals.put("name", pl.getName());
-		dataVals.put("payment", pl.getPayment().toInt());
-		dataVals.put("limits", pl.getLimit());
-		dataVals.put("notes", "Empty");
-		dataVals.put("rate", pl.getRate());
-		dataVals.put("ratetime", pl.getRateTime().toString());
-		dataVals.put("grate", pl.getGarageRate());
-		dataVals.put("monstart", pl.getMondayStart());
-		dataVals.put("monend", pl.getMondayEnd());
-		dataVals.put("tuestart", pl.getTuesdayStart());
-		dataVals.put("tueend", pl.getTuesdayEnd());
-		dataVals.put("wedstart", pl.getWednesdayStart());
-		dataVals.put("wedend", pl.getWednesdayEnd());
-		dataVals.put("thustart", pl.getThursdayStart());
-		dataVals.put("thuend", pl.getThursdayEnd());
-		dataVals.put("fristart", pl.getFridayStart());
-		dataVals.put("friend", pl.getFridayEnd());
-		dataVals.put("satstart", pl.getSaturdayStart());
-		dataVals.put("satend", pl.getSaturdayEnd());
-		dataVals.put("sunstart", pl.getSundayStart());
-		dataVals.put("sunend", pl.getSundayEnd());
-
 		ContentValues vals = new ContentValues();
 		vals.put(KEY_LAT, pl.getLatitude());
 		vals.put(KEY_LON, pl.getLongitude());
@@ -295,8 +253,6 @@ public class dbAdapter
 		vals.put(KEY_SUNSTART, ""+pl.getSundayStart());
 		vals.put(KEY_SUNEND, ""+pl.getSundayEnd());
 
-        dataVals.saveInBackground();
-
 		if (mDb.query(INFO_TABLE,
 						new String[] {KEY_ROWID},
 						KEY_LAT + "=? and " + KEY_LON +"=? and " + KEY_TYPE + "=?",
@@ -305,14 +261,9 @@ public class dbAdapter
 						null,
 						KEY_ROWID).getCount() != 0)
 		{
-			Log.i("PARKIT DATABASE", "ADD DIDN'T WORK BRO");
 			return -1;
 		}
 		else
-		{
-			Log.i("PARKIT DATABASE", "ADD WORKED! CELEBRATE!");
 			return (int) mDb.insert(INFO_TABLE, null, vals);
-		}
-
 	}
 }
