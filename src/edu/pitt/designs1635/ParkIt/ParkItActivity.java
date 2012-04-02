@@ -201,7 +201,8 @@ public class ParkItActivity extends MapActivity {
             }while(!mCursor.isAfterLast());
         }
         
-            
+        
+        
         List<Overlay> points = mapView.getOverlays();
         points.clear();
         points.add(gItemizedOverlay);
