@@ -58,7 +58,7 @@ public class ParkItActivity extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
-        //getRemotePoints();        
+        getRemotePoints();        
         refreshAllPoints();
 
         //This will attempt to grab the current location and have the map automatically center to there

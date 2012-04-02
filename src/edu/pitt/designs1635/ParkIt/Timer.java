@@ -5,11 +5,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -102,5 +104,19 @@ public class Timer extends Activity
 			}
 		});
     }
+	
+	   @Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	    	switch (item.getItemId()) {
+	    	case android.R.id.home:
+	    		Intent intent = new Intent(this, ParkItActivity.class);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    		startActivity(intent);
+	    		return true;
+	    	default:
+	    		return super.onOptionsItemSelected(item);
+	    		
+	    	}
+	    }
 
 }

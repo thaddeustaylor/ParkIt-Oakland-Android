@@ -3,23 +3,16 @@ package edu.pitt.designs1635.ParkIt;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.os.Bundle;
-import android.widget.Button;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-
-import android.content.DialogInterface.OnShowListener;
-
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
-
-import android.widget.Toast;
-import android.util.Log;
-import android.widget.Spinner;
-
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class Information extends Activity
@@ -220,5 +213,19 @@ public class Information extends Activity
 
     	mDbHelper.close();
     	finish();
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		Intent intent = new Intent(this, ParkItActivity.class);
+    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    		startActivity(intent);
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    		
+    	}
     }
 }
