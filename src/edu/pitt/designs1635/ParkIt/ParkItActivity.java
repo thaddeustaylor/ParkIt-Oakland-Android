@@ -37,7 +37,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public class ParkItActivity extends MapActivity implements LocationListener
-{    
+{
 	private dbAdapter mDbHelper;
     private Cursor mCursor;
     private MapView mapView;
@@ -54,7 +54,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        
+
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -65,13 +65,13 @@ public class ParkItActivity extends MapActivity implements LocationListener
         mCursor = mDbHelper.fetchAllRows();
         startManagingCursor(mCursor);
         mCursor.moveToFirst();
-        
-        
+
+
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapCtrl = mapView.getController();
 
-        //getRemotePoints();        
+        getRemotePoints();
         refreshAllPoints();
 
         criteria = new Criteria();
@@ -93,7 +93,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
         super.onStart();
         getCurrentLocation();
     }
-    
+
     @Override
     protected void onStop()
     {
@@ -101,7 +101,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
         mlocManager.removeUpdates(this);
         mDbHelper.close();
     }
-    
+
     @Override
     protected void onResume()
     {
@@ -160,7 +160,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
 
     public void getRemotePoints()
     {
-        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
         ParseQuery query = new ParseQuery("Points");
         query.findInBackground(new FindCallback() {
             public void done(List<ParseObject> objects, ParseException e) {
@@ -195,23 +195,23 @@ public class ParkItActivity extends MapActivity implements LocationListener
         gItemizedOverlay.hideAllBalloons();
         lItemizedOverlay.hideAllBalloons();
         mItemizedOverlay.hideAllBalloons();
-        
-        
+
+
         OverlayItem overlayItem;
         GeoPoint point;
 
         //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
         if(mCursor.getCount() > 0)
         {
-            do{                
+            do{
                 ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
-                
+
                 pl.setName(mCursor.getString(4));
                 pl.setRate(mCursor.getFloat(8));
                 pl.setType(mCursor.getInt(3));
                 pl.setPayment(mCursor.getInt(5));
                 pl.setLimit(mCursor.getInt(6));
-                
+
                 if(mCursor.getInt(3) == 0)
                     mItemizedOverlay.addOverlay(pl);
                 else if(mCursor.getInt(3) == 1)
@@ -221,15 +221,15 @@ public class ParkItActivity extends MapActivity implements LocationListener
                 mCursor.moveToNext();
             }while(!mCursor.isAfterLast());
         }
-        
-            
+
+
         List<Overlay> points = mapView.getOverlays();
         points.clear();
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
         points.add(mItemizedOverlay);
     }
-    
+
     public void onLocationChanged(Location location) {
         //updateLocation(location);
     }
@@ -239,42 +239,51 @@ public class ParkItActivity extends MapActivity implements LocationListener
         if (location != null) {
             Double lat = location.getLatitude()*1E6;
             Double lng = location.getLongitude()*1E6;
-            Log.i("CURRRRRRRENT LOCATION", "LAT: "+lat+" LON: "+lng);
             p = new GeoPoint(lat.intValue(), lng.intValue());
             mapCtrl.animateTo(p);
         }
         else
         {
-            Log.i("LOCATION NOT FOUND DEAR LORD ABANDAON SHIP", "lol");
+
         }
 
     }
 
     private void getCurrentLocation()
     {
-        String provider = mlocManager.getBestProvider(criteria, true);
-        Location location = mlocManager.getLastKnownLocation(provider);
-        if(location != null)
-            Log.i("LAST KNOWWWWNNNNN LOCATION", "LAT: "+location.getLatitude()+" LON: "+location.getLongitude());
-        else
-            Log.i("YOU HAVE NO LAST KNOWN LOCATION", "bitch");
+        List<String> providers = mlocManager.getProviders(true);
+        /* loop over the array backwards, and if we got an accurate location,
+         * the break out of the loop
+         * Ref: stackoverflow.com/questions/3635917/#3651855 */
+        Location location = null;
+        int i = providers.size();
+        for( i = providers.size()-1; i>=0; i--)
+        {
+            //if( i == 0 ) break;
+            location = mlocManager.getLastKnownLocation( providers.get(i) );
+            if(location != null )
+               break;
+        }
+
         updateLocation(location);
-        
+
         // Start listening for location changes
-        mlocManager.requestLocationUpdates(provider, 
+        /*
+        mlocManager.requestLocationUpdates(providers.get(i),
                                                60000, // 1min
                                                1000,  // 1km
                                                this);
+                                               */
     }
 
     public void onProviderDisabled(String provider) {
         // required for interface, not used
     }
-    
+
     public void onProviderEnabled(String provider) {
         // required for interface, not used
     }
-    
+
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // required for interface, not used
     }

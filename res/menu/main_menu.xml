@@ -1,10 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menu_add"
 		android:title="@string/menu_add"
-		android:icon="@android:drawable/ic_menu_add" />
+		android:icon="@android:drawable/ic_menu_add" 
+		android:showAsAction="always" />
 	<item android:id="@+id/menu_alarm"
 		android:title="@string/menu_alarm"
-		android:icon="@android:drawable/ic_menu_recent_history" />
+		android:icon="@android:drawable/ic_menu_recent_history"
+		android:showAsAction="always" />
 	<item android:id="@+id/menu_refresh"
 		android:title="@string/menu_refresh"/>
 	<item android:id="@+id/menu_settings"

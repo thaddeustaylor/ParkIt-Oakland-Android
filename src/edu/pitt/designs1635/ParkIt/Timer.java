@@ -3,10 +3,10 @@ package edu.pitt.designs1635.ParkIt;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-
+import android.content.Intent;
 import android.app.Activity;
 import android.os.Bundle;
-
+import android.view.MenuItem;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
@@ -103,4 +103,17 @@ public class Timer extends Activity
 		});
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case android.R.id.home:
+    		Intent intent = new Intent(this, ParkItActivity.class);
+    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    		startActivity(intent);
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+
+    	}
+    }
 }
