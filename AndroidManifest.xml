@@ -24,12 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>   
-        <activity android:name="Timer" 
+        <activity android:name=".Timer" 
             android:theme="@style/Theme.Sherlock.Light"/>     
           <activity 
             android:name="Information"
             android:theme="@style/Theme.Sherlock.Light" />
-        <activity android:name="Add"
+        <activity android:name=".Add"
             android:theme="@style/Theme.Sherlock.Light" />
         <activity android:name=".AddPointMapActivity"
             android:theme="@style/Theme.Sherlock.Light" />

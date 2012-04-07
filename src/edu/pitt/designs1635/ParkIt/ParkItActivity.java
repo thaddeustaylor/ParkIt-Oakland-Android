@@ -14,10 +14,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -72,7 +76,8 @@ public class ParkItActivity extends MapActivity implements LocationListener
         startManagingCursor(mCursor);
         mCursor.moveToFirst();
 
-
+        //ActionBar ab = getSupportActionBar();
+        
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapCtrl = mapView.getController();
@@ -134,8 +139,8 @@ public class ParkItActivity extends MapActivity implements LocationListener
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-    @Override
+	
+	@Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
@@ -143,7 +148,8 @@ public class ParkItActivity extends MapActivity implements LocationListener
         return true;
     }
 
-    @Override
+	
+	@Override
     public boolean onMenuItemSelected(int featureId, MenuItem item)
     {
         switch (item.getItemId())
@@ -358,6 +364,8 @@ public class ParkItActivity extends MapActivity implements LocationListener
 	{
 
 		Log.i("ParkItActivity.onActivityResult", "Start");
+		if(data == null)
+			return;
 		
 		switch (requestCode)
 		{
