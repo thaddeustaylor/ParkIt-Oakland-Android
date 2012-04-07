@@ -1,6 +1,7 @@
-package edu.pitt.designs1635.Directions;
+package edu.pitt.designs1635.ParkIt.Directions;
 
-import edu.pitt.designs1635.Directions.Placemark;
+import edu.pitt.designs1635.ParkIt.Directions.Placemark;
+
 import com.google.android.maps.GeoPoint;
 
 public class PlacemarkImpl implements Placemark

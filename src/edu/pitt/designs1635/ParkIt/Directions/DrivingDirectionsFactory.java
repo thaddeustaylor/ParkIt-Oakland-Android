@@ -1,6 +1,6 @@
-package edu.pitt.designs1635.Directions;
+package edu.pitt.designs1635.ParkIt.Directions;
 
-import edu.pitt.designs1635.Directions.DrivingDirectionsGoogleKML;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirectionsGoogleKML;
 
 public class DrivingDirectionsFactory
 {

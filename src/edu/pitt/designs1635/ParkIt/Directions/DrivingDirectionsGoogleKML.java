@@ -1,4 +1,4 @@
-package edu.pitt.designs1635.Directions;
+package edu.pitt.designs1635.ParkIt.Directions;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -15,8 +15,9 @@ import org.w3c.dom.NodeList;
 
 import android.os.AsyncTask;
 
-import edu.pitt.designs1635.Directions.DrivingDirections;
-import edu.pitt.designs1635.Directions.Placemark;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
+import edu.pitt.designs1635.ParkIt.Directions.Placemark;
+
 import com.google.android.maps.GeoPoint;
 
 /**

@@ -1,10 +1,11 @@
-package edu.pitt.designs1635.Directions;
+package edu.pitt.designs1635.ParkIt.Directions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.pitt.designs1635.Directions.Placemark;
-import edu.pitt.designs1635.Directions.Route;
+import edu.pitt.designs1635.ParkIt.Directions.Placemark;
+import edu.pitt.designs1635.ParkIt.Directions.Route;
+
 import com.google.android.maps.GeoPoint;
 
 public class RouteImpl implements Route

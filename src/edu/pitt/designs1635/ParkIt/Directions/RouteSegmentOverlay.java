@@ -1,4 +1,4 @@
-package edu.pitt.designs1635.ParkIt;
+package edu.pitt.designs1635.ParkIt.Directions;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
