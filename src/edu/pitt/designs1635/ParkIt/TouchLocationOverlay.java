@@ -90,7 +90,7 @@ public class TouchLocationOverlay extends Overlay {
     }*/
     
     /**
-     * Interface for firing an event when the Overlay's onTap event is fired. (both displayed and erased) has changed.
+     * Interface for firing an event when the Overlay's onTap event is fired. 
      * @author Thaddeus
      *
      */
