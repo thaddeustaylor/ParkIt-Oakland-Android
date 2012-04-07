@@ -31,7 +31,7 @@
             android:theme="@style/Theme.Sherlock.Light" />
         <activity android:name="Add"
             android:theme="@style/Theme.Sherlock.Light" />
-        <activity android:name="AddPointMapActivity"
+        <activity android:name=".AddPointMapActivity"
             android:theme="@style/Theme.Sherlock.Light" />
         
         

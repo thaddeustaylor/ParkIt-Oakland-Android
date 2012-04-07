@@ -3,21 +3,20 @@ package edu.pitt.designs1635.ParkIt;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.content.Context;
-import android.location.Criteria;
-
-import android.location.LocationManager;
-import android.location.LocationListener;
-import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -25,16 +24,19 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
+import com.parse.FindCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseException;
-import com.parse.FindCallback;
 
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.IDirectionsListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.Mode;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirectionsFactory;
+import edu.pitt.designs1635.ParkIt.Directions.Route;
+import edu.pitt.designs1635.ParkIt.Directions.RouteOverlay;
 
 public class ParkItActivity extends MapActivity implements LocationListener
 {
@@ -50,8 +52,12 @@ public class ParkItActivity extends MapActivity implements LocationListener
     Double latitude, longitude;
     private Criteria criteria;
     private GeoPoint p;
-
-
+    private RouteOverlay m_route;
+    
+    public static final int INFORMATION_ACTIVITY = 0;
+    
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -71,7 +77,11 @@ public class ParkItActivity extends MapActivity implements LocationListener
         mapView.setBuiltInZoomControls(true);
         mapCtrl = mapView.getController();
 
+        //DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+        
+        //dir.driveTo(new GeoPoint(40443154, -79956304), new GeoPoint(40445545, -79972259), Mode.DRIVING, new MyIDirectionsListener());
 
+        
         getRemotePoints();        
 
         refreshAllPoints();
@@ -199,6 +209,11 @@ public class ParkItActivity extends MapActivity implements LocationListener
         mItemizedOverlay.hideAllBalloons();
 
 
+        gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        mItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+
+        
         OverlayItem overlayItem;
         GeoPoint point;
 
@@ -225,7 +240,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
         }
 
         List<Overlay> points = mapView.getOverlays();
-        points.clear();
+        //points.clear();
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
         points.add(mItemizedOverlay);
@@ -275,6 +290,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
                                                1000,  // 1km
                                                this);
                                                */
+        
     }
 
     public void onProviderDisabled(String provider) {
@@ -288,4 +304,93 @@ public class ParkItActivity extends MapActivity implements LocationListener
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // required for interface, not used
     }
+    
+    private class MyIDirectionsListener implements IDirectionsListener
+    {
+
+		@Override
+		public void onDirectionsAvailable(Route route, Mode mode) {
+			
+			List<Overlay> points = mapView.getOverlays();
+			
+			if(m_route != null)
+				points.remove(m_route);
+			
+			m_route = new RouteOverlay(route.getGeoPoints());
+			//RouteSegmentOverlay rso = new RouteSegmentOverlay(route.getGeoPoints().get(0), route.getGeoPoints().get(route.getGeoPoints().size() - 2));
+			points.add(m_route);
+			
+			//Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
+			//mapView.invalidate();
+			
+		}
+
+		@Override
+		public void onDirectionsNotAvailable() {
+			Log.i("MyIDirectionsListener", "No Route!!!!!!");
+			//TODO provide a warning to the user
+		}
+    	
+    }
+    
+    private class MyBalloonTouchListener implements BalloonTouchListener
+    {
+
+		@Override
+		public void onBalloonTap(ParkingLocation pl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onNextClick(ParkingLocation pl) {
+			
+			Intent info = new Intent(ParkItActivity.this, Information.class);
+			
+			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
+            
+			startActivityForResult(info, INFORMATION_ACTIVITY);
+		}
+    	
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
+		Log.i("ParkItActivity.onActivityResult", "Start");
+		
+		switch (requestCode)
+		{
+			case INFORMATION_ACTIVITY:
+				Bundle extras = data.getExtras();
+				Log.i("ParkItActivity.onActivityResult", "in INFORMATION_ACTIVITY");
+				
+				switch(resultCode)
+				{
+				case Information.GOTO_TRUE:
+
+					Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+					
+					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
+					
+					DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+			        dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
+			        
+					break;
+					
+				case Information.GOTO_FALSE:
+					Log.i("ParkItActivity.onActivityResult", "in GOTO_FALSE");
+					break;
+				default:
+
+					Log.i("ParkItActivity.onActivityResult", "in default");
+					break;
+				}
+		
+			break;
+		default:
+			break;
+		}
+	}
+
 }
