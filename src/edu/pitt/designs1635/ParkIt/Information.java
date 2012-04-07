@@ -214,7 +214,7 @@ public class Information extends Activity
     	mDbHelper.close();
     	finish();
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
