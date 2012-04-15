@@ -9,9 +9,12 @@ import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
+
+import edu.pitt.designs1635.ParkIt.TouchLocationOverlay.TapListener;
 
 public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
@@ -19,7 +22,7 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	private ArrayList<ParkingLocation> m_locations = new ArrayList<ParkingLocation>();
 	private Context c;
 	private NumberFormat nf;
-	
+	private BalloonTouchListener m_touchListener = null;
 	
 	public ParkingLocationItemizedOverlay(Drawable defaultMarker, MapView mapView, boolean shadow) 
 	{
@@ -45,10 +48,13 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 		nf = NumberFormat.getCurrencyInstance();
 	}
 	
-	public void addOverlay(OverlayItem overlay) {
-	    m_overlays.add(overlay);
-	    populate();
-	}
+	// I removed this because if it is used then the ParkingLocation Arraylist will become
+	// out of sync with the overlay ArrayList and when the ballon is touch the wrong
+	// parkingLocation will be sent.
+	//public void addOverlay(OverlayItem overlay) {
+	//    m_overlays.add(overlay);
+	//    populate();
+	//}
 	
 	public void addOverlay(ParkingLocation pl) {
 	    
@@ -76,19 +82,52 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 	protected boolean onBalloonTap(int index, OverlayItem item) {
 		//Toast.makeText(c, "onBalloonTap for overlay index " + index,
 		//		Toast.LENGTH_LONG).show();
+		
+		if(m_touchListener  != null)
+		{
+			m_touchListener.onBalloonTap(m_locations.get(index));
+		}
 		return true;
 	}
 	
 	protected boolean onNextClick(int index, OverlayItem item) {
-		Intent info = new Intent(c, Information.class);
+		/*Intent info = new Intent(c, Information.class);
 		
 		info.putExtra("edu.pitt.designs1635.ParkIt.location", m_locations.get(index));
 		
-		c.startActivity(info);
+		c.startActivity(info);*/
+		
+		if(m_touchListener  != null)
+		{
+			m_touchListener.onNextClick(m_locations.get(index));
+		}
+		
 		
 		return true;
 	}
 	
-	
+    /**
+     * Interface for firing an event when the Overlay's onBallonTap event or onNextClick event is fired. 
+     * @author Thaddeus
+     *
+     */
+    public interface BalloonTouchListener
+    {
+    	public abstract void onBalloonTap(ParkingLocation pl);
+    	
+    	public abstract void onNextClick(ParkingLocation pl);
+    }
+    
+    /**
+     * Allow the TapListener to be set.
+     * 
+     * @param listener - the user implemented interface.
+     */
+    public void setBalloonTouchListener(BalloonTouchListener listener)
+    {
+    	m_touchListener = listener;
+    }
+    
+    
 }
 

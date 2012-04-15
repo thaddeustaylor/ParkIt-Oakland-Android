@@ -37,6 +37,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
 
+import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.IDirectionsListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.Mode;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirectionsFactory;
+import edu.pitt.designs1635.ParkIt.Directions.Route;
+import edu.pitt.designs1635.ParkIt.Directions.RouteOverlay;
+
 public class ParkItActivity extends SherlockMapActivity implements LocationListener
 {
 	private dbAdapter mDbHelper;
@@ -51,7 +59,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
     Double latitude, longitude;
     private Criteria criteria;
     private GeoPoint p;
+    private RouteOverlay m_route;
 
+    public static final int INFORMATION_ACTIVITY = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +110,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
     {
 	    super.onStop();
         mlocManager.removeUpdates(this);
+        if(mDbHelper != null)
         mDbHelper.close();
     }
 
@@ -115,7 +126,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
     protected void onDestroy()
     {
         super.onDestroy();
-        mDbHelper.close();
+        mlocManager.removeUpdates(this);
+        if(mDbHelper != null)
+            mDbHelper.close();
     }
 
 	@Override
@@ -142,6 +155,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
                 editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
                 editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
                 editor.commit();
+                mDbHelper.close();
             	startActivity(new Intent(this, Add.class));
                 return true;
             case R.id.menu_refresh:
@@ -176,7 +190,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
     {
         for(int i=0; i < objs.size(); i++)
         {
-            mDbHelper.addPoint(objs.get(i));
+            try{
+                mDbHelper.addPoint(objs.get(i));
+            }catch(Exception e){}
         }
         refreshAllPoints();
     }
@@ -196,6 +212,10 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         gItemizedOverlay.hideAllBalloons();
         lItemizedOverlay.hideAllBalloons();
         mItemizedOverlay.hideAllBalloons();
+
+        gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        mItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
 
 
         OverlayItem overlayItem;
@@ -287,5 +307,102 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // required for interface, not used
+    }
+
+    private class MyIDirectionsListener implements IDirectionsListener
+    {
+
+        @Override
+        public void onDirectionsAvailable(Route route, Mode mode) {
+            
+            List<Overlay> points = mapView.getOverlays();
+            
+            if(m_route != null)
+                points.remove(m_route);
+            
+            m_route = new RouteOverlay(route.getGeoPoints());
+            //RouteSegmentOverlay rso = new RouteSegmentOverlay(route.getGeoPoints().get(0), route.getGeoPoints().get(route.getGeoPoints().size() - 2));
+            points.add(m_route);
+            
+            //Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
+            //mapView.invalidate();
+            
+        }
+
+        @Override
+        public void onDirectionsNotAvailable() {
+            Log.i("MyIDirectionsListener", "No Route!!!!!!");
+            //TODO provide a warning to the user
+        }
+        
+    }
+
+    private class MyBalloonTouchListener implements BalloonTouchListener
+    {
+
+        @Override
+        public void onBalloonTap(ParkingLocation pl) {
+            Intent info = new Intent(ParkItActivity.this, Information.class);
+            
+            info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
+            mDbHelper.close();
+            startActivityForResult(info, INFORMATION_ACTIVITY);
+            
+        }
+
+        @Override
+        public void onNextClick(ParkingLocation pl) {
+            
+            getDirections(pl.getGeoPoint());
+        }
+        
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+
+        Log.i("ParkItActivity.onActivityResult", "Start");
+        if(data == null)
+            return;
+        
+        switch (requestCode)
+        {
+            case INFORMATION_ACTIVITY:
+                Bundle extras = data.getExtras();
+                Log.i("ParkItActivity.onActivityResult", "in INFORMATION_ACTIVITY");
+                
+                switch(resultCode)
+                {
+                case Information.GOTO_TRUE:
+
+                    //Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+                    
+                    ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
+                    getDirections(pl.getGeoPoint());
+                    
+                    //DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+                    //dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
+                    
+                    break;
+                    
+                case Information.GOTO_FALSE:
+                    Log.i("ParkItActivity.onActivityResult", "in GOTO_FALSE");
+                    break;
+                default:
+
+                    Log.i("ParkItActivity.onActivityResult", "in default");
+                    break;
+                }
+        
+            break;
+        default:
+            break;
+        }
+    }
+
+    private void getDirections(GeoPoint destination)
+    {
+        DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+        dir.driveTo(p, destination, Mode.DRIVING, new MyIDirectionsListener());
     }
 }

@@ -105,7 +105,8 @@ public class dbAdapter
 
 	public void close()
 	{
-		mDbHelper.close();
+		if(mDbHelper != null)
+			mDbHelper.close();
 	}
 
 	public Cursor fetchAllRows()

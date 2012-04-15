@@ -1,222 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:layout_weight="1">
-        <TextView
-            android:id="@+id/nameview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/name" />    
-        <TextView 
-            android:id="@+id/namevalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_toRightOf="@id/nameview" />
-        <EditText 
-            android:id="@+id/namevalue_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:singleLine="true"
-            android:inputType="textCapSentences"
-            android:layout_toRightOf="@id/nameview" />
-        
-        <TextView
-            android:id="@+id/typeview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nameview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/parking_type" />
-        <TextView
-            android:id="@+id/typevalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nameview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_toRightOf="@id/typeview" />
-        <Spinner android:id="@+id/tv_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nameview"
-            android:layout_toRightOf="@id/typeview"
-            android:visibility="invisible"
-            android:prompt="@string/type_prompt" />
-        
-        <TextView
-            android:id="@+id/paytypeview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/typeview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/payment_type" />
-        <TextView
-            android:id="@+id/paytypevalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/typeview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_toRightOf="@id/paytypeview" />
-        <Spinner android:id="@+id/ptv_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/typeview"
-            android:layout_toRightOf="@id/paytypeview"
-            android:visibility="invisible"
-            android:prompt="@string/payment_prompt" />
-        
-        <TextView
-            android:id="@+id/limitview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/paytypeview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/time_limit" />
-        <TextView
-            android:id="@+id/limitvalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/limitview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_below="@id/paytypeview" />
-        <EditText
-            android:id="@+id/limitvalue_edit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/limitview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:visibility="invisible"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:singleLine="true"
-            android:layout_below="@id/paytypeview" />
-        
-        <TextView
-            android:id="@+id/rateview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/limitview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/rate" />
-       <TextView
-            android:id="@+id/ratevalue"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/limitview"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_toRightOf="@id/rateview" />
-        <EditText
-            android:id="@+id/ratevalue_edit"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/limitview"
-            android:textSize="17dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:visibility="invisible"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:singleLine="true"
-            android:layout_toRightOf="@id/rateview" />
-      <TextView
-            android:id="@+id/rv_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_toRightOf="@id/ratevalue"
-            android:layout_below="@id/limitview"
-            android:text="per hour" />
-    </RelativeLayout>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scroller"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical" 
+		android:background="#dddddd">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="@android:style/ButtonBar">
-        <Button android:id="@+id/edit_button"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/info_edit" />
-        <Button android:id="@+id/save_button"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/info_save" />
-        <Button android:id="@+id/goto_button"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/info_goto" />
-    </LinearLayout>
-   
-</LinearLayout>
+		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1">
+
+			<!-- First Section (Type/Name) -->
+			<TextView
+				android:id="@+id/typeview"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoTitle" /> 
+			<View
+				style="@style/InfoLine"
+				android:id="@+id/line1"
+				android:layout_width="fill_parent"
+				android:layout_height="3dip"
+				android:layout_below="@id/typeview" />
+			<TextView
+				android:id="@+id/namevalue"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:layout_below="@id/line1" />
+			<EditText 
+				android:id="@+id/namevalue_edit"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:textSize="17dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="15dp"
+				android:paddingRight="15dp"
+				android:visibility="invisible"
+				android:imeOptions="actionNext"
+				android:singleLine="true"
+				android:inputType="textCapSentences"
+				android:layout_below="@id/line1" />
+
+			<!-- Secton Section (Rate/Payment Type) -->
+			<TextView
+				android:id="@+id/rateview"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoTitle"
+				android:text="@string/info_rate" 
+				android:layout_below="@id/namevalue"/> 
+			<View
+				style="@style/InfoLine"
+				android:id="@+id/line2"
+				android:layout_width="fill_parent"
+				android:layout_height="3dip"
+				android:layout_below="@id/rateview" />
+
+				<!-- Rate -->
+			<TextView
+				android:id="@+id/rv_start"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:paddingRight="0dp"
+				android:text="$"
+				android:layout_below="@id/line2" />
+			<TextView
+				android:id="@+id/ratevalue"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:paddingLeft="2dp"
+				android:paddingRight="10dp"
+				android:layout_below="@id/line2"
+				android:layout_toRightOf="@id/rv_start" />
+			<EditText
+				android:id="@+id/ratevalue_edit"
+				android:layout_width="60dp"
+				android:layout_height="wrap_content"
+				android:textSize="17dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="15dp"
+				android:paddingRight="5dp"
+				android:visibility="invisible"
+				android:inputType="number"
+				android:singleLine="true" 
+				android:layout_below="@id/line2" 
+				android:layout_toRightOf="@id/rv_start"/>
+			<TextView
+				android:id="@+id/rv_end"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:paddingLeft="0dp"
+				android:text="an hour"
+				android:layout_below="@id/line2"
+				android:layout_toRightOf="@id/ratevalue" />
+
+				<!-- Payment Type -->
+			<TextView
+				android:id="@+id/paytypevalue"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:layout_below="@id/ratevalue" />
+			<Spinner android:id="@+id/ptv_edit"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/ratevalue"
+				android:visibility="invisible"
+				android:prompt="@string/payment_prompt" />
+
+			<!-- Last Section (Hours) -->
+			<TextView
+				android:id="@+id/hoursview"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoTitle"
+				android:text="@string/info_hours" 
+				android:layout_below="@id/paytypevalue"/> 
+			<View
+				style="@style/InfoLine"
+				android:id="@+id/line3"
+				android:layout_width="fill_parent"
+				android:layout_height="3dip"
+				android:layout_below="@id/hoursview" />
+
+			<!-- Limit -->
+			<TextView
+				android:id="@+id/limitvalue"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:paddingRight="0dp"
+				android:layout_below="@id/line3" />
+			<EditText
+				android:id="@+id/limitvalue_edit"
+				android:layout_width="40dp"
+				android:layout_height="wrap_content"
+				android:textSize="19dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="5dp"
+				android:paddingRight="5dp"
+				android:visibility="invisible"
+				android:inputType="number"
+				android:singleLine="true" 
+				android:layout_below="@id/line3" />
+			<TextView
+				android:id="@+id/limit_end"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:text="@string/info_limit_end"
+				android:layout_below="@id/line3"
+				android:layout_toRightOf="@id/limitvalue" />
+
+			<!-- Hours -->
+			<TextView
+				android:id="@+id/hoursvalue"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/InfoValue"
+				android:layout_below="@id/limitvalue" 
+				android:text="@string/junk"/>
+
+		</RelativeLayout>
+
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			style="@android:style/ButtonBar">
+			<Button android:id="@+id/edit_button"
+				android:focusable="true"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:text="@string/info_edit" />
+			<Button android:id="@+id/save_button"
+				android:focusable="true"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:enabled="false"
+				android:text="@string/info_save" />
+			<Button android:id="@+id/goto_button"
+				android:focusable="true"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:enabled="false"
+				android:text="@string/info_goto" />
+		</LinearLayout>
+	   
+	</LinearLayout>
+</ScrollView>
