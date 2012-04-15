@@ -9,9 +9,6 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.content.Context;
 import android.location.Criteria;
 
@@ -35,8 +32,12 @@ import com.parse.FindCallback;
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 
-public class ParkItActivity extends MapActivity implements LocationListener
+public class ParkItActivity extends SherlockMapActivity implements LocationListener
 {
 	private dbAdapter mDbHelper;
     private Cursor mCursor;
@@ -126,7 +127,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
@@ -144,7 +145,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
             	startActivity(new Intent(this, Add.class));
                 return true;
             case R.id.menu_refresh:
-                //getRemotePoints();
+                getRemotePoints();
                 getCurrentLocation();
                 return true;
             case R.id.menu_alarm:
