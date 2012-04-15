@@ -344,18 +344,18 @@ public class ParkItActivity extends MapActivity implements LocationListener
 
 		@Override
 		public void onBalloonTap(ParkingLocation pl) {
-			// TODO Auto-generated method stub
+			Intent info = new Intent(ParkItActivity.this, Information.class);
+			
+			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
+            
+			startActivityForResult(info, INFORMATION_ACTIVITY);
 			
 		}
 
 		@Override
 		public void onNextClick(ParkingLocation pl) {
 			
-			Intent info = new Intent(ParkItActivity.this, Information.class);
-			
-			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
-            
-			startActivityForResult(info, INFORMATION_ACTIVITY);
+			getDirections(pl.getGeoPoint());
 		}
     	
     }
@@ -377,12 +377,13 @@ public class ParkItActivity extends MapActivity implements LocationListener
 				{
 				case Information.GOTO_TRUE:
 
-					Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+					//Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
 					
 					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
+					getDirections(pl.getGeoPoint());
 					
-					DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-			        dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
+					//DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+			        //dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
 			        
 					break;
 					
@@ -400,5 +401,13 @@ public class ParkItActivity extends MapActivity implements LocationListener
 			break;
 		}
 	}
+    
+    
+    private void getDirections(GeoPoint destination)
+    {
+
+		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+        dir.driveTo(p, destination, Mode.DRIVING, new MyIDirectionsListener());
+    }
 
 }
