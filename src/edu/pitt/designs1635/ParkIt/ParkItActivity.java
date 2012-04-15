@@ -12,16 +12,14 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockMapActivity;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -109,6 +107,7 @@ public class ParkItActivity extends MapActivity implements LocationListener
     {
         super.onStart();
         getCurrentLocation();
+        
     }
 
     @Override
@@ -125,6 +124,17 @@ public class ParkItActivity extends MapActivity implements LocationListener
 	    super.onResume();
         mDbHelper.open();
         refreshAllPoints();
+        
+        // Check for Internet connection on startup
+        if (isNetworkAvailable()) {
+        	System.out.println("You have the internets");
+        } else {
+        	System.out.println("Why u no have internets?");
+        }
+        
+        isGPSAvailable();
+        
+        
     }
 
     @Override
@@ -400,5 +410,25 @@ public class ParkItActivity extends MapActivity implements LocationListener
 			break;
 		}
 	}
+    
+    private boolean isNetworkAvailable() {
+    	ConnectivityManager connectivityManager = 
+    			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+    	return activeNetworkInfo != null;
+    }
+    
+    private boolean isGPSAvailable() {
+    	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+    		System.out.println("GPS is enabled");
+    		return true;
+    		
+    	} else {
+    		System.out.println("GPS is not enabled");
+    		return false;
+    	}
+
+    }
 
 }
