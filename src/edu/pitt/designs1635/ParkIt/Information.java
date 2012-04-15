@@ -21,12 +21,17 @@ public class Information extends Activity
 	private TextView nameValue, typeValue, paymentValue, limitValue, rateValue;
 	private EditText nameValueEdit, limitValueEdit, rateValueEdit;
 	private Spinner typeValueEdit, paymentValueEdit;
-	private Button edit, save;
+	private Button edit, save, goto_button;
 	private dbAdapter mDbHelper;
 	private ArrayAdapter<CharSequence> adapter, payment_adapter;
 
     public static final int SAVE_TO_PHONE = 10;
     public static final int SAVE_TO_SERVER = 11;
+    public static final int GOTO_TRUE = 12;
+    public static final int GOTO_FALSE = 13;
+    
+    
+    
     public final int SAVE_DIALOG = 1;
 	
 	@Override
@@ -37,7 +42,7 @@ public class Information extends Activity
 
 		Bundle extras = getIntent().getExtras();
 
-		pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.location");
+		pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.location.info");
 
 		nameValue = (TextView) this.findViewById(R.id.namevalue);
 		nameValueEdit = (EditText) findViewById(R.id.namevalue_edit);
@@ -74,7 +79,10 @@ public class Information extends Activity
 
 		edit = (Button) findViewById(R.id.edit_button);
 		save = (Button) findViewById(R.id.save_button);
+		goto_button = (Button) findViewById(R.id.goto_button);
 
+		
+		
 		edit.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
 				nameValue.setVisibility(View.INVISIBLE);
@@ -100,6 +108,18 @@ public class Information extends Activity
 
 				save.setEnabled(true);
 				edit.setEnabled(false);
+			}
+		});
+		
+		goto_button.setEnabled(true);
+		goto_button.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View v){
+				Intent intent = new Intent();
+		    	
+				intent.putExtra("edu.pitt.designs1635.ParkIt.Information.info", pl);
+		    	
+		    	setResult(GOTO_TRUE, intent);
+		    	finish();
 			}
 		});
 
@@ -210,9 +230,11 @@ public class Information extends Activity
     	default:
 			break;
     	}
+
+    	mDbHelper.close();
     	finish();
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {

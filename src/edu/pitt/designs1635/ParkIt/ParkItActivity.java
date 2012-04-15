@@ -3,10 +3,17 @@ package edu.pitt.designs1635.ParkIt;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,30 +26,43 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
+import com.parse.FindCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseException;
-import com.parse.FindCallback;
 
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.IDirectionsListener;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.Mode;
+import edu.pitt.designs1635.ParkIt.Directions.DrivingDirectionsFactory;
+import edu.pitt.designs1635.ParkIt.Directions.Route;
+import edu.pitt.designs1635.ParkIt.Directions.RouteOverlay;
 
-public class ParkItActivity extends MapActivity {
-    
+public class ParkItActivity extends MapActivity implements LocationListener
+{
 	private dbAdapter mDbHelper;
     private Cursor mCursor;
     private MapView mapView;
     private ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
     private Drawable drawable;
     private SharedPreferences prefs;
-
-
+    private MapController mapCtrl;
+    LocationManager mlocManager;
+    Location lastKnownLocation;
+    Double latitude, longitude;
+    private Criteria criteria;
+    private GeoPoint p;
+    private RouteOverlay m_route;
+    
+    public static final int INFORMATION_ACTIVITY = 0;
+    
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        
+
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -53,39 +73,68 @@ public class ParkItActivity extends MapActivity {
         mCursor = mDbHelper.fetchAllRows();
         startManagingCursor(mCursor);
         mCursor.moveToFirst();
-        
+
+        //ActionBar ab = getSupportActionBar();
         
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+        mapCtrl = mapView.getController();
 
+        //DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+        
+        //dir.driveTo(new GeoPoint(40443154, -79956304), new GeoPoint(40445545, -79972259), Mode.DRIVING, new MyIDirectionsListener());
+
+        
         getRemotePoints();        
+
         refreshAllPoints();
 
-        //This will attempt to grab the current location and have the map automatically center to there
-        /* Buuuuut it doesn't use the current location yet. It uses the LAST known location...
-        LocationManager mLocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        LocationListener mLocListener = new MyLocationListener();
-        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocListener);
-        Location loc = mLocManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
-        mapCtrl.animateTo(new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6)));
+        mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+
         mapCtrl.setZoom(17);
-        */
     }
-    
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        getCurrentLocation();
+        
+    }
+
     @Override
     protected void onStop()
     {
 	    super.onStop();
+        mlocManager.removeUpdates(this);
         mDbHelper.close();
     }
-    
+
     @Override
     protected void onResume()
     {
 	    super.onResume();
         mDbHelper.open();
         refreshAllPoints();
+        
+        // Check for Internet connection on startup
+        if (isNetworkAvailable()) {
+        	System.out.println("You have the internets");
+        } else {
+        	System.out.println("Why u no have internets?");
+        }
+        
+        isGPSAvailable();
+        
+        
     }
 
     @Override
@@ -100,8 +149,8 @@ public class ParkItActivity extends MapActivity {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-    @Override
+	
+	@Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
@@ -109,7 +158,8 @@ public class ParkItActivity extends MapActivity {
         return true;
     }
 
-    @Override
+	
+	@Override
     public boolean onMenuItemSelected(int featureId, MenuItem item)
     {
         switch (item.getItemId())
@@ -122,7 +172,8 @@ public class ParkItActivity extends MapActivity {
             	startActivity(new Intent(this, Add.class));
                 return true;
             case R.id.menu_refresh:
-                getRemotePoints();
+                //getRemotePoints();
+                getCurrentLocation();
                 return true;
             case R.id.menu_alarm:
                 startActivity(new Intent(this, Timer.class));
@@ -137,7 +188,7 @@ public class ParkItActivity extends MapActivity {
 
     public void getRemotePoints()
     {
-        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
+        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
         ParseQuery query = new ParseQuery("Points");
         query.findInBackground(new FindCallback() {
             public void done(List<ParseObject> objects, ParseException e) {
@@ -172,25 +223,28 @@ public class ParkItActivity extends MapActivity {
         gItemizedOverlay.hideAllBalloons();
         lItemizedOverlay.hideAllBalloons();
         mItemizedOverlay.hideAllBalloons();
-        
+
+
+        gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+        mItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+
         
         OverlayItem overlayItem;
         GeoPoint point;
 
-        MapController mapCtrl = mapView.getController();
-
         //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
         if(mCursor.getCount() > 0)
         {
-            do{                
+            do{
                 ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
-                
+
                 pl.setName(mCursor.getString(4));
                 pl.setRate(mCursor.getFloat(8));
                 pl.setType(mCursor.getInt(3));
                 pl.setPayment(mCursor.getInt(5));
                 pl.setLimit(mCursor.getInt(6));
-                
+
                 if(mCursor.getInt(3) == 0)
                     mItemizedOverlay.addOverlay(pl);
                 else if(mCursor.getInt(3) == 1)
@@ -200,13 +254,181 @@ public class ParkItActivity extends MapActivity {
                 mCursor.moveToNext();
             }while(!mCursor.isAfterLast());
         }
-        
-            
+
         List<Overlay> points = mapView.getOverlays();
-        points.clear();
+        //points.clear();
         points.add(gItemizedOverlay);
         points.add(lItemizedOverlay);
         points.add(mItemizedOverlay);
     }
+
+    public void onLocationChanged(Location location) {
+        //updateLocation(location);
+    }
+
+    private void updateLocation(Location location)
+    {
+        if (location != null) {
+            Double lat = location.getLatitude()*1E6;
+            Double lng = location.getLongitude()*1E6;
+            p = new GeoPoint(lat.intValue(), lng.intValue());
+            mapCtrl.animateTo(p);
+        }
+        else
+        {
+
+        }
+
+    }
+
+    private void getCurrentLocation()
+    {
+        List<String> providers = mlocManager.getProviders(true);
+        /* loop over the array backwards, and if we got an accurate location,
+         * the break out of the loop
+         * Ref: stackoverflow.com/questions/3635917/#3651855 */
+        Location location = null;
+        int i = providers.size();
+        for( i = providers.size()-1; i>=0; i--)
+        {
+            //if( i == 0 ) break;
+            location = mlocManager.getLastKnownLocation( providers.get(i) );
+            if(location != null )
+               break;
+        }
+
+        updateLocation(location);
+
+        // Start listening for location changes
+        /*
+        mlocManager.requestLocationUpdates(providers.get(i),
+                                               60000, // 1min
+                                               1000,  // 1km
+                                               this);
+                                               */
+        
+    }
+
+    public void onProviderDisabled(String provider) {
+        // required for interface, not used
+    }
+
+    public void onProviderEnabled(String provider) {
+        // required for interface, not used
+    }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // required for interface, not used
+    }
     
+    private class MyIDirectionsListener implements IDirectionsListener
+    {
+
+		@Override
+		public void onDirectionsAvailable(Route route, Mode mode) {
+			
+			List<Overlay> points = mapView.getOverlays();
+			
+			if(m_route != null)
+				points.remove(m_route);
+			
+			m_route = new RouteOverlay(route.getGeoPoints());
+			//RouteSegmentOverlay rso = new RouteSegmentOverlay(route.getGeoPoints().get(0), route.getGeoPoints().get(route.getGeoPoints().size() - 2));
+			points.add(m_route);
+			
+			//Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
+			//mapView.invalidate();
+			
+		}
+
+		@Override
+		public void onDirectionsNotAvailable() {
+			Log.i("MyIDirectionsListener", "No Route!!!!!!");
+			//TODO provide a warning to the user
+		}
+    	
+    }
+    
+    private class MyBalloonTouchListener implements BalloonTouchListener
+    {
+
+		@Override
+		public void onBalloonTap(ParkingLocation pl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onNextClick(ParkingLocation pl) {
+			
+			Intent info = new Intent(ParkItActivity.this, Information.class);
+			
+			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
+            
+			startActivityForResult(info, INFORMATION_ACTIVITY);
+		}
+    	
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
+		Log.i("ParkItActivity.onActivityResult", "Start");
+		if(data == null)
+			return;
+		
+		switch (requestCode)
+		{
+			case INFORMATION_ACTIVITY:
+				Bundle extras = data.getExtras();
+				Log.i("ParkItActivity.onActivityResult", "in INFORMATION_ACTIVITY");
+				
+				switch(resultCode)
+				{
+				case Information.GOTO_TRUE:
+
+					Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+					
+					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
+					
+					DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+			        dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
+			        
+					break;
+					
+				case Information.GOTO_FALSE:
+					Log.i("ParkItActivity.onActivityResult", "in GOTO_FALSE");
+					break;
+				default:
+
+					Log.i("ParkItActivity.onActivityResult", "in default");
+					break;
+				}
+		
+			break;
+		default:
+			break;
+		}
+	}
+    
+    private boolean isNetworkAvailable() {
+    	ConnectivityManager connectivityManager = 
+    			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+    	return activeNetworkInfo != null;
+    }
+    
+    private boolean isGPSAvailable() {
+    	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+    		System.out.println("GPS is enabled");
+    		return true;
+    		
+    	} else {
+    		System.out.println("GPS is not enabled");
+    		return false;
+    	}
+
+    }
+
 }
