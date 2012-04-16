@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -176,7 +177,8 @@ public class ParkItActivity extends MapActivity implements LocationListener
                 getCurrentLocation();
                 return true;
             case R.id.menu_alarm:
-                startActivity(new Intent(this, Timer.class));
+                //startActivity(new Intent(this, Timer.class));
+            	isGPSAvailable();
                 return true;
             case R.id.menu_settings:
                 mDbHelper.abandonShip();
@@ -422,10 +424,13 @@ public class ParkItActivity extends MapActivity implements LocationListener
     	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
     		System.out.println("GPS is enabled");
+    		Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();
+    		
     		return true;
     		
     	} else {
     		System.out.println("GPS is not enabled");
+    		Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
     		return false;
     	}
 
