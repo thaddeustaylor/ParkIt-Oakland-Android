@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#dddddd">
     
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -12,11 +13,7 @@
             android:id="@+id/nv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:text="@string/name" />    
         <EditText 
             android:id="@+id/nv_add"
@@ -37,11 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/nv"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:text="@string/parking_type" />
         <Spinner android:id="@+id/tv_add"
             android:layout_width="fill_parent"
@@ -55,11 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:text="@string/payment_type" />
         <Spinner android:id="@+id/pt_add"
             android:layout_width="fill_parent"
@@ -73,11 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/ptv"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:text="@string/time_limit" />
         <EditText
             android:id="@+id/lv_add"
@@ -99,11 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/lv"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:text="@string/rate" />
         <EditText
             android:id="@+id/rv_add"
@@ -124,11 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/lv"
-            android:textSize="23dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            style="@style/InfoTitle"
             android:layout_toRightOf="@id/rv_add"
             android:text="per hour" />
 

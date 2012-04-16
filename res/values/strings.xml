@@ -3,18 +3,26 @@
     <string name="app_name">ParkIt</string>
     <string name="menu_add">Add</string>
     <string name="menu_alarm">Alarm</string>
-    <string name="menu_refresh">Sync With Internet</string>
+    <string name="menu_refresh">Sync Points</string>
     <string name="menu_settings">Settings</string>
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
     <string name="info_goto">Go to...</string>
     <string name="info_save">Save</string>
     <string name="info_next">Next</string>
+
     <string name="name">Name: </string>
+    <string name="info_rate">Rate</string>
+    <string name="info_hours">Hours</string>
+    <string name="info_hours_of">Hours of Operation</string>
+    <string name="info_limit_end">hour(s) limit</string>
+    <string name="rate">$</string>
+    <string name="junk">M-Sa:\t9-5\n\n\n\nSu: 9-10</string>
     <string name="parking_type">Parking Type: </string>
     <string name="payment_type">Payment Type: </string>
-    <string name="rate">Rate:  $</string>
     <string name="time_limit">Time Limit: </string>
+    
+
     <string name="edit_local">Save only to phone</string>
     <string name="edit_remote">Save to server</string>
     <string name="timer1">Time on meter:</string>

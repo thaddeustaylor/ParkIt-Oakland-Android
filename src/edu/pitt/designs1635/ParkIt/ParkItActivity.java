@@ -3,7 +3,9 @@ package edu.pitt.designs1635.ParkIt;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,14 +17,18 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -41,290 +47,310 @@ import edu.pitt.designs1635.ParkIt.Directions.DrivingDirectionsFactory;
 import edu.pitt.designs1635.ParkIt.Directions.Route;
 import edu.pitt.designs1635.ParkIt.Directions.RouteOverlay;
 
-public class ParkItActivity extends MapActivity implements LocationListener
+public class ParkItActivity extends SherlockMapActivity implements LocationListener
 {
 	private dbAdapter mDbHelper;
-    private Cursor mCursor;
-    private MapView mapView;
-    private ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
-    private Drawable drawable;
-    private SharedPreferences prefs;
-    private MapController mapCtrl;
-    LocationManager mlocManager;
-    Location lastKnownLocation;
-    Double latitude, longitude;
-    private Criteria criteria;
-    private GeoPoint p;
-    private RouteOverlay m_route;
-    
-    public static final int INFORMATION_ACTIVITY = 0;
-    
-    
-    
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	private Cursor mCursor;
+	private MapView mapView;
+	private ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
+	private Drawable drawable;
+	private SharedPreferences prefs;
+	private MapController mapCtrl;
+	LocationManager mlocManager;
+	Location lastKnownLocation;
+	Double latitude, longitude;
+	ActionMode mMode;
+	private Criteria criteria;
+	private GeoPoint p;
+	private RouteOverlay m_route;
 
-    	super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+	public static final int INFORMATION_ACTIVITY = 0;
 
-        prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        mDbHelper = new dbAdapter(this);
-        mDbHelper.open();
-        mCursor = mDbHelper.fetchAllRows();
-        startManagingCursor(mCursor);
-        mCursor.moveToFirst();
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.main);
 
-        //ActionBar ab = getSupportActionBar();
+		setSupportProgressBarIndeterminateVisibility(false);
+
+		prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
+
+		mDbHelper = new dbAdapter(this);
+		mDbHelper.open();
+		mCursor = mDbHelper.fetchAllRows();
+		startManagingCursor(mCursor);
+		mCursor.moveToFirst();
+
+
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		mapCtrl = mapView.getController();
+
+		getRemotePoints();
+
+		criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		criteria.setAltitudeRequired(false);
+		criteria.setBearingRequired(false);
+		criteria.setCostAllowed(true);
+		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
+
+		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+
+		mapCtrl.setZoom(17);
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		getCurrentLocation();
+	}
+
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		mlocManager.removeUpdates(this);
+		if(mDbHelper != null)
+		mDbHelper.close();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		mDbHelper.open();
+		refreshAllPoints();
+		
+		// Check for Internet connection on startup
+        if (! isNetworkAvailable()) {
+        	showAlertMessageNoInternets();
+        } 
         
-        mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-        mapCtrl = mapView.getController();
-
-        //DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-        
-        //dir.driveTo(new GeoPoint(40443154, -79956304), new GeoPoint(40445545, -79972259), Mode.DRIVING, new MyIDirectionsListener());
-
-        
-        getRemotePoints();        
-
-        refreshAllPoints();
-
-        criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-
-        mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
-
-        mapCtrl.setZoom(17);
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        getCurrentLocation();
-        
-    }
-
-    @Override
-    protected void onStop()
-    {
-	    super.onStop();
-        mlocManager.removeUpdates(this);
-        mDbHelper.close();
-    }
-
-    @Override
-    protected void onResume()
-    {
-	    super.onResume();
-        mDbHelper.open();
-        refreshAllPoints();
-        
-        // Check for Internet connection on startup
-        if (isNetworkAvailable()) {
-        	System.out.println("You have the internets");
-        } else {
-        	System.out.println("Why u no have internets?");
+        // Check is GPS is on.  Show alert if off.
+        if (! isGPSAvailable()) {
+        	showAlertMessageNoGPS();
         }
-        
-        isGPSAvailable();
-        
-        
-    }
+	}
 
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        mDbHelper.close();
-    }
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		mlocManager.removeUpdates(this);
+		if(mDbHelper != null)
+			mDbHelper.close();
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
+	}
 
-	
 	@Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_add:
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
-                editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
-                editor.commit();
-            	startActivity(new Intent(this, Add.class));
-                return true;
-            case R.id.menu_refresh:
-                //getRemotePoints();
-                getCurrentLocation();
-                return true;
-            case R.id.menu_alarm:
-                //startActivity(new Intent(this, Timer.class));
-            	isGPSAvailable();
-                return true;
-            case R.id.menu_settings:
-                mDbHelper.abandonShip();
-                refreshAllPoints();
-                return true;
-        }
-        return super.onMenuItemSelected(featureId, item);
-    }
+	public boolean onMenuItemSelected(int featureId, MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.menu_add:
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
+				editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
+				editor.commit();
+				mDbHelper.close();
+				startActivity(new Intent(this, Add.class));
+				return true;
+			case R.id.menu_refresh:
+				getRemotePoints();
+				getCurrentLocation();
+				return true;
+			case R.id.menu_alarm:
+				startActivity(new Intent(this, Timer.class));
+				return true;
+			case R.id.menu_settings:
+				mDbHelper.abandonShip();
+				refreshAllPoints();
+				return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
 
-    public void getRemotePoints()
-    {
-        Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
-        ParseQuery query = new ParseQuery("Points");
-        query.findInBackground(new FindCallback() {
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    pointsProcessing(objects);
-                }
-            }
-        });
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+			List<Overlay> points = mapView.getOverlays();
+			
+			if(m_route != null)
+				points.remove(m_route);
+			mapView.invalidate();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);	
+		}
+	}
 
-    public void pointsProcessing(List<ParseObject> objs)
-    {
-        for(int i=0; i < objs.size(); i++)
-        {
-            mDbHelper.addPoint(objs.get(i));
-        }
-        refreshAllPoints();
-    }
+	public void getRemotePoints()
+	{
+		setSupportProgressBarIndeterminateVisibility(true);
+		ActionBar ab = getSupportActionBar();
+		ab.setTitle("Refreshing Points...");
 
-    public void refreshAllPoints()
-    {
-        mCursor = mDbHelper.fetchAllRows();
-        startManagingCursor(mCursor);
-        mCursor.moveToFirst();
-        drawable = getResources().getDrawable(R.drawable.g_icon);
-        gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
-        drawable = getResources().getDrawable(R.drawable.l_icon);
-        lItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
-        drawable = getResources().getDrawable(R.drawable.m_icon);
-        mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
+		ParseQuery query = new ParseQuery("Points");
+		query.findInBackground(new FindCallback() {
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null) {
+					pointsProcessing(objects);
+				}
+			}
+		});
 
-        gItemizedOverlay.hideAllBalloons();
-        lItemizedOverlay.hideAllBalloons();
-        mItemizedOverlay.hideAllBalloons();
+		mapView.invalidate();
+		ab.setTitle("ParkIt");
+		setSupportProgressBarIndeterminateVisibility(false);
+	}
+
+	public void pointsProcessing(List<ParseObject> objs)
+	{
+		for(int i=0; i < objs.size(); i++)
+		{
+			try{
+				mDbHelper.addPoint(objs.get(i));
+			}catch(Exception e){}
+		}
+		refreshAllPoints();
+	}
+
+	public void refreshAllPoints()
+	{
+		mCursor = mDbHelper.fetchAllRows();
+		startManagingCursor(mCursor);
+		mCursor.moveToFirst();
+		drawable = getResources().getDrawable(R.drawable.g_icon);
+		gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		drawable = getResources().getDrawable(R.drawable.l_icon);
+		lItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		drawable = getResources().getDrawable(R.drawable.m_icon);
+		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+
+		gItemizedOverlay.hideAllBalloons();
+		lItemizedOverlay.hideAllBalloons();
+		mItemizedOverlay.hideAllBalloons();
+
+		gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+		lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+		mItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
 
 
-        gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
-        lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
-        mItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
+		OverlayItem overlayItem;
+		GeoPoint point;
 
-        
-        OverlayItem overlayItem;
-        GeoPoint point;
+		//Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
+		if(mCursor.getCount() > 0)
+		{
+			do{
+				ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
 
-        //Will take the cursor (contains every record in the db) and iterate through adding each point to the appropriate overlay
-        if(mCursor.getCount() > 0)
-        {
-            do{
-                ParkingLocation pl = new ParkingLocation(mCursor.getInt(1), mCursor.getInt(2));
+				pl.setName(mCursor.getString(4));
+				pl.setRate(mCursor.getFloat(8));
+				pl.setType(mCursor.getInt(3));
+				pl.setPayment(mCursor.getInt(5));
+				pl.setLimit(mCursor.getInt(6));
 
-                pl.setName(mCursor.getString(4));
-                pl.setRate(mCursor.getFloat(8));
-                pl.setType(mCursor.getInt(3));
-                pl.setPayment(mCursor.getInt(5));
-                pl.setLimit(mCursor.getInt(6));
+				if(mCursor.getInt(3) == 0)
+					mItemizedOverlay.addOverlay(pl);
+				else if(mCursor.getInt(3) == 1)
+					lItemizedOverlay.addOverlay(pl);
+				else
+					gItemizedOverlay.addOverlay(pl);
+				mCursor.moveToNext();
+			}while(!mCursor.isAfterLast());
+		}
 
-                if(mCursor.getInt(3) == 0)
-                    mItemizedOverlay.addOverlay(pl);
-                else if(mCursor.getInt(3) == 1)
-                    lItemizedOverlay.addOverlay(pl);
-                else
-                    gItemizedOverlay.addOverlay(pl);
-                mCursor.moveToNext();
-            }while(!mCursor.isAfterLast());
-        }
 
-        List<Overlay> points = mapView.getOverlays();
-        //points.clear();
-        points.add(gItemizedOverlay);
-        points.add(lItemizedOverlay);
-        points.add(mItemizedOverlay);
-    }
+		List<Overlay> points = mapView.getOverlays();
+		points.clear();
+		points.add(gItemizedOverlay);
+		points.add(lItemizedOverlay);
+		points.add(mItemizedOverlay);
+	}
 
-    public void onLocationChanged(Location location) {
-        //updateLocation(location);
-    }
+	public void onLocationChanged(Location location) {
+		//updateLocation(location);
+	}
 
-    private void updateLocation(Location location)
-    {
-        if (location != null) {
-            Double lat = location.getLatitude()*1E6;
-            Double lng = location.getLongitude()*1E6;
-            p = new GeoPoint(lat.intValue(), lng.intValue());
-            mapCtrl.animateTo(p);
-        }
-        else
-        {
+	private void updateLocation(Location location)
+	{
+		if (location != null) {
+			Double lat = location.getLatitude()*1E6;
+			Double lng = location.getLongitude()*1E6;
+			p = new GeoPoint(lat.intValue(), lng.intValue());
+			mapCtrl.animateTo(p);
+		}
+		else
+		{
 
-        }
+		}
 
-    }
+	}
 
-    private void getCurrentLocation()
-    {
-        List<String> providers = mlocManager.getProviders(true);
-        /* loop over the array backwards, and if we got an accurate location,
-         * the break out of the loop
-         * Ref: stackoverflow.com/questions/3635917/#3651855 */
-        Location location = null;
-        int i = providers.size();
-        for( i = providers.size()-1; i>=0; i--)
-        {
-            //if( i == 0 ) break;
-            location = mlocManager.getLastKnownLocation( providers.get(i) );
-            if(location != null )
-               break;
-        }
+	private void getCurrentLocation()
+	{
+		List<String> providers = mlocManager.getProviders(true);
+		/* loop over the array backwards, and if we got an accurate location,
+		 * the break out of the loop
+		 * Ref: stackoverflow.com/questions/3635917/#3651855 */
+		Location location = null;
+		int i = providers.size();
+		for( i = providers.size()-1; i>=0; i--)
+		{
+			//if( i == 0 ) break;
+			location = mlocManager.getLastKnownLocation( providers.get(i) );
+			if(location != null )
+			   break;
+		}
 
-        updateLocation(location);
+		updateLocation(location);
 
-        // Start listening for location changes
-        /*
-        mlocManager.requestLocationUpdates(providers.get(i),
-                                               60000, // 1min
-                                               1000,  // 1km
-                                               this);
-                                               */
-        
-    }
+		// Start listening for location changes
+		/*
+		mlocManager.requestLocationUpdates(providers.get(i),
+											   60000, // 1min
+											   1000,  // 1km
+											   this);
+											   */
+	}
 
-    public void onProviderDisabled(String provider) {
-        // required for interface, not used
-    }
+	public void onProviderDisabled(String provider) {
+		// required for interface, not used
+	}
 
-    public void onProviderEnabled(String provider) {
-        // required for interface, not used
-    }
+	public void onProviderEnabled(String provider) {
+		// required for interface, not used
+	}
 
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // required for interface, not used
-    }
-    
-    private class MyIDirectionsListener implements IDirectionsListener
-    {
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// required for interface, not used
+	}
+
+	private class MyIDirectionsListener implements IDirectionsListener
+	{
 
 		@Override
 		public void onDirectionsAvailable(Route route, Mode mode) {
@@ -337,9 +363,11 @@ public class ParkItActivity extends MapActivity implements LocationListener
 			m_route = new RouteOverlay(route.getGeoPoints());
 			//RouteSegmentOverlay rso = new RouteSegmentOverlay(route.getGeoPoints().get(0), route.getGeoPoints().get(route.getGeoPoints().size() - 2));
 			points.add(m_route);
+
+			mMode = startActionMode(new RouteActionMode());
 			
 			//Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
-			//mapView.invalidate();
+			mapView.invalidate();
 			
 		}
 
@@ -348,31 +376,33 @@ public class ParkItActivity extends MapActivity implements LocationListener
 			Log.i("MyIDirectionsListener", "No Route!!!!!!");
 			//TODO provide a warning to the user
 		}
-    	
-    }
-    
-    private class MyBalloonTouchListener implements BalloonTouchListener
-    {
+		
+	}
+
+	private class MyBalloonTouchListener implements BalloonTouchListener
+	{
 
 		@Override
 		public void onBalloonTap(ParkingLocation pl) {
-			// TODO Auto-generated method stub
+			Intent info = new Intent(ParkItActivity.this, Information.class);
+			
+			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
+			mDbHelper.close();
+			startActivityForResult(info, INFORMATION_ACTIVITY);
 			
 		}
 
 		@Override
 		public void onNextClick(ParkingLocation pl) {
-			
-			Intent info = new Intent(ParkItActivity.this, Information.class);
-			
-			info.putExtra("edu.pitt.designs1635.ParkIt.location.info", pl);
-            
-			startActivityForResult(info, INFORMATION_ACTIVITY);
+			ActionBar ab = getSupportActionBar();
+			ab.setTitle("Loading Directions");
+			setSupportProgressBarIndeterminateVisibility(true);
+			getDirections(pl.getGeoPoint());
 		}
-    	
-    }
-    
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+		
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 
 		Log.i("ParkItActivity.onActivityResult", "Start");
@@ -389,13 +419,14 @@ public class ParkItActivity extends MapActivity implements LocationListener
 				{
 				case Information.GOTO_TRUE:
 
-					Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+					//Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
 					
 					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
+					getDirections(pl.getGeoPoint());
 					
-					DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-			        dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
-			        
+					//DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+					//dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
+					
 					break;
 					
 				case Information.GOTO_FALSE:
@@ -412,8 +443,57 @@ public class ParkItActivity extends MapActivity implements LocationListener
 			break;
 		}
 	}
-    
-    private boolean isNetworkAvailable() {
+
+	private void getDirections(GeoPoint destination)
+	{
+		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
+		dir.driveTo(p, destination, Mode.DRIVING, new MyIDirectionsListener());
+	}
+
+	private final class RouteActionMode implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            //Used to put dark icons on light action bar           
+            menu.add("Clear Route")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        	setSupportProgressBarIndeterminateVisibility(false);
+            ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+			List<Overlay> points = mapView.getOverlays();
+			
+			if(m_route != null)
+				points.remove(m_route);
+			mapView.invalidate();
+
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+        	setSupportProgressBarIndeterminateVisibility(false);
+        	ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+			List<Overlay> points = mapView.getOverlays();
+			
+			if(m_route != null)
+				points.remove(m_route);
+			mapView.invalidate();
+        }
+    }
+	
+	private boolean isNetworkAvailable() {
     	ConnectivityManager connectivityManager = 
     			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -423,17 +503,51 @@ public class ParkItActivity extends MapActivity implements LocationListener
     private boolean isGPSAvailable() {
     	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-    		System.out.println("GPS is enabled");
-    		Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();
-    		
-    		return true;
-    		
+    		//System.out.println("GPS is enabled");
+    		//Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();	
+    		return true;	
     	} else {
-    		System.out.println("GPS is not enabled");
-    		Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
+    		//System.out.println("GPS is not enabled");
+    		//Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
     		return false;
     	}
 
     }
-
+    
+    private void showAlertMessageNoGPS() {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
+    		.setCancelable(false)
+    		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    			}
+    		})
+    		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				dialog.cancel();
+    			}
+    		});
+    	final AlertDialog alert = builder.create();
+    	alert.show();	
+    }
+    
+    private void showAlertMessageNoInternets() {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
+    		.setCancelable(false)
+    		.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				dialog.cancel();
+    			}
+    		})
+    		.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				finish();
+    			}
+    		});
+    	final AlertDialog alert = builder.create();
+    	alert.show();	
+    }
 }
+
