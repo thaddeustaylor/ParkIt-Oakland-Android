@@ -3,42 +3,41 @@ package edu.pitt.designs1635.ParkIt;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.content.Context;
 import android.location.Criteria;
-
-import android.location.LocationManager;
-import android.location.LocationListener;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
+import com.parse.FindCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseException;
-import com.parse.FindCallback;
-
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import com.actionbarsherlock.app.SherlockMapActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Window;
 
 import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
@@ -126,6 +125,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		super.onResume();
 		mDbHelper.open();
 		refreshAllPoints();
+		
+		// Check for Internet connection on startup
+        if (! isNetworkAvailable()) {
+        	showAlertMessageNoInternets();
+        } 
+        
+        // Check is GPS is on.  Show alert if off.
+        if (! isGPSAvailable()) {
+        	showAlertMessageNoGPS();
+        }
 	}
 
 	@Override
@@ -482,4 +491,62 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			mapView.invalidate();
         }
     }
+	
+	private boolean isNetworkAvailable() {
+    	ConnectivityManager connectivityManager = 
+    			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+    	return activeNetworkInfo != null;
+    }
+    
+    private boolean isGPSAvailable() {
+    	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+    		//System.out.println("GPS is enabled");
+    		//Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();	
+    		return true;	
+    	} else {
+    		//System.out.println("GPS is not enabled");
+    		//Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
+    		return false;
+    	}
+
+    }
+    
+    private void showAlertMessageNoGPS() {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
+    		.setCancelable(false)
+    		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    			}
+    		})
+    		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				dialog.cancel();
+    			}
+    		});
+    	final AlertDialog alert = builder.create();
+    	alert.show();	
+    }
+    
+    private void showAlertMessageNoInternets() {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
+    		.setCancelable(false)
+    		.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				dialog.cancel();
+    			}
+    		})
+    		.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
+    			public void onClick(final DialogInterface dialog, final int id) {
+    				finish();
+    			}
+    		});
+    	final AlertDialog alert = builder.create();
+    	alert.show();	
+    }
 }
+
