@@ -298,7 +298,6 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		{
 
 		}
-
 	}
 
 	private void getCurrentLocation()
