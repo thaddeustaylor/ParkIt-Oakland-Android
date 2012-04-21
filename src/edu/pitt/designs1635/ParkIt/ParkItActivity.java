@@ -54,6 +54,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	private Cursor mCursor;
 	private MapView mapView;
 	private ParkingLocationItemizedOverlay gItemizedOverlay, lItemizedOverlay, mItemizedOverlay;
+	private CurrentLocationOverlay cLocationOverlay;
 	private Drawable drawable;
 	private SharedPreferences prefs;
 	private MapController mapCtrl;
@@ -78,6 +79,22 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
 
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		mapCtrl = mapView.getController();
+
+		criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		criteria.setAltitudeRequired(false);
+		criteria.setBearingRequired(false);
+		criteria.setCostAllowed(true);
+		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
+
+		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+
+		updateLocation(getCurrentLocation());
+
 		if(!prefs.getBoolean("tutorial", false))
 		{
 			promptTutorial();
@@ -89,22 +106,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
 
-
-		mapView = (MapView) findViewById(R.id.mapview);
-		mapView.setBuiltInZoomControls(true);
-		mapCtrl = mapView.getController();
-
 		getRemotePoints();
-
-		criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		criteria.setAltitudeRequired(false);
-		criteria.setBearingRequired(false);
-		criteria.setCostAllowed(true);
-		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-
-		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
 
 		mapCtrl.setZoom(17);
 	}
@@ -133,13 +135,6 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			}
 		});
 		ed.show();
-	}
-
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		getCurrentLocation();
 	}
 
 	@Override
@@ -207,14 +202,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
-				getCurrentLocation();
+				updateLocation(getCurrentLocation());
 				return true;
 			case R.id.menu_alarm:
 				startActivity(new Intent(this, Timer.class));
 				return true;
 			case R.id.menu_settings:
-				mDbHelper.abandonShip();
-				refreshAllPoints();
+				//mDbHelper.abandonShip();
+				//refreshAllPoints();
 				return true;
 		}
 		return super.onMenuItemSelected(featureId, item);
@@ -281,6 +276,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		drawable = getResources().getDrawable(R.drawable.m_icon);
 		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
 
+		cLocationOverlay = new CurrentLocationOverlay(getCurrentLocation());
+
 		gItemizedOverlay.hideAllBalloons();
 		lItemizedOverlay.hideAllBalloons();
 		mItemizedOverlay.hideAllBalloons();
@@ -321,32 +318,21 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		points.add(gItemizedOverlay);
 		points.add(lItemizedOverlay);
 		points.add(mItemizedOverlay);
+		points.add(cLocationOverlay);
 	}
 
 	public void onLocationChanged(Location location) {
 		//updateLocation(location);
 	}
 
-	private void updateLocation(Location location)
+	private void updateLocation(GeoPoint p)
 	{
-		if (location != null) {
-			Double lat = location.getLatitude()*1E6;
-			Double lng = location.getLongitude()*1E6;
-			p = new GeoPoint(lat.intValue(), lng.intValue());
-			mapCtrl.animateTo(p);
-		}
-		else
-		{
-
-		}
+		mapCtrl.animateTo(p);
 	}
 
-	private void getCurrentLocation()
+	private GeoPoint getCurrentLocation()
 	{
 		List<String> providers = mlocManager.getProviders(true);
-		/* loop over the array backwards, and if we got an accurate location,
-		 * the break out of the loop
-		 * Ref: stackoverflow.com/questions/3635917/#3651855 */
 		Location location = null;
 		int i = providers.size();
 		for( i = providers.size()-1; i>=0; i--)
@@ -356,16 +342,13 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			if(location != null )
 			   break;
 		}
+		GeoPoint p = null;
 
-		updateLocation(location);
+		Double lat = location.getLatitude()*1E6;
+		Double lng = location.getLongitude()*1E6;
+		p = new GeoPoint(lat.intValue(), lng.intValue());
 
-		// Start listening for location changes
-		/*
-		mlocManager.requestLocationUpdates(providers.get(i),
-											   60000, // 1min
-											   1000,  // 1km
-											   this);
-											   */
+		return p;
 	}
 
 	public void onProviderDisabled(String provider) {

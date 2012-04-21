@@ -38,6 +38,9 @@ public class Information extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.info);
 
+		mDbHelper = new dbAdapter(this);
+		mDbHelper.open();
+
 		Bundle extras = getIntent().getExtras();
 
 		pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.location.info");
@@ -122,9 +125,6 @@ public class Information extends Activity
 			}
 		});
 
-		mDbHelper = new dbAdapter(this);
-		mDbHelper.open();
-
 		save.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v)
 			{
@@ -151,6 +151,7 @@ public class Information extends Activity
 	protected void onResume()
 	{
 		super.onResume();
+		mDbHelper = new dbAdapter(this);
 		mDbHelper.open();
 	}
 
