@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button android:id="@+id/skip_button"
+    	android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="Skip Tutorial"
+		android:onClick="skip"
+		android:layout_centerHorizontal="true"/>
+
+    <ImageView
+    	android:id="@+id/tut_image"
+    	android:src="@drawable/tut_0"
+    	android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:adjustViewBounds="true"
+		android:gravity="center"
+		android:layout_below="@id/skip_button"/>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/button_bar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		style="@android:style/ButtonBar">
+		
+		<Button android:id="@+id/back_button"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent"
+			android:text="Back"
+			android:layout_weight="1"
+			android:paddingLeft="20px"
+			android:paddingRight="20px"
+			/>
+
+		<Button android:id="@+id/next_button"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent"
+			android:text="Next"
+			android:layout_weight="1"
+			android:paddingLeft="20px"
+			android:paddingRight="20px"/>
+	</LinearLayout>
+
+</RelativeLayout>

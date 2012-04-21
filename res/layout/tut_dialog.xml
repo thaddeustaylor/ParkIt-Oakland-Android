@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:scrollbars="vertical" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<TextView 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:padding="10dp"
+		android:textSize="16dp"
+		android:text=
+		"It looks like this is the first time using ParkIt!
+		\n\nWould you like to go through a guide to see how the app works?" />
+
+</LinearLayout>

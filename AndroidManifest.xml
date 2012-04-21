@@ -35,7 +35,9 @@
         <activity android:name="Add"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" />
         <activity android:name="AddPointMapActivity"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" />        
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" />   
+        <activity android:name="Tutorial"
+            android:theme="@style/Theme.Sherlock.NoActionBar" />       
     </application>
 
 </manifest>

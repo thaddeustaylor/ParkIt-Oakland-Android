@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -77,6 +78,11 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
 
+		if(!prefs.getBoolean("tutorial", false))
+		{
+			promptTutorial();
+		}
+
 		mDbHelper = new dbAdapter(this);
 		mDbHelper.open();
 		mCursor = mDbHelper.fetchAllRows();
@@ -101,6 +107,32 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
 
 		mapCtrl.setZoom(17);
+	}
+
+	public void promptTutorial()
+	{
+		AlertDialog.Builder ed = new AlertDialog.Builder(this);
+		ed.setIcon(R.drawable.ic_launcher);
+		ed.setTitle("First Time User");
+		ed.setView(LayoutInflater.from(this).inflate(R.layout.tut_dialog,null));
+
+		SharedPreferences.Editor editor = prefs.edit();
+			editor.putBoolean("tutorial", true);
+			editor.commit();
+
+		ed.setPositiveButton("Yes",
+		new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+			startActivity(new Intent(getApplicationContext(), Tutorial.class));
+			}
+		});
+
+		ed.setNegativeButton("No",
+		new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+			}
+		});
+		ed.show();
 	}
 
 	@Override
