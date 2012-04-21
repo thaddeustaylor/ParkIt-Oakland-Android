@@ -157,16 +157,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		super.onResume();
 		mDbHelper.open();
 		refreshAllPoints();
-		
-		// Check for Internet connection on startup
-        if (! isNetworkAvailable()) {
-        	showAlertMessageNoInternets();
-        } 
         
         // Check is GPS is on.  Show alert if off.
         if (! isGPSAvailable()) {
         	showAlertMessageNoGPS();
         }
+        
+        // Check for Internet connection on startup.
+        if (! isNetworkAvailable()) {
+        	showAlertMessageNoInternets();
+        } 
 	}
 
 	@Override

@@ -91,7 +91,7 @@
 				android:paddingLeft="15dp"
 				android:paddingRight="5dp"
 				android:visibility="invisible"
-				android:inputType="number"
+				android:inputType="numberDecimal"
 				android:singleLine="true" 
 				android:layout_below="@id/line2" 
 				android:layout_toRightOf="@id/rv_start"/>
@@ -152,7 +152,7 @@
 				android:paddingLeft="5dp"
 				android:paddingRight="5dp"
 				android:visibility="invisible"
-				android:inputType="number"
+				android:inputType="numberDecimal"
 				android:singleLine="true" 
 				android:layout_below="@id/line3" />
 			<TextView

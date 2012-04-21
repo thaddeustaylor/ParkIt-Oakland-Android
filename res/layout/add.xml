@@ -76,7 +76,7 @@
             android:paddingRight="5dp"
             android:imeOptions="actionNext"
             android:singleLine="true"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:layout_below="@id/ptv" />
         
         <TextView
@@ -97,7 +97,7 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:imeOptions="actionDone"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:singleLine="true"
             android:layout_toRightOf="@id/rv" />
       <TextView
