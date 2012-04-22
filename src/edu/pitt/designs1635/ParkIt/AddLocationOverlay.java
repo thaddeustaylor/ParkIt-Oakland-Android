@@ -19,27 +19,27 @@ public class AddLocationOverlay extends Overlay {
 		m_point = p;
 	}
 
-    @Override
-    public boolean draw(Canvas canvas, 
-    					MapView mapView, 
-    					boolean shadow, 
-    					long when) 
-    {
-        super.draw(canvas, mapView, shadow);                   
+	@Override
+	public boolean draw(Canvas canvas, 
+						MapView mapView, 
+						boolean shadow, 
+						long when) 
+	{
+		super.draw(canvas, mapView, shadow);                   
 
-        //---translate the GeoPoint to screen pixels---
-        Point screenPts = new Point();
-        mapView.getProjection().toPixels(m_point, screenPts);
+		//---translate the GeoPoint to screen pixels---
+		Point screenPts = new Point();
+		mapView.getProjection().toPixels(m_point, screenPts);
 
-        //---add the marker---
-        Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.g_icon);            
-        canvas.drawBitmap(bmp, screenPts.x, screenPts.y-50, null);         
-        return true;
-    }
-    
-    public GeoPoint getGeoPoint()
-    {
-    	return m_point;
-    }
+		//---add the marker---
+		Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.t_icon);            
+		canvas.drawBitmap(bmp, screenPts.x, screenPts.y-50, null);         
+		return true;
+	}
+	
+	public GeoPoint getGeoPoint()
+	{
+		return m_point;
+	}
 
 }
