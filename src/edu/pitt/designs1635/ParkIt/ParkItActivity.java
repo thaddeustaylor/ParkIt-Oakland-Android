@@ -176,7 +176,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -460,8 +460,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	private void getDirections(GeoPoint destination)
 	{
+		
 		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-		dir.driveTo(p, destination, Mode.DRIVING, new MyIDirectionsListener());
+		dir.driveTo(getCurrentLocation(), destination, Mode.DRIVING, new MyIDirectionsListener());
 	}
 
 	private final class RouteActionMode implements ActionMode.Callback {
