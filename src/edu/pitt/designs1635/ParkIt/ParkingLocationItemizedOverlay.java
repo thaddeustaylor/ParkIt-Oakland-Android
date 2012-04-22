@@ -29,8 +29,7 @@ public class ParkingLocationItemizedOverlay extends BalloonItemizedOverlay<Overl
 		super(boundCenterBottom(defaultMarker), mapView);
 		c = mapView.getContext();
 		setBalloonBottomOffset(defaultMarker.getIntrinsicHeight());
-		//setShadow(shadow);
-	
+		setShadow(shadow);
 		
 		populate();
 		

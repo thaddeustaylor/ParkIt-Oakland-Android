@@ -4,23 +4,19 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.view.LayoutInflater;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
+import android.view.*;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.location.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.lang.Runnable;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
@@ -29,16 +25,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.google.android.maps.*;
+import com.parse.*;
 
 import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
@@ -65,6 +53,15 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	private Criteria criteria;
 	private GeoPoint p;
 	private RouteOverlay m_route;
+	private ActionBar ab;
+
+	private Runnable refreshMap = new Runnable()
+	{
+		public void run()
+		{
+			mapView.postInvalidate();
+		}
+	};
 
 	public static final int INFORMATION_ACTIVITY = 0;
 
@@ -74,6 +71,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
+		ab = getSupportActionBar();
+
+		Log.i("PARKIT ACTIVITY", "-----------START---------");
 
 		setSupportProgressBarIndeterminateVisibility(false);
 
@@ -102,6 +102,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		mDbHelper = new dbAdapter(this);
 		mDbHelper.open();
+
 		mCursor = mDbHelper.fetchAllRows();
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
@@ -225,7 +226,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			
 			if(m_route != null)
 				points.remove(m_route);
-			mapView.invalidate();
+			mapView.postInvalidate();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);	
@@ -234,9 +235,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	public void getRemotePoints()
 	{
-		setSupportProgressBarIndeterminateVisibility(true);
-		ActionBar ab = getSupportActionBar();
 		ab.setTitle("Refreshing Points...");
+		setSupportProgressBarIndeterminateVisibility(true);
 
 		Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
 		ParseQuery query = new ParseQuery("Points");
@@ -244,13 +244,13 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			public void done(List<ParseObject> objects, ParseException e) {
 				if (e == null) {
 					pointsProcessing(objects);
+
+					ab.setTitle("ParkIt");
+					setSupportProgressBarIndeterminateVisibility(false);
 				}
 			}
 		});
 
-		mapView.invalidate();
-		ab.setTitle("ParkIt");
-		setSupportProgressBarIndeterminateVisibility(false);
 	}
 
 	public void pointsProcessing(List<ParseObject> objs)
@@ -261,20 +261,26 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				mDbHelper.addPoint(objs.get(i));
 			}catch(Exception e){}
 		}
+		Log.i("PARKIT ACTIVITY", "ATTEMPTING TO REFRESH");
 		refreshAllPoints();
+		Log.i("PARKIT ACTIVITY", "INVALIDATED");
 	}
 
 	public void refreshAllPoints()
 	{
-		mCursor = mDbHelper.fetchAllRows();
+		if(mDbHelper == null)
+		{
+			mDbHelper.open();
+			mCursor = mDbHelper.fetchAllRows();
+		}
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
 		drawable = getResources().getDrawable(R.drawable.g_icon);
-		gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		gItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView, false);
 		drawable = getResources().getDrawable(R.drawable.l_icon);
-		lItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		lItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView, false);
 		drawable = getResources().getDrawable(R.drawable.m_icon);
-		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView);
+		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView, false);
 
 		cLocationOverlay = new CurrentLocationOverlay(getCurrentLocation());
 
@@ -312,17 +318,21 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			}while(!mCursor.isAfterLast());
 		}
 
-
-		List<Overlay> points = mapView.getOverlays();
-		points.clear();
-		points.add(gItemizedOverlay);
-		points.add(lItemizedOverlay);
-		points.add(mItemizedOverlay);
-		points.add(cLocationOverlay);
+		mapView.getOverlays().clear();
+		mapView.getOverlays().add(gItemizedOverlay);
+		mapView.getOverlays().add(lItemizedOverlay);
+		mapView.getOverlays().add(mItemizedOverlay);
+		mapView.getOverlays().add(cLocationOverlay);
+		mapView.postInvalidate();
 	}
 
 	public void onLocationChanged(Location location) {
 		//updateLocation(location);
+	}
+
+	public void recenterMap(View v)
+	{
+		updateLocation(getCurrentLocation());
 	}
 
 	private void updateLocation(GeoPoint p)
@@ -337,12 +347,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		int i = providers.size();
 		for( i = providers.size()-1; i>=0; i--)
 		{
-			//if( i == 0 ) break;
 			location = mlocManager.getLastKnownLocation( providers.get(i) );
 			if(location != null )
-			   break;
+			{
+				mlocManager.requestLocationUpdates(providers.get(i),
+													60000,
+													1000,
+													this);
+				break;
+			}
 		}
-		GeoPoint p = null;
 
 		Double lat = location.getLatitude()*1E6;
 		Double lng = location.getLongitude()*1E6;
@@ -381,7 +395,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			mMode = startActionMode(new RouteActionMode());
 			
 			//Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
-			mapView.invalidate();
+			mapView.postInvalidate();
 			
 		}
 
@@ -434,6 +448,10 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				case Information.GOTO_TRUE:
 
 					//Log.i("ParkItActivity.onActivityResult", "in GOTO_TRUE");
+
+					ActionBar ab = getSupportActionBar();
+					ab.setTitle("Loading Directions");
+					setSupportProgressBarIndeterminateVisibility(true);
 					
 					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
 					getDirections(pl.getGeoPoint());
@@ -461,7 +479,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	private void getDirections(GeoPoint destination)
 	{
 		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-		dir.driveTo(p, destination, Mode.DRIVING, new MyIDirectionsListener());
+		dir.driveTo(getCurrentLocation(), destination, Mode.DRIVING, new MyIDirectionsListener());
 	}
 
 	private final class RouteActionMode implements ActionMode.Callback {
@@ -488,7 +506,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			
 			if(m_route != null)
 				points.remove(m_route);
-			mapView.invalidate();
+			mapView.postInvalidate();
 
             mode.finish();
             return true;
@@ -503,7 +521,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			
 			if(m_route != null)
 				points.remove(m_route);
-			mapView.invalidate();
+			mapView.postInvalidate();
         }
     }
 	

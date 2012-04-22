@@ -174,10 +174,12 @@ public class dbAdapter
 		}
 	}
 
-	private boolean isNotEmpty;
+	//private boolean isNotEmpty;
+	private ParseObject dataValUpdate;
 	public boolean addRemotePoint(ParkingLocation pl)
 	{
-		isNotEmpty = true;
+		dataValUpdate = new ParseObject("Points");
+		//isNotEmpty = true;
 		Parse.initialize(mCtx, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy"); 
 		ParseQuery query = new ParseQuery("Points");
 		query.whereEqualTo("lat", pl.getLatitude());
@@ -185,40 +187,47 @@ public class dbAdapter
         query.findInBackground(new FindCallback() {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects.size() == 0) {
-                    isNotEmpty = true;
+                    //isNotEmpty = true;
+                    Log.i("PARKIT DB", "Did NOT find a dup!");
+                }
+                else if(e == null)
+                {
+                	Log.i("PARKIT DB", "Found a dup on database!");
+                	dataValUpdate = objects.get(0);
+                	try{
+                		objects.get(0).delete();
+                	}catch(ParseException pe){ Log.i("PARKIT DB", "Parse error code: "+pe.getCode()); }
                 }
             }
         });
 
-		if(addPoint(pl) != -1 && isNotEmpty)
+		if(addPoint(pl) != -1)
 		{
-			
-			ParseObject dataVals = new ParseObject("Points");
-			dataVals.put("lat", pl.getLatitude());
-			dataVals.put("lon", pl.getLongitude());
-			dataVals.put("type", pl.getType().toInt());
-			dataVals.put("name", pl.getName());
-			dataVals.put("payment", pl.getPayment().toInt());
-			dataVals.put("limits", pl.getLimit());
-			dataVals.put("notes", "Empty");
-			dataVals.put("rate", pl.getRate());
-			dataVals.put("ratetime", pl.getRateTime().toString());
-			dataVals.put("grate", pl.getGarageRate());
-			dataVals.put("monstart", pl.getMondayStart());
-			dataVals.put("monend", pl.getMondayEnd());
-			dataVals.put("tuestart", pl.getTuesdayStart());
-			dataVals.put("tueend", pl.getTuesdayEnd());
-			dataVals.put("wedstart", pl.getWednesdayStart());
-			dataVals.put("wedend", pl.getWednesdayEnd());
-			dataVals.put("thustart", pl.getThursdayStart());
-			dataVals.put("thuend", pl.getThursdayEnd());
-			dataVals.put("fristart", pl.getFridayStart());
-			dataVals.put("friend", pl.getFridayEnd());
-			dataVals.put("satstart", pl.getSaturdayStart());
-			dataVals.put("satend", pl.getSaturdayEnd());
-			dataVals.put("sunstart", pl.getSundayStart());
-			dataVals.put("sunend", pl.getSundayEnd());
-	        dataVals.saveInBackground();
+			dataValUpdate.put("lat", pl.getLatitude());
+			dataValUpdate.put("lon", pl.getLongitude());
+			dataValUpdate.put("type", pl.getType().toInt());
+			dataValUpdate.put("name", pl.getName());
+			dataValUpdate.put("payment", pl.getPayment().toInt());
+			dataValUpdate.put("limits", pl.getLimit());
+			dataValUpdate.put("notes", "Empty");
+			dataValUpdate.put("rate", pl.getRate());
+			dataValUpdate.put("ratetime", pl.getRateTime().toString());
+			dataValUpdate.put("grate", pl.getGarageRate());
+			dataValUpdate.put("monstart", pl.getMondayStart());
+			dataValUpdate.put("monend", pl.getMondayEnd());
+			dataValUpdate.put("tuestart", pl.getTuesdayStart());
+			dataValUpdate.put("tueend", pl.getTuesdayEnd());
+			dataValUpdate.put("wedstart", pl.getWednesdayStart());
+			dataValUpdate.put("wedend", pl.getWednesdayEnd());
+			dataValUpdate.put("thustart", pl.getThursdayStart());
+			dataValUpdate.put("thuend", pl.getThursdayEnd());
+			dataValUpdate.put("fristart", pl.getFridayStart());
+			dataValUpdate.put("friend", pl.getFridayEnd());
+			dataValUpdate.put("satstart", pl.getSaturdayStart());
+			dataValUpdate.put("satend", pl.getSaturdayEnd());
+			dataValUpdate.put("sunstart", pl.getSundayStart());
+			dataValUpdate.put("sunend", pl.getSundayEnd());
+	        dataValUpdate.saveInBackground();
 
 	        return true;
 	    }
