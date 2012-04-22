@@ -36,5 +36,10 @@ public class AddLocationOverlay extends Overlay {
         canvas.drawBitmap(bmp, screenPts.x, screenPts.y-50, null);         
         return true;
     }
+    
+    public GeoPoint getGeoPoint()
+    {
+    	return m_point;
+    }
 
 }

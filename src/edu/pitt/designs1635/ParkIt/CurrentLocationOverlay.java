@@ -33,7 +33,7 @@ public class CurrentLocationOverlay extends Overlay {
 
         //---add the marker---
         Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.c_icon);            
-        canvas.drawBitmap(bmp, screenPts.x, screenPts.y-50, null);         
+        canvas.drawBitmap(bmp, screenPts.x-15, screenPts.y-15, null);         
         return true;
     }
 
