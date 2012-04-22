@@ -109,7 +109,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
 
-		//getRemotePoints();
+		getRemotePoints();
 
 		mapCtrl.setZoom(17);
 	}
