@@ -21,7 +21,7 @@ public class Information extends Activity
 	private TextView typeView, nameValue, rateValue, paytypeValue, limitValue, hoursView;
 	private EditText nameValueEdit, rateValueEdit, limitValueEdit;
 	private Spinner paytypeValueEdit;
-	private Button edit, save, goto_button;
+	private Button edit, save, goto_button, cancel_button;
 	private dbAdapter mDbHelper;
 	private ArrayAdapter<CharSequence> adapter, payment_adapter;
 
@@ -79,6 +79,7 @@ public class Information extends Activity
 		edit = (Button) findViewById(R.id.edit_button);
 		save = (Button) findViewById(R.id.save_button);
 		goto_button = (Button) findViewById(R.id.goto_button);
+		cancel_button = (Button) findViewById(R.id.cancel_button);
 
 		edit.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
