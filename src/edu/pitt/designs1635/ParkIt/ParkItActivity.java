@@ -53,6 +53,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	ActionMode mMode;
 	private Criteria criteria;
 	private GeoPoint p;
+	private AddLocationOverlay addedLocation;
 	private RouteOverlay m_route;
 	private ActionBar ab;
 
@@ -202,7 +203,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				//mDbHelper.close();
 				//startActivity(new Intent(this, Add.class));
 				hideAllBalloons();
-				mMode = startActionMode(new AddPointActionMode());
+				//mMode = startActionMode(new AddPointActionMode());
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
@@ -285,7 +286,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		drawable = getResources().getDrawable(R.drawable.m_icon);
 		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView, false);
 
-		cLocationOverlay = new CurrentLocationOverlay(getCurrentLocation());
+		GeoPoint currentLocation = getCurrentLocation();
+		if(currentLocation != null)
+			cLocationOverlay = new CurrentLocationOverlay(currentLocation);
 
 		hideAllBalloons();
 
@@ -338,7 +341,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	private void updateLocation(GeoPoint p)
 	{
-		mapCtrl.animateTo(p);
+		if(p != null)
+			mapCtrl.animateTo(p);
 	}
 
 	private GeoPoint getCurrentLocation()
@@ -356,6 +360,10 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			}
 		}
 
+		if(location == null)
+			return null;
+		
+		
 		Double lat = location.getLatitude()*1E6;
 		Double lng = location.getLongitude()*1E6;
 		p = new GeoPoint(lat.intValue(), lng.intValue());
@@ -478,7 +486,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	{
 		
 		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-		dir.driveTo(getCurrentLocation(), destination, Mode.DRIVING, new MyIDirectionsListener());
+		GeoPoint start = getCurrentLocation();
+		if(start != null)
+			dir.driveTo(start, destination, Mode.DRIVING, new MyIDirectionsListener());
 	}
 
 	private final class RouteActionMode implements ActionMode.Callback {
@@ -524,13 +534,22 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         }
     }
 	
-	private final class AddPointActionMode implements ActionMode.Callback {
+/*	private final class AddPointActionMode implements ActionMode.Callback {
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        public boolean onCreateActionMode(ActionMode mode, final Menu menu) {
             //Used to put dark icons on light action bar           
-            menu.add("Tap Map to Add Point")
+            menu.add(0,0,0,"Exit")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             
+            mode.setTitle("Tap Map to Add Point");
+            
+            menu.add(0,1,1,"Add Point")
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            
+            menu.getItem(1).setVisible(false);
+            
+            
+            //menu.add(groupId, itemId, order, title)
             TouchLocationOverlay plo = new TouchLocationOverlay(getApplicationContext());
             
             final List<Overlay> points = mapView.getOverlays();
@@ -538,7 +557,18 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
             plo.setTapListener(new TapListener(){
 
     			public void onTap(GeoPoint p) {
-    				points.add(new AddLocationOverlay(p));
+    				
+    				//only add the first point
+    				if (addedLocation == null)
+    				{	
+    					//this is stored so the overlay can be removed later
+	    				addedLocation = new AddLocationOverlay(p);
+	    				
+	    				points.add(addedLocation);
+	    				
+	    				menu.getItem(1).setVisible(true);
+	    				menu.getItem(0).setTitle("Cancel");
+    				}
     			}
             	
             });
@@ -560,8 +590,28 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         	setSupportProgressBarIndeterminateVisibility(false);
             ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
-
-            mode.finish();
+			
+			if(item.getTitle().toString().equals("Add Point"))
+			{
+				Log.i("AddPointActionMode", "Yay! add point");
+				//item.setVisible(false);
+				//TODO goto activity for adding point.
+				
+			}else if (item.getTitle().toString().equals("Cancel"))
+			{
+				Log.i("AddPointActionMode", "Boo! Cancel");
+				mode.getMenu().getItem(1).setVisible(false);
+				mode.getMenu().getItem(0).setTitle("Exit");
+			}
+			
+			if(addedLocation != null)
+			{
+				List<Overlay> points = mapView.getOverlays();
+				points.remove(addedLocation);
+				addedLocation = null;
+			}
+			
+			//mode.finish();
             return true;
         }
 
@@ -570,9 +620,17 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         	setSupportProgressBarIndeterminateVisibility(false);
         	ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
+			
+			if(addedLocation != null)
+			{
+				List<Overlay> points = mapView.getOverlays();
+				points.remove(addedLocation);
+				addedLocation = null;
+			}
+			
         }
 
-    }
+    }*/
 	
 	private boolean isNetworkAvailable() {
     	ConnectivityManager connectivityManager = 
