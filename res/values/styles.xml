@@ -6,16 +6,16 @@
 		<item name="android:textSize">23dp</item>
 		<item name="android:paddingLeft">15dp</item>
 		<item name="android:paddingRight">15dp</item>
-		<item name="android:paddingTop">10dp</item>
-		<item name="android:paddingBottom">10dp</item>
+		<item name="android:paddingTop">5dp</item>
+		<item name="android:paddingBottom">7dp</item>
 	</style>
 	<style name="InfoValue">
 		<item name="android:textColor">#616161</item>
 		<item name="android:textSize">20dp</item>
 		<item name="android:paddingLeft">15dp</item>
 		<item name="android:paddingRight">15dp</item>
-		<item name="android:paddingTop">10dp</item>
-		<item name="android:paddingBottom">10dp</item>
+		<item name="android:paddingTop">5dp</item>
+		<item name="android:paddingBottom">7dp</item>
 	</style>
 	<style name="InfoLine">
 		<item name="android:background">#616161</item>

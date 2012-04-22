@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import java.text.DecimalFormat;
 
 public class Information extends Activity
 {
@@ -37,6 +38,8 @@ public class Information extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.info);
+
+		DecimalFormat money = new DecimalFormat("0.00");
 
 		mDbHelper = new dbAdapter(this);
 		mDbHelper.open();
@@ -74,7 +77,7 @@ public class Information extends Activity
 		if(pl.getRate() == 0)
 			rateValue.setText("No rate recorded");
 		else
-			rateValue.setText(String.valueOf(pl.getRate()));
+			rateValue.setText(String.valueOf(money.format(pl.getRate())));
 
 		edit = (Button) findViewById(R.id.edit_button);
 		save = (Button) findViewById(R.id.save_button);

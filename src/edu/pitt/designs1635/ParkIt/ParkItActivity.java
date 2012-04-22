@@ -93,7 +93,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
 		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 		GeoPoint currentLocation = getCurrentLocation();
 		if(currentLocation != null)
@@ -156,17 +156,17 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	{
 		super.onResume();
 		mDbHelper.open();
-		refreshAllPoints();
-        
-        // Check is GPS is on.  Show alert if off.
-        if (! isGPSAvailable()) {
-        	showAlertMessageNoGPS();
-        }
-        
-        // Check for Internet connection on startup.
-        if (! isNetworkAvailable()) {
-        	showAlertMessageNoInternets();
-        } 
+		//refreshAllPoints();
+		
+		// Check is GPS is on.  Show alert if off.
+		if (! isGPSAvailable()) {
+			showAlertMessageNoGPS();
+		}
+		
+		// Check for Internet connection on startup.
+		if (! isNetworkAvailable()) {
+			showAlertMessageNoInternets();
+		} 
 	}
 
 	@Override
@@ -261,9 +261,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				mDbHelper.addPoint(objs.get(i));
 			}catch(Exception e){}
 		}
-		Log.i("PARKIT ACTIVITY", "ATTEMPTING TO REFRESH");
 		refreshAllPoints();
-		Log.i("PARKIT ACTIVITY", "INVALIDATED");
 	}
 
 	public void refreshAllPoints()
@@ -351,10 +349,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			location = mlocManager.getLastKnownLocation( providers.get(i) );
 			if(location != null )
 			{
-				mlocManager.requestLocationUpdates(providers.get(i),
-													60000,
-													1000,
-													this);
+				mlocManager.requestLocationUpdates(providers.get(i),0,0,this);
 				break;
 			}
 		}
@@ -491,24 +486,24 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	}
 
 	private final class RouteActionMode implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            //Used to put dark icons on light action bar           
-            menu.add("Clear Route")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			//Used to put dark icons on light action bar           
+			menu.add("Clear Route")
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            return true;
-        }
+			return true;
+		}
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
 
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        	setSupportProgressBarIndeterminateVisibility(false);
-            ActionBar ab = getSupportActionBar();
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			List<Overlay> points = mapView.getOverlays();
 			
@@ -516,24 +511,25 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				points.remove(m_route);
 			mapView.postInvalidate();
 
-            mode.finish();
-            return true;
-        }
+			mode.finish();
+			return true;
+		}
 
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-        	setSupportProgressBarIndeterminateVisibility(false);
-        	ActionBar ab = getSupportActionBar();
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			List<Overlay> points = mapView.getOverlays();
 			
 			if(m_route != null)
 				points.remove(m_route);
 			mapView.postInvalidate();
-        }
-    }
+		}
+	}
 	
 	private final class AddPointActionMode implements ActionMode.Callback {
+
 		TouchLocationOverlay plo;
 		
 		final int BUTTON_GROUP = 0;
@@ -616,6 +612,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         	setSupportProgressBarIndeterminateVisibility(false);
             ActionBar ab = getSupportActionBar();
+
 			ab.setTitle("ParkIt");
 			
 			
@@ -655,15 +652,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				points.remove(addedLocation);
 				addedLocation = null;
 			}
-			
+
 			
             return true;
         }
 
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-        	setSupportProgressBarIndeterminateVisibility(false);
-        	ActionBar ab = getSupportActionBar();
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			List<Overlay> points = mapView.getOverlays();
 			
@@ -681,73 +679,69 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         }
 
     }
-	
-	private boolean isNetworkAvailable() {
-    	ConnectivityManager connectivityManager = 
-    			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-    	return activeNetworkInfo != null;
-    }
-    
-    private boolean isGPSAvailable() {
-    	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-    		//System.out.println("GPS is enabled");
-    		//Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();	
-    		return true;	
-    	} else {
-    		//System.out.println("GPS is not enabled");
-    		//Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
-    		return false;
-    	}
 
-    }
-    
-    private void showAlertMessageNoGPS() {
-    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
-    		.setCancelable(false)
-    		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-    			}
-    		})
-    		.setNegativeButton("No", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				dialog.cancel();
-    			}
-    		});
-    	final AlertDialog alert = builder.create();
-    	alert.show();	
-    }
-    
-    private void showAlertMessageNoInternets() {
-    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
-    		.setCancelable(false)
-    		.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				dialog.cancel();
-    			}
-    		})
-    		.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				finish();
-    			}
-    		});
-    	final AlertDialog alert = builder.create();
-    	alert.show();	
-    }
-    
-    private void hideAllBalloons()
-    {
-    	if(gItemizedOverlay != null)
-    		gItemizedOverlay.hideAllBalloons();
-    	if(lItemizedOverlay != null)
-        	lItemizedOverlay.hideAllBalloons();
-    	if(mItemizedOverlay != null)
-        	mItemizedOverlay.hideAllBalloons();	
-    }
-    
+	private boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager = 
+				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
+	}
+	
+	private boolean isGPSAvailable() {
+		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {	
+			return true;	
+		} else {
+			return false;
+		}
+
+	}
+	
+	private void showAlertMessageNoGPS() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
+			.setCancelable(false)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				}
+			})
+			.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	private void showAlertMessageNoInternets() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
+			.setCancelable(false)
+			.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			})
+			.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					finish();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	private void hideAllBalloons()
+	{
+		if(gItemizedOverlay != null)
+			gItemizedOverlay.hideAllBalloons();
+		if(lItemizedOverlay != null)
+			lItemizedOverlay.hideAllBalloons();
+		if(mItemizedOverlay != null)
+			mItemizedOverlay.hideAllBalloons();	
+	}
+	
 }
 
