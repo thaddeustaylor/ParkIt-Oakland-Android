@@ -64,7 +64,6 @@ public class Information extends Activity
 		paytypeValueEdit.setAdapter(payment_adapter);
 
 		nameValue.setText(pl.getName());
-		//typeValue.setText(pl.getType().toString());
 		paytypeValue.setText(pl.getPayment().toString());
 
 		if(pl.getLimit() == 0)
@@ -81,18 +80,11 @@ public class Information extends Activity
 		save = (Button) findViewById(R.id.save_button);
 		goto_button = (Button) findViewById(R.id.goto_button);
 
-		
-		
 		edit.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
 				nameValue.setVisibility(View.INVISIBLE);
 				nameValueEdit.setVisibility(View.VISIBLE);
 				nameValueEdit.setText(nameValue.getText());
-
-				/*
-				typeValue.setVisibility(View.INVISIBLE);
-				typeValueEdit.setVisibility(View.VISIBLE);
-				*/
 
 				paytypeValue.setVisibility(View.INVISIBLE);
 				paytypeValueEdit.setVisibility(View.VISIBLE);
@@ -201,7 +193,7 @@ public class Information extends Activity
 	{
 		ParkingLocation newPl = new ParkingLocation();
 		newPl.setName(nameValueEdit.getText().toString());
-		//newPl.setType(typeValueEdit.getSelectedItem().toString());
+		newPl.setType(pl.getType());
 		newPl.setPayment(paytypeValueEdit.getSelectedItem().toString());
 		if(limitValueEdit.getText().toString().compareTo("No time limit recorded") != 0)
 		{
