@@ -95,7 +95,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
 
-		updateLocation(getCurrentLocation());
+		GeoPoint currentLocation = getCurrentLocation();
+		if(currentLocation != null)
+			updateLocation(currentLocation);
 
 		if(!prefs.getBoolean("tutorial", false))
 		{
@@ -196,14 +198,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		switch (item.getItemId())
 		{
 			case R.id.menu_add:
-				//SharedPreferences.Editor editor = prefs.edit();
-				//editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
-				//editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
-				//editor.commit();
-				//mDbHelper.close();
-				//startActivity(new Intent(this, Add.class));
 				hideAllBalloons();
-				//mMode = startActionMode(new AddPointActionMode());
+				mMode = startActionMode(new AddPointActionMode());
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
@@ -537,23 +533,39 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         }
     }
 	
-/*	private final class AddPointActionMode implements ActionMode.Callback {
-        @Override
+	private final class AddPointActionMode implements ActionMode.Callback {
+		TouchLocationOverlay plo;
+		
+		final int BUTTON_GROUP = 0;
+		final int EXIT_BUTTON = 0;
+		final int ADD_BUTTON = 2;
+		final int CANCEL_BUTTON = 1;
+		
+		@Override
         public boolean onCreateActionMode(ActionMode mode, final Menu menu) {
-            //Used to put dark icons on light action bar           
-            menu.add(0,0,0,"Exit")
+            
+			mode.setTitle("Tap Map to Add Point");
+			
+			//Used to put dark icons on light action bar           
+            menu.add(BUTTON_GROUP,EXIT_BUTTON,0,"Exit")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             
-            mode.setTitle("Tap Map to Add Point");
             
-            menu.add(0,1,1,"Add Point")
+            
+            menu.add(BUTTON_GROUP,CANCEL_BUTTON,1,"Cancel")
+        	.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        
+            menu.getItem(CANCEL_BUTTON).setVisible(false);
+            
+            menu.add(BUTTON_GROUP,ADD_BUTTON,2,"Add Point")
 				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             
-            menu.getItem(1).setVisible(false);
+            menu.getItem(ADD_BUTTON).setVisible(false);
             
+           
             
             //menu.add(groupId, itemId, order, title)
-            TouchLocationOverlay plo = new TouchLocationOverlay(getApplicationContext());
+            plo = new TouchLocationOverlay(getApplicationContext());
             
             final List<Overlay> points = mapView.getOverlays();
             
@@ -569,8 +581,20 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	    				
 	    				points.add(addedLocation);
 	    				
-	    				menu.getItem(1).setVisible(true);
-	    				menu.getItem(0).setTitle("Cancel");
+	    				menu.getItem(ADD_BUTTON).setVisible(true);
+	    				menu.getItem(CANCEL_BUTTON).setVisible(true);
+	    				menu.getItem(EXIT_BUTTON).setVisible(false);
+	    				
+	    			
+	    				
+    				}else
+    				{
+    					points.remove(addedLocation);
+    					
+    					addedLocation = new AddLocationOverlay(p);
+	    				
+	    				points.add(addedLocation);
+	    				
     				}
     			}
             	
@@ -594,17 +618,35 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
             ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			
-			if(item.getTitle().toString().equals("Add Point"))
+			
+			//TODO make this a switch
+			if(item.getItemId() == ADD_BUTTON)
 			{
 				Log.i("AddPointActionMode", "Yay! add point");
-				//item.setVisible(false);
-				//TODO goto activity for adding point.
+				//SharedPreferences.Editor editor = prefs.edit();
+				//editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
+				//editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
+				//editor.commit();
+				//mDbHelper.close();
 				
-			}else if (item.getTitle().toString().equals("Cancel"))
+				Intent intent = new Intent(getApplicationContext(), Add.class);
+				
+				intent.putExtra("edu.pitt.designs1635.ParkIt.location.lat", addedLocation.getGeoPoint().getLatitudeE6());
+				intent.putExtra("edu.pitt.designs1635.ParkIt.location.long", addedLocation.getGeoPoint().getLongitudeE6());
+				
+            	startActivity(intent);
+				
+			}else if (item.getItemId() == CANCEL_BUTTON)
 			{
 				Log.i("AddPointActionMode", "Boo! Cancel");
-				mode.getMenu().getItem(1).setVisible(false);
-				mode.getMenu().getItem(0).setTitle("Exit");
+				mode.getMenu().getItem(EXIT_BUTTON).setVisible(true);
+				mode.getMenu().getItem(ADD_BUTTON).setVisible(false);
+				mode.getMenu().getItem(CANCEL_BUTTON).setVisible(false);
+				
+				
+			}else if (item.getItemId() == EXIT_BUTTON)
+			{
+				mode.finish();
 			}
 			
 			if(addedLocation != null)
@@ -614,7 +656,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				addedLocation = null;
 			}
 			
-			//mode.finish();
+			
             return true;
         }
 
@@ -623,17 +665,22 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         	setSupportProgressBarIndeterminateVisibility(false);
         	ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
+			List<Overlay> points = mapView.getOverlays();
 			
 			if(addedLocation != null)
 			{
-				List<Overlay> points = mapView.getOverlays();
+				
 				points.remove(addedLocation);
 				addedLocation = null;
 			}
 			
+			if(plo != null)
+			{
+				points.remove(plo);
+			}
         }
 
-    }*/
+    }
 	
 	private boolean isNetworkAvailable() {
     	ConnectivityManager connectivityManager = 
