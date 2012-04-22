@@ -29,6 +29,7 @@ import com.google.android.maps.*;
 import com.parse.*;
 
 import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
+import edu.pitt.designs1635.ParkIt.TouchLocationOverlay.TapListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.IDirectionsListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.Mode;
@@ -194,12 +195,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		switch (item.getItemId())
 		{
 			case R.id.menu_add:
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
-				editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
-				editor.commit();
-				mDbHelper.close();
-				startActivity(new Intent(this, Add.class));
+				//SharedPreferences.Editor editor = prefs.edit();
+				//editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
+				//editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
+				//editor.commit();
+				//mDbHelper.close();
+				//startActivity(new Intent(this, Add.class));
+				hideAllBalloons();
+				mMode = startActionMode(new AddPointActionMode());
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
@@ -284,9 +287,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		cLocationOverlay = new CurrentLocationOverlay(getCurrentLocation());
 
-		gItemizedOverlay.hideAllBalloons();
-		lItemizedOverlay.hideAllBalloons();
-		mItemizedOverlay.hideAllBalloons();
+		hideAllBalloons();
 
 		gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
 		lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
@@ -526,6 +527,56 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
         }
     }
 	
+	private final class AddPointActionMode implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            //Used to put dark icons on light action bar           
+            menu.add("Tap Map to Add Point")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            
+            TouchLocationOverlay plo = new TouchLocationOverlay(getApplicationContext());
+            
+            final List<Overlay> points = mapView.getOverlays();
+            
+            plo.setTapListener(new TapListener(){
+
+    			public void onTap(GeoPoint p) {
+    				points.add(new AddLocationOverlay(p));
+    			}
+            	
+            });
+            
+            
+            points.add(plo);
+            
+            
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        	setSupportProgressBarIndeterminateVisibility(false);
+            ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+        	setSupportProgressBarIndeterminateVisibility(false);
+        	ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+        }
+
+    }
+	
 	private boolean isNetworkAvailable() {
     	ConnectivityManager connectivityManager = 
     			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -582,5 +633,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
     	final AlertDialog alert = builder.create();
     	alert.show();	
     }
+    
+    private void hideAllBalloons()
+    {
+    	if(gItemizedOverlay != null)
+    		gItemizedOverlay.hideAllBalloons();
+    	if(lItemizedOverlay != null)
+        	lItemizedOverlay.hideAllBalloons();
+    	if(mItemizedOverlay != null)
+        	mItemizedOverlay.hideAllBalloons();	
+    }
+    
 }
 
