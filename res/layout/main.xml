@@ -19,3 +19,4 @@
 		android:alpha="0.8"
 		android:onClick="recenterMap" /> 
 </RelativeLayout>
+

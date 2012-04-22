@@ -29,6 +29,7 @@ import com.google.android.maps.*;
 import com.parse.*;
 
 import edu.pitt.designs1635.ParkIt.ParkingLocationItemizedOverlay.BalloonTouchListener;
+import edu.pitt.designs1635.ParkIt.TouchLocationOverlay.TapListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.IDirectionsListener;
 import edu.pitt.designs1635.ParkIt.Directions.DrivingDirections.Mode;
@@ -52,6 +53,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	ActionMode mMode;
 	private Criteria criteria;
 	private GeoPoint p;
+	private AddLocationOverlay addedLocation;
 	private RouteOverlay m_route;
 	private ActionBar ab;
 
@@ -91,7 +93,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
 		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 		updateLocation(getCurrentLocation());
 
@@ -152,17 +154,17 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	{
 		super.onResume();
 		mDbHelper.open();
-		refreshAllPoints();
-        
-        // Check is GPS is on.  Show alert if off.
-        if (! isGPSAvailable()) {
-        	showAlertMessageNoGPS();
-        }
-        
-        // Check for Internet connection on startup.
-        if (! isNetworkAvailable()) {
-        	showAlertMessageNoInternets();
-        } 
+		//refreshAllPoints();
+		
+		// Check is GPS is on.  Show alert if off.
+		if (! isGPSAvailable()) {
+			showAlertMessageNoGPS();
+		}
+		
+		// Check for Internet connection on startup.
+		if (! isNetworkAvailable()) {
+			showAlertMessageNoInternets();
+		} 
 	}
 
 	@Override
@@ -177,7 +179,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -194,12 +196,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		switch (item.getItemId())
 		{
 			case R.id.menu_add:
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
-				editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
-				editor.commit();
-				mDbHelper.close();
-				startActivity(new Intent(this, Add.class));
+				//SharedPreferences.Editor editor = prefs.edit();
+				//editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
+				//editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
+				//editor.commit();
+				//mDbHelper.close();
+				//startActivity(new Intent(this, Add.class));
+				hideAllBalloons();
+				mMode = startActionMode(new AddPointActionMode());
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
@@ -261,9 +265,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				mDbHelper.addPoint(objs.get(i));
 			}catch(Exception e){}
 		}
-		Log.i("PARKIT ACTIVITY", "ATTEMPTING TO REFRESH");
 		refreshAllPoints();
-		Log.i("PARKIT ACTIVITY", "INVALIDATED");
 	}
 
 	public void refreshAllPoints()
@@ -282,11 +284,11 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		drawable = getResources().getDrawable(R.drawable.m_icon);
 		mItemizedOverlay = new ParkingLocationItemizedOverlay(drawable, mapView, false);
 
-		cLocationOverlay = new CurrentLocationOverlay(getCurrentLocation());
+		GeoPoint currentLocation = getCurrentLocation();
+		if(currentLocation != null)
+			cLocationOverlay = new CurrentLocationOverlay(currentLocation);
 
-		gItemizedOverlay.hideAllBalloons();
-		lItemizedOverlay.hideAllBalloons();
-		mItemizedOverlay.hideAllBalloons();
+		hideAllBalloons();
 
 		gItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
 		lItemizedOverlay.setBalloonTouchListener(new MyBalloonTouchListener());
@@ -337,7 +339,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	private void updateLocation(GeoPoint p)
 	{
-		mapCtrl.animateTo(p);
+		if(p != null)
+			mapCtrl.animateTo(p);
 	}
 
 	private GeoPoint getCurrentLocation()
@@ -350,14 +353,15 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			location = mlocManager.getLastKnownLocation( providers.get(i) );
 			if(location != null )
 			{
-				mlocManager.requestLocationUpdates(providers.get(i),
-													60000,
-													1000,
-													this);
+				mlocManager.requestLocationUpdates(providers.get(i),0,0,this);
 				break;
 			}
 		}
 
+		if(location == null)
+			return null;
+		
+		
 		Double lat = location.getLatitude()*1E6;
 		Double lng = location.getLongitude()*1E6;
 		p = new GeoPoint(lat.intValue(), lng.intValue());
@@ -478,29 +482,32 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	private void getDirections(GeoPoint destination)
 	{
+		
 		DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-		dir.driveTo(getCurrentLocation(), destination, Mode.DRIVING, new MyIDirectionsListener());
+		GeoPoint start = getCurrentLocation();
+		if(start != null)
+			dir.driveTo(start, destination, Mode.DRIVING, new MyIDirectionsListener());
 	}
 
 	private final class RouteActionMode implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            //Used to put dark icons on light action bar           
-            menu.add("Clear Route")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			//Used to put dark icons on light action bar           
+			menu.add("Clear Route")
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            return true;
-        }
+			return true;
+		}
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
 
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        	setSupportProgressBarIndeterminateVisibility(false);
-            ActionBar ab = getSupportActionBar();
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			List<Overlay> points = mapView.getOverlays();
 			
@@ -508,78 +515,181 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 				points.remove(m_route);
 			mapView.postInvalidate();
 
-            mode.finish();
-            return true;
-        }
+			mode.finish();
+			return true;
+		}
 
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-        	setSupportProgressBarIndeterminateVisibility(false);
-        	ActionBar ab = getSupportActionBar();
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
 			ab.setTitle("ParkIt");
 			List<Overlay> points = mapView.getOverlays();
 			
 			if(m_route != null)
 				points.remove(m_route);
 			mapView.postInvalidate();
-        }
-    }
+		}
+	}
+	
+	private final class AddPointActionMode implements ActionMode.Callback {
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, final Menu menu) {
+			//Used to put dark icons on light action bar           
+			menu.add(0,0,0,"Exit")
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			
+			mode.setTitle("Tap Map to Add Point");
+			
+			menu.add(0,1,1,"Add Point")
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			
+			menu.getItem(1).setVisible(false);
+			
+			
+			//menu.add(groupId, itemId, order, title)
+			TouchLocationOverlay plo = new TouchLocationOverlay(getApplicationContext());
+			
+			final List<Overlay> points = mapView.getOverlays();
+			
+			plo.setTapListener(new TapListener(){
+
+				public void onTap(GeoPoint p) {
+					
+					//only add the first point
+					if (addedLocation == null)
+					{	
+						//this is stored so the overlay can be removed later
+						addedLocation = new AddLocationOverlay(p);
+						
+						points.add(addedLocation);
+						
+						menu.getItem(1).setVisible(true);
+						menu.getItem(0).setTitle("Cancel");
+					}
+				}
+				
+			});
+			
+			points.add(plo);
+			
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+			
+			if(item.getTitle().toString().equals("Add Point"))
+			{
+				Log.i("AddPointActionMode", "Yay! add point");
+				//item.setVisible(false);
+				//TODO goto activity for adding point.
+				
+			}else if (item.getTitle().toString().equals("Cancel"))
+			{
+				Log.i("AddPointActionMode", "Boo! Cancel");
+				mode.getMenu().getItem(1).setVisible(false);
+				mode.getMenu().getItem(0).setTitle("Exit");
+			}
+			
+			if(addedLocation != null)
+			{
+				List<Overlay> points = mapView.getOverlays();
+				points.remove(addedLocation);
+				addedLocation = null;
+			}
+			
+			//mode.finish();
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			setSupportProgressBarIndeterminateVisibility(false);
+			ActionBar ab = getSupportActionBar();
+			ab.setTitle("ParkIt");
+			
+			if(addedLocation != null)
+			{
+				List<Overlay> points = mapView.getOverlays();
+				points.remove(addedLocation);
+				addedLocation = null;
+			}
+			
+		}
+
+	}
 	
 	private boolean isNetworkAvailable() {
-    	ConnectivityManager connectivityManager = 
-    			(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    	NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-    	return activeNetworkInfo != null;
-    }
-    
-    private boolean isGPSAvailable() {
-    	LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    	if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-    		//System.out.println("GPS is enabled");
-    		//Toast.makeText(this, "GPS enabled", Toast.LENGTH_LONG).show();	
-    		return true;	
-    	} else {
-    		//System.out.println("GPS is not enabled");
-    		//Toast.makeText(this, "GPS not enabled", Toast.LENGTH_LONG).show();
-    		return false;
-    	}
+		ConnectivityManager connectivityManager = 
+				(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
+	}
+	
+	private boolean isGPSAvailable() {
+		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {	
+			return true;	
+		} else {
+			return false;
+		}
 
-    }
-    
-    private void showAlertMessageNoGPS() {
-    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
-    		.setCancelable(false)
-    		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-    			}
-    		})
-    		.setNegativeButton("No", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				dialog.cancel();
-    			}
-    		});
-    	final AlertDialog alert = builder.create();
-    	alert.show();	
-    }
-    
-    private void showAlertMessageNoInternets() {
-    	final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
-    		.setCancelable(false)
-    		.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				dialog.cancel();
-    			}
-    		})
-    		.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
-    			public void onClick(final DialogInterface dialog, final int id) {
-    				finish();
-    			}
-    		});
-    	final AlertDialog alert = builder.create();
-    	alert.show();	
-    }
+	}
+	
+	private void showAlertMessageNoGPS() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("GPS is not enabled on this phone.  Do you want to enable it?")
+			.setCancelable(false)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				}
+			})
+			.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	private void showAlertMessageNoInternets() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("No connection to the Internet detected.  Most features of this app require an active Internet connection.")
+			.setCancelable(false)
+			.setPositiveButton("Continue Anyway", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			})
+			.setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					finish();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	private void hideAllBalloons()
+	{
+		if(gItemizedOverlay != null)
+			gItemizedOverlay.hideAllBalloons();
+		if(lItemizedOverlay != null)
+			lItemizedOverlay.hideAllBalloons();
+		if(mItemizedOverlay != null)
+			mItemizedOverlay.hideAllBalloons();	
+	}
+	
 }
 
