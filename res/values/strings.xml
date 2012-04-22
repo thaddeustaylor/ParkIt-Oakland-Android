@@ -17,7 +17,7 @@
     <string name="info_hours_of">Hours of Operation</string>
     <string name="info_limit_end">hour(s) limit</string>
     <string name="rate">$</string>
-    <string name="junk">M-Sa:\t9-5\n\n\n\nSu: 9-10</string>
+    <string name="junk">M-Sa:\t9-5\n\nSu: 9-10</string>
     <string name="parking_type">Parking Type: </string>
     <string name="payment_type">Payment Type: </string>
     <string name="time_limit">Time Limit: </string>

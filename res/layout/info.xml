@@ -140,6 +140,7 @@
 				android:id="@+id/paytypevalue"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:paddingTop="0dp"
 				style="@style/InfoValue"
 				android:layout_below="@id/ratevalue" />
 			<Spinner android:id="@+id/ptv_edit"

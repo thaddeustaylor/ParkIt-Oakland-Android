@@ -92,7 +92,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 		criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
 		mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, this);
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 		updateLocation(getCurrentLocation());
 
@@ -153,7 +153,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	{
 		super.onResume();
 		mDbHelper.open();
-		refreshAllPoints();
+		//refreshAllPoints();
         
         // Check is GPS is on.  Show alert if off.
         if (! isGPSAvailable()) {
@@ -351,10 +351,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			location = mlocManager.getLastKnownLocation( providers.get(i) );
 			if(location != null )
 			{
-				mlocManager.requestLocationUpdates(providers.get(i),
-													60000,
-													1000,
-													this);
+				mlocManager.requestLocationUpdates(providers.get(i),0,0,this);
 				break;
 			}
 		}
