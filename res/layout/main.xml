@@ -7,7 +7,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:clickable="true"
-		android:apiKey="0Q5_rFPa0O5DWxVsI_6mRAUA6CAub-rghKwLvmg" />
+		android:apiKey="0iJ2TAqQUCA49rQL6zbstPhFhAHOWp4Amg--iOw" />
 	<Button android:id="@+id/map_recenter" 
 		android:layout_width="50dp" 
 		android:layout_height="50dp" 
