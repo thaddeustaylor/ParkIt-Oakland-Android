@@ -16,8 +16,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.lang.Runnable;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.ActionMode;
