@@ -18,6 +18,14 @@
 			android:layout_height="match_parent"
 			android:layout_weight="1"
 			android:text="@string/info_edit" />
+		
+		<Button android:id="@+id/cancel_button"
+			android:focusable="true"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:text="@string/info_cancel" />
+		
 		<Button android:id="@+id/save_button"
 			android:focusable="true"
 			android:layout_width="match_parent"
