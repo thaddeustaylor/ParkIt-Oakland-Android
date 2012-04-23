@@ -54,6 +54,9 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	private AddLocationOverlay addedLocation;
 	private RouteOverlay m_route;
 	private ActionBar ab;
+	
+	
+	
 
 	private Runnable refreshMap = new Runnable()
 	{
@@ -64,7 +67,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	};
 
 	public static final int INFORMATION_ACTIVITY = 0;
-
+	public static final int ADD_LOCATION_ACTIVITY = 1;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -198,6 +201,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			case R.id.menu_add:
 				hideAllBalloons();
 				mMode = startActionMode(new AddPointActionMode());
+				
 				return true;
 			case R.id.menu_refresh:
 				getRemotePoints();
@@ -390,10 +394,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			//RouteSegmentOverlay rso = new RouteSegmentOverlay(route.getGeoPoints().get(0), route.getGeoPoints().get(route.getGeoPoints().size() - 2));
 			points.add(m_route);
 
+			
+			
 			mMode = startActionMode(new RouteActionMode());
 			
 			//Log.i("MyIDirectionsListener", "Route achieved! Size = " + ro.size());
 			mapView.postInvalidate();
+			
+			
 			
 		}
 
@@ -420,10 +428,16 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		@Override
 		public void onNextClick(ParkingLocation pl) {
+			
+			if(mMode != null)	
+				mMode.finish();
+			
 			ActionBar ab = getSupportActionBar();
 			ab.setTitle("Loading Directions");
 			setSupportProgressBarIndeterminateVisibility(true);
 			getDirections(pl.getGeoPoint());
+			
+			
 		}
 		
 	}
@@ -431,13 +445,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 
-		Log.i("ParkItActivity.onActivityResult", "Start");
-		if(data == null)
-			return;
+		Log.i("ParkItActivity.onActivityResult", "Start " + requestCode);
+		
 		
 		switch (requestCode)
 		{
 			case INFORMATION_ACTIVITY:
+				if(data == null)
+					return;
 				Bundle extras = data.getExtras();
 				Log.i("ParkItActivity.onActivityResult", "in INFORMATION_ACTIVITY");
 				
@@ -454,9 +469,6 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 					ParkingLocation pl = extras.getParcelable("edu.pitt.designs1635.ParkIt.Information.info");
 					getDirections(pl.getGeoPoint());
 					
-					//DrivingDirections dir = DrivingDirectionsFactory.createDrivingDirections();
-					//dir.driveTo(p, pl.getGeoPoint(), Mode.DRIVING, new MyIDirectionsListener());
-					
 					break;
 					
 				case Information.GOTO_FALSE:
@@ -467,7 +479,10 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 					Log.i("ParkItActivity.onActivityResult", "in default");
 					break;
 				}
-		
+			break;
+		case ADD_LOCATION_ACTIVITY:
+			Log.i("ParkItActivity", "RETURN FROM ADD LOCATION");
+			refreshAllPoints();
 			break;
 		default:
 			break;
@@ -495,6 +510,7 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			
 			return false;
 		}
 
@@ -617,23 +633,25 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			//TODO make this a switch
 			if(item.getItemId() == ADD_BUTTON)
 			{
-				Log.i("AddPointActionMode", "Yay! add point");
-				//SharedPreferences.Editor editor = prefs.edit();
-				//editor.putInt("last_location_lat", mapView.getMapCenter().getLatitudeE6());
-				//editor.putInt("last_location_lon", mapView.getMapCenter().getLongitudeE6());
-				//editor.commit();
-				//mDbHelper.close();
+				//Log.i("AddPointActionMode", "Yay! add point");
+
+				mDbHelper.close();
+				
 				
 				Intent intent = new Intent(getApplicationContext(), Add.class);
 				
 				intent.putExtra("edu.pitt.designs1635.ParkIt.location.lat", addedLocation.getGeoPoint().getLatitudeE6());
 				intent.putExtra("edu.pitt.designs1635.ParkIt.location.long", addedLocation.getGeoPoint().getLongitudeE6());
+				//Log.i("AddActionMode", "BEFORE ADD ACTIVITY");
+
+            	startActivityForResult(intent, ADD_LOCATION_ACTIVITY);
+            	//Log.i("AddActionMode", "AFTER ADD ACTIVITY");
+            	mode.finish();
 				
-            	startActivity(intent);
 				
 			}else if (item.getItemId() == CANCEL_BUTTON)
 			{
-				Log.i("AddPointActionMode", "Boo! Cancel");
+				//Log.i("AddPointActionMode", "Boo! Cancel");
 				mode.getMenu().getItem(EXIT_BUTTON).setVisible(true);
 				mode.getMenu().getItem(ADD_BUTTON).setVisible(false);
 				mode.getMenu().getItem(CANCEL_BUTTON).setVisible(false);

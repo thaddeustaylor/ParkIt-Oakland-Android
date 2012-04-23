@@ -10,6 +10,7 @@
     <string name="info_goto">Go to...</string>
     <string name="info_save">Save</string>
     <string name="info_next">Next</string>
+    <string name="info_cancel">Cancel</string>
 
     <string name="name">Name: </string>
     <string name="info_rate">Rate</string>

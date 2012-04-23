@@ -1,6 +1,9 @@
 package edu.pitt.designs1635.ParkIt;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,13 +21,15 @@ import com.google.android.maps.GeoPoint;
 public class Add extends Activity
 {
 	private ParkingLocation pl;
-	private Button next;
+	private Button save, cancel;
 	public final int ADD_ACTIVITY = 0;
     private SharedPreferences prefs;
     private EditText name, limit, rate;
     private Spinner type, payment;
     private dbAdapter mDbHelper;
-
+    public static final int SAVE_TO_PHONE = 10;
+    public static final int SAVE_TO_SERVER = 11;
+    public final int SAVE_DIALOG = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -33,9 +38,11 @@ public class Add extends Activity
 		setContentView(R.layout.add);
 		mDbHelper = new dbAdapter(this);
 
-		prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
+		//prefs = this.getSharedPreferences("parkItPrefs", Activity.MODE_PRIVATE);
 
-		next = (Button) findViewById(R.id.next_button);
+		save = (Button) findViewById(R.id.save_button);
+		cancel = (Button) findViewById(R.id.cancel_button);
+		
 		name = (EditText) findViewById(R.id.nv_add);
 
 		type = (Spinner) findViewById(R.id.tv_add);
@@ -53,79 +60,109 @@ public class Add extends Activity
 		limit = (EditText) findViewById(R.id.lv_add);
 		rate = (EditText) findViewById(R.id.rv_add);
 
+		
+		Bundle extras = getIntent().getExtras(); 
+		pl = new ParkingLocation(extras.getInt("edu.pitt.designs1635.ParkIt.location.lat"), 
+        								extras.getInt("edu.pitt.designs1635.ParkIt.location.long"));
+		
+      
+		
 		name.addTextChangedListener(new TextWatcher(){
 			public void afterTextChanged(Editable s) {}
 			public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 			public void onTextChanged(CharSequence s, int start, int before, int count){
 				if(s.length() > 0)
-					next.setEnabled(true);
+					save.setEnabled(true);
 				else
-					next.setEnabled(false);
+					save.setEnabled(false);
 			}
 		}); 
 
-		next.setOnClickListener(new View.OnClickListener(){
+		save.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
-				Intent intent = new Intent(getApplicationContext(), AddPointMapActivity.class);
+				//Intent intent = new Intent(getApplicationContext(), AddPointMapActivity.class);
             	            	
-            	intent.putExtra("edu.pitt.designs1635.ParkIt.center.lat", prefs.getInt("last_location_lat", 0));
-            	intent.putExtra("edu.pitt.designs1635.ParkIt.center.long", prefs.getInt("last_location_lon", 0));
+            	//intent.putExtra("edu.pitt.designs1635.ParkIt.center.lat", prefs.getInt("last_location_lat", 0));
+            	//intent.putExtra("edu.pitt.designs1635.ParkIt.center.long", prefs.getInt("last_location_lon", 0));
             	
-                startActivityForResult(intent, ADD_ACTIVITY);
+                //startActivityForResult(intent, ADD_ACTIVITY);
+				showDialog(SAVE_DIALOG);
 			}
 		});
+	
+		cancel.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View v){
+				finish();
+			}
+		});
+	
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	
+	
+	  protected Dialog onCreateDialog(int id, Bundle b)
+	    {
+	    	//Toast.makeText(this, "in dialog " + id, Toast.LENGTH_SHORT).show();
+			
+	    	switch(id)
+	    	{
+	    	case SAVE_DIALOG:
+	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		        
+		        builder.setMessage("Do you want to save the new parking location to your phone only or to the public server?")
+		               .setCancelable(false)
+		               .setPositiveButton("Phone", new DialogInterface.OnClickListener() {
+		                   public void onClick(DialogInterface dialog, int id) {
+		                        saveLocation(SAVE_TO_PHONE);
+		                   }
+		               })
+		               .setNegativeButton("Server", new DialogInterface.OnClickListener() {
+		                   public void onClick(DialogInterface dialog, int id) {
+		                	   saveLocation(SAVE_TO_SERVER);
+		                   }
+		               })
+		               .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+		                       public void onClick(DialogInterface dialog, int id) {
+		                            dialog.cancel();
+		                            
+		                       }
+		                       
+		               });
+		        AlertDialog ad = builder.create();
+		        return ad;
+	    	}
+		    
+	    	return null;
+	    	
+	    }
+	
+	
+	
+	private void saveLocation(int saveCode)
 	{
-		if (data == null)
-			return;
+		
+		pl.setName(name.getText().toString());
+		pl.setType(type.getSelectedItem().toString());
+		pl.setPayment(payment.getSelectedItem().toString());
+		if(limit.getText().toString().compareTo("") != 0)
+			pl.setLimit(Integer.parseInt(limit.getText().toString()));
+		if(rate.getText().toString().compareTo("") != 0)
+			pl.setRate(Float.parseFloat(rate.getText().toString()));
+		
 		
 		mDbHelper.open();
-		switch (requestCode)
-		{
-			case ADD_ACTIVITY:
-			Bundle extras = data.getExtras();
-		
-			GeoPoint newPoint = new GeoPoint(extras.getInt("edu.pitt.designs1635.ParkIt.Add.lat"),
-											extras.getInt("edu.pitt.designs1635.ParkIt.Add.long"));
-			
-			ParkingLocation newPl = new ParkingLocation();
-			switch(resultCode)
+			switch(saveCode)
 			{
-			case AddPointMapActivity.SAVE_TO_PHONE:
-				newPl.setName(name.getText().toString());
-				newPl.setType(type.getSelectedItem().toString());
-				newPl.setPayment(payment.getSelectedItem().toString());
-				if(limit.getText().toString().compareTo("") != 0)
-					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				if(rate.getText().toString().compareTo("") != 0)
-					newPl.setRate(Float.parseFloat(rate.getText().toString()));
-				newPl.setLatitude(newPoint.getLatitudeE6());
-				newPl.setLongitude(newPoint.getLongitudeE6());
-				mDbHelper.addPoint(newPl);
-				finish();
+			case SAVE_TO_PHONE:
+				mDbHelper.addPoint(pl);
 				break;
-			case AddPointMapActivity.SAVE_TO_SERVER:
-				newPl.setName(name.getText().toString());
-				newPl.setType(type.getSelectedItem().toString());
-				newPl.setPayment(payment.getSelectedItem().toString());
-				if(limit.getText().toString().compareTo("") != 0)
-					newPl.setLimit(Integer.parseInt(limit.getText().toString()));
-				if(rate.getText().toString().compareTo("") != 0)
-					newPl.setRate(Float.parseFloat(rate.getText().toString()));
-				newPl.setLatitude(newPoint.getLatitudeE6());
-				newPl.setLongitude(newPoint.getLongitudeE6());
-				mDbHelper.addRemotePoint(newPl);
-				finish();
+			case SAVE_TO_SERVER:
+				mDbHelper.addRemotePoint(pl);
 				break;
 			default:
 				break;
 			}
-			break;
-		default:
-			break;
-		}
+		finish();
 	}
 
 	@Override

@@ -116,13 +116,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         style="@android:style/ButtonBar">
-        <Button android:id="@+id/next_button"
+    	
+    	<Button android:id="@+id/cancel_button"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/info_cancel" />
+      
+        <Button android:id="@+id/save_button"
             android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:enabled="false"
-            android:text="@string/info_next" />
+            android:text="@string/info_save" />
     </LinearLayout>
    
 </LinearLayout>
