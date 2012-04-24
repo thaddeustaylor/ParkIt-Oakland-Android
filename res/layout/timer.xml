@@ -1,67 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#dddddd">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#dddddd">
 
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		style="@android:style/ButtonBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" 
+		android:layout_alignParentBottom="true"
+		android:id="@+id/button_bar2">
+		 
+		<Button
+			android:id="@+id/alarmCancelButton"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:focusable="true"
+			android:layout_weight="1"
+			android:text="@string/info_cancel" />
+		
+		<Button android:id="@+id/alarmStartButton"
+			android:focusable="true"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/alarm_start_button" />
+		
+	</LinearLayout>
 
-        
-    
-		  <TextView  android:id="@+id/textView1"
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="@string/alarm_meter_title"
-				style="@style/InfoTitle"/>
-		    
-		  
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/scroller"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_above="@id/button_bar2" >
+
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1">
+
+			<TextView  android:id="@+id/textView1"
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content"
+					android:text="@string/alarm_meter_title"
+					style="@style/InfoTitle"/>
 			<View
 				style="@style/InfoLine"
 				android:id="@+id/line1"
 				android:layout_width="fill_parent"
-				android:layout_height="3dip"/>
-			<!-- 
-		    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:paddingLeft="12dp"
-				android:paddingRight="12dp"
-				android:paddingTop="2dp">
-				
-			   <TextView  android:id="@+id/hours_label1"
-					android:layout_width="wrap_content" 
-					android:layout_height="fill_parent"
-					android:layout_gravity="center_horizontal"
-					android:text="@string/alarm_hours_label"
-					style="@style/InfoValue"/>
-			   
-	  			<TextView  android:id="@+id/min_label1"
-					android:layout_width="wrap_content" 
-					android:layout_height="fill_parent"
-					android:text="@string/alarm_min_label"
-					android:layout_gravity="center_horizontal"
-					style="@style/InfoValue"/>
-			</LinearLayout>  	
-			-->
-			
+				android:layout_height="3dip"
+				android:layout_below="@id/textView1" />
+
 			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"
-				android:layout_gravity="center_horizontal"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:id="@+id/first_timer"
+				android:layout_below="@id/line1"
 				android:paddingLeft="2dp"
 				android:paddingRight="2dp"
 				android:paddingTop="9dp"
 				android:paddingBottom="9dp">
-			  
-			    <TextView  android:id="@+id/hours_label1"
+		  
+				<TextView  android:id="@+id/hours_label1"
 					android:layout_width="wrap_content" 
 					android:layout_height="fill_parent"
 					android:gravity="center_vertical"
 					android:text="@string/alarm_hours_label"
+					android:padding="5dp"
 					style="@style/InfoValue"/>
-			    
-			  	<kankan.wheel.widget.WheelView android:id="@+id/meter_hour"
+				
+				<kankan.wheel.widget.WheelView android:id="@+id/meter_hour"
 					android:layout_height="wrap_content"
 					android:layout_width="85dp"/>
 				<kankan.wheel.widget.WheelView android:id="@+id/meter_mins"
@@ -72,41 +84,46 @@
 					android:layout_width="wrap_content" 
 					android:layout_height="fill_parent"
 					android:text="@string/alarm_min_label"
+					android:padding="5dp"
 					android:gravity="center_vertical"
 					style="@style/InfoValue" />
 			</LinearLayout>
-			
-						
-		  	<TextView  android:id="@+id/alarm_title"
+
+			<TextView  android:id="@+id/alarm_title"
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content"
 				android:text="@string/alarm_alert_title"
+				android:layout_below="@id/first_timer"
 				style="@style/InfoTitle"/>
-		    
-		  	
+			
 			<View
 				style="@style/InfoLine"
 				android:id="@+id/line2"
+				android:layout_below="@id/alarm_title"
 				android:layout_width="fill_parent"
 				android:layout_height="3dip"/>
 			
 			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_height="wrap_content"
 				android:layout_width="wrap_content"
-				android:layout_gravity="center_horizontal"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:id="@+id/second_timer"
+				android:layout_below="@id/line2"
 				android:paddingLeft="2dp"
 				android:paddingRight="2dp"
 				android:paddingTop="9dp"
 				android:paddingBottom="9dp">
 				
-			  	<TextView  android:id="@+id/hours_label2"
+				<TextView  android:id="@+id/hours_label2"
 					android:layout_width="wrap_content" 
 					android:layout_height="fill_parent"
 					android:gravity="center_vertical"
 					android:text="@string/alarm_hours_label"
+					android:padding="5dp"
 					style="@style/InfoValue"/>
-			  	
-			  	<kankan.wheel.widget.WheelView android:id="@+id/alarm_hour"
+				
+				<kankan.wheel.widget.WheelView android:id="@+id/alarm_hour"
 					android:layout_height="wrap_content"
 					android:layout_width="85dp"/>
 				<kankan.wheel.widget.WheelView android:id="@+id/alarm_mins"
@@ -118,62 +135,9 @@
 					android:layout_height="fill_parent"
 					android:text="@string/alarm_min_label"
 					android:gravity="center_vertical"
-					
+					android:padding="5dp"
 					style="@style/InfoValue"/>
 			</LinearLayout>
-		<!-- 
-			<View
-				style="@style/InfoLine"
-				android:id="@+id/line3"
-				android:layout_width="fill_parent"
-				android:layout_height="3dip" />
-		    
-		    <TextView  android:id="@+id/remind_title"
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="@string/timer1"
-				android:paddingTop="5dp"
-				style="@style/InfoTitle"/>
-		    
-			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:paddingLeft="12dp"
-				android:paddingRight="12dp"
-				android:paddingTop="10dp">
-			  
-			  	<kankan.wheel.widget.WheelView android:id="@+id/remind_hour"
-					android:layout_height="wrap_content"
-					android:layout_width="100dp"/>
-				<kankan.wheel.widget.WheelView android:id="@+id/remind_mins"
-					android:layout_height="wrap_content"
-					android:layout_width="100dp"/>
-			</LinearLayout>
- -->
- 
-	<LinearLayout
-	    style="@android:style/ButtonBar"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal" 
-	    android:layout_gravity="bottom" 
-	    android:gravity="bottom">
-		 	    <Button
-	        android:id="@+id/alarmCancelButton"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:focusable="true"
-	        android:layout_weight=".5"
-	        android:text="@string/info_cancel" />
-	    
-        <Button android:id="@+id/alarmStartButton"
-            android:focusable="true"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight=".5"
-            android:text="@string/alarm_start_button" />
-        
-    </LinearLayout>
-
-</LinearLayout>
+		</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>
