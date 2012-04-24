@@ -1,6 +1,5 @@
 package edu.pitt.designs1635.ParkIt;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -35,6 +34,11 @@ public class CurrentLocationOverlay extends Overlay {
         Bitmap bmp = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.c_icon);            
         canvas.drawBitmap(bmp, screenPts.x-15, screenPts.y-15, null);         
         return true;
+    }
+    
+    public void setLocation(GeoPoint p)
+    {
+    	m_point = p;
     }
 
 }

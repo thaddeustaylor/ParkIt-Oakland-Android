@@ -235,9 +235,14 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	public void getRemotePoints()
 	{
+		
+		if (!isNetworkAvailable())	
+			return;
+		
 		ab.setTitle("Refreshing Points...");
 		setSupportProgressBarIndeterminateVisibility(true);
-
+		
+		
 		Parse.initialize(this, "pAtl7R7WUbPl3RIVMD9Ov8UDVODGYSJ9tImxKTPQ", "cgjq64nO8l5RVbmrqYH3Nv2VC1zPyX4904htpXPy");
 		ParseQuery query = new ParseQuery("Points");
 		query.findInBackground(new FindCallback() {
@@ -266,11 +271,12 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 	public void refreshAllPoints()
 	{
-		if(mDbHelper == null)
-		{
+		//if(mDbHelper == null)
+		//{
 			mDbHelper.open();
-			mCursor = mDbHelper.fetchAllRows();
-		}
+			
+		//}
+		mCursor = mDbHelper.fetchAllRows();
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
 		drawable = getResources().getDrawable(R.drawable.g_icon);
@@ -337,6 +343,17 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	{
 		if(p != null)
 			mapCtrl.animateTo(p);
+		
+		if (cLocationOverlay != null)
+		{	
+			GeoPoint currentLocation = getCurrentLocation();
+			if(currentLocation != null)
+			{
+				mapView.getOverlays().remove(cLocationOverlay);
+				cLocationOverlay = new CurrentLocationOverlay(currentLocation);
+				mapView.getOverlays().add(cLocationOverlay);
+			}
+		}	
 	}
 
 	private GeoPoint getCurrentLocation()
