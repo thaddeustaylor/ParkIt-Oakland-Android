@@ -7,7 +7,7 @@
     <string name="menu_help">Help</string>
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
-    <string name="info_goto">Go to...</string>
+    <string name="info_goto">Go to&#8230;</string>
     <string name="info_save">Save</string>
     <string name="info_next">Next</string>
     <string name="info_cancel">Cancel</string>
@@ -18,18 +18,23 @@
     <string name="info_hours_of">Hours of Operation</string>
     <string name="info_limit_end">hour(s) limit</string>
     <string name="rate">$</string>
-    <string name="junk">M-Sa:\t9-5\n\nSu: 9-10</string>
+    <string name="junk">M&#8211;Sa:\t9&#8211;5\n\nSu: 9&#8211;10</string>
     <string name="parking_type">Parking Type: </string>
     <string name="payment_type">Payment Type: </string>
     <string name="time_limit">Time Limit: </string>
     
     <string name="edit_local">Save only to phone</string>
     <string name="edit_remote">Save to server</string>
-    <string name="timer1">Time on meter:</string>
-    <string name="timer2">Start timer </string>
-    <string name="timer3">minutes before.</string>
-    <string name="timer4">Alert me every </string>
-    <string name="timer5"> minutes</string>
+    
+    <!-- Alarm Activity -->
+    <string name="alarm_meter_title">Time on meter:</string>
+    <string name="alarm_alert_title">Alert before expiration:</string>
+    <string name="alarm_start_button">Start</string>
+    <string name="alarm_hours_label">Hour</string>
+    <string name="alarm_min_label">Min</string>
+    <string name="alarm_remind_title">Remind me every </string>
+    <!-- End Alarm Activity -->
+    
     <string name="interval_prompt">Select number of minutes</string>
     <string name="add_title">Tap map to add point</string>
     <string name="type_prompt">Select the type of parking:</string>

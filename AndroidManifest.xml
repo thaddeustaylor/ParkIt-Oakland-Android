@@ -29,7 +29,8 @@
             </intent-filter>
         </activity>   
         <activity android:name="Timer" 
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar"/>     
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
+            android:screenOrientation="portrait" />"
           <activity 
             android:name="Information"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar"

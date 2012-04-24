@@ -12,6 +12,7 @@
 		android:layout_alignParentBottom="true"
 		android:id="@+id/button_bar"
 		style="@android:style/ButtonBar">
+		
 		<Button android:id="@+id/edit_button"
 			android:focusable="true"
 			android:layout_width="match_parent"
