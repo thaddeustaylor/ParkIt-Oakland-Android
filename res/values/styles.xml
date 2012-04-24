@@ -20,4 +20,7 @@
 	<style name="InfoLine">
 		<item name="android:background">#616161</item>
 	</style>
+	<style name="ActionBar" parent="@style/Theme.Sherlock.Light.DarkActionBar" >
+      <item name="android:background">#00000000</item>
+  </style>
 </resources>

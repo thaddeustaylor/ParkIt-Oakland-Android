@@ -16,7 +16,7 @@
 		android:layout_alignParentTop="true" 
 		android:layout_alignParentRight="true" 
 		android:background="@drawable/recenter_icon" 
-		android:alpha="0.8"
+		android:alpha="0.9"
 		android:onClick="recenterMap" /> 
 </RelativeLayout>
 

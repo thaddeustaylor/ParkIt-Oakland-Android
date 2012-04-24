@@ -11,8 +11,8 @@
 		android:title="@string/menu_alarm"
 		android:icon="@drawable/ic_menu_recent_history"
 		android:showAsAction="always" />
-	<item android:id="@+id/menu_settings"
-		android:title="@string/menu_settings"
-		android:icon="@drawable/ic_menu_preferences" 
+	<item android:id="@+id/menu_help"
+		android:title="@string/menu_help"
+		android:icon="@drawable/ic_menu_help" 
 		android:showAsAction="always"/>
 </menu>

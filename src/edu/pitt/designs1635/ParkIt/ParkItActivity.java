@@ -16,8 +16,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.lang.Runnable;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.ActionMode;
@@ -56,9 +54,6 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 	private AddLocationOverlay addedLocation;
 	private RouteOverlay m_route;
 	private ActionBar ab;
-	
-	
-	
 
 	private Runnable refreshMap = new Runnable()
 	{
@@ -75,6 +70,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		disclaimerPrompt();
+		//getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
 		setContentView(R.layout.main);
 		ab = getSupportActionBar();
 
@@ -212,9 +209,8 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			case R.id.menu_alarm:
 				startActivity(new Intent(this, Timer.class));
 				return true;
-			case R.id.menu_settings:
-				//mDbHelper.abandonShip();
-				//refreshAllPoints();
+			case R.id.menu_help:
+				tutorialPrompt();
 				return true;
 		}
 		return super.onMenuItemSelected(featureId, item);
@@ -761,5 +757,40 @@ public class ParkItActivity extends SherlockMapActivity implements LocationListe
 			mItemizedOverlay.hideAllBalloons();	
 	}
 	
+	public void tutorialPrompt()
+	{
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Would you like to view the Tutorial again?")
+			.setCancelable(false)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					startActivity(new Intent(getApplicationContext(), Tutorial.class));
+				}
+			})
+			.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+	public void disclaimerPrompt()
+	{
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.disclaimer)
+			.setCancelable(false)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					dialog.cancel();
+				}
+			})
+			.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(final DialogInterface dialog, final int id) {
+					finish();
+				}
+			});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}	
 }
-

@@ -42,7 +42,8 @@
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
             android:configChanges="orientation"/>   
         <activity android:name="Tutorial"
-            android:theme="@style/Theme.Sherlock.NoActionBar" />       
+            android:theme="@style/Theme.Sherlock.NoActionBar" 
+            android:screenOrientation="portrait"/>       
     </application>
 
 </manifest>

@@ -16,7 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import java.text.DecimalFormat;
 
-public class Information extends Activity
+import com.actionbarsherlock.app.SherlockActivity;
+
+
+public class Information extends SherlockActivity
 {
 	private ParkingLocation pl;
 	private TextView typeView, nameValue, rateValue, paytypeValue, limitValue, hoursView;
@@ -242,7 +245,7 @@ public class Information extends Activity
 		//mDbHelper.close();
 		finish();
 	}
-
+	/*
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -256,4 +259,5 @@ public class Information extends Activity
 			return super.onOptionsItemSelected(item);	
 		}
 	}
+	*/
 }
