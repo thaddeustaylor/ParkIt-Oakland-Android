@@ -24,16 +24,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class Timer extends Activity
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class Timer extends SherlockActivity
 {
 	//private Spinner spinner, spinner2, spinner3;
 	private int timerVal;
 
 	@Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.timer);
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.timer);
 
 		final WheelView meterHours = (WheelView) findViewById(R.id.meter_hour);
 		meterHours.setViewAdapter(new NumericWheelAdapter(this, 0, 23));
@@ -63,12 +65,12 @@ public class Timer extends Activity
 		
 		/*
 		OnWheelClickedListener click = new OnWheelClickedListener() {
-            public void onItemClicked(WheelView wheel, int itemIndex) {
-                wheel.setCurrentItem(itemIndex, true);
-                Log.i("Timer Activity", wheel.getTag() + " / " + itemIndex);
-            }
-        };
-        */
+			public void onItemClicked(WheelView wheel, int itemIndex) {
+				wheel.setCurrentItem(itemIndex, true);
+				Log.i("Timer Activity", wheel.getTag() + " / " + itemIndex);
+			}
+		};
+		*/
 		
 		
 		
@@ -95,39 +97,34 @@ public class Timer extends Activity
 				
 				if (incorrectAlarm)
 					Toast.makeText(getApplicationContext(), "Alarm cannot be greater than the time on the meter.", Toast.LENGTH_SHORT).show();
-					
-				
 			}
 		};
 		
+		meterHours.setTag("Meter Hours");
+		meterMins.setTag("Meter Mins");
+		alarmHours.setTag("Alarm Hours");
+		alarmMins.setTag("Alarm Mins");
 		
+		//meterHours.addClickingListener(click);
+		//meterMins.addClickingListener(click);
+		//alarmHours.addClickingListener(click);
+		//alarmMins.addClickingListener(click);
 		
-        meterHours.setTag("Meter Hours");
-        meterMins.setTag("Meter Mins");
-        alarmHours.setTag("Alarm Hours");
-        alarmMins.setTag("Alarm Mins");
+		meterHours.addScrollingListener(scrollListener);
+		meterMins.addScrollingListener(scrollListener);
+		alarmHours.addScrollingListener(scrollListener);
+		alarmMins.addScrollingListener(scrollListener);
 		
-        //meterHours.addClickingListener(click);
-        //meterMins.addClickingListener(click);
-        //alarmHours.addClickingListener(click);
-        //alarmMins.addClickingListener(click);
-		
-        meterHours.addScrollingListener(scrollListener);
-        meterMins.addScrollingListener(scrollListener);
-        alarmHours.addScrollingListener(scrollListener);
-        alarmMins.addScrollingListener(scrollListener);
-        
-        
 		Button cancel = (Button) findViewById(R.id.alarmCancelButton);
-        Button start = (Button) findViewById(R.id.alarmStartButton);
+		Button start = (Button) findViewById(R.id.alarmStartButton);
 	
-        cancel.setOnClickListener(new View.OnClickListener(){
+		cancel.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
 				finish();
 			}
 		});
-        
-        start.setOnClickListener(new View.OnClickListener(){
+		
+		start.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
 				Log.i("Timer Activity", "Meter: " + meterHours.getCurrentItem() + ":"
 						+ meterMins.getCurrentItem() + "  -- Alarm: " + 
@@ -135,21 +132,5 @@ public class Timer extends Activity
 						+ alarmMins.getCurrentItem());
 			}
 		});
-    
-    }
-	
-	
-	   @Override
-	    public boolean onOptionsItemSelected(MenuItem item) {
-	    	switch (item.getItemId()) {
-	    	case android.R.id.home:
-	    		Intent intent = new Intent(this, ParkItActivity.class);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    		startActivity(intent);
-	    		return true;
-	    	default:
-	    		return super.onOptionsItemSelected(item);
-	    		
-	    	}
-	    }
+	}
 }

@@ -7,7 +7,7 @@
     <string name="menu_help">Help</string>
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
-    <string name="info_goto">Go to&#8230;</string>
+    <string name="info_goto">Go to...</string>
     <string name="info_save">Save</string>
     <string name="info_next">Next</string>
     <string name="info_cancel">Cancel</string>
@@ -18,7 +18,7 @@
     <string name="info_hours_of">Hours of Operation</string>
     <string name="info_limit_end">hour(s) limit</string>
     <string name="rate">$</string>
-    <string name="junk">M&#8211;Sa:\t9&#8211;5\n\nSu: 9&#8211;10</string>
+    <string name="junk">Mon-Sa:\t\n\nSu: 9-10</string>
     <string name="parking_type">Parking Type: </string>
     <string name="payment_type">Payment Type: </string>
     <string name="time_limit">Time Limit: </string>
