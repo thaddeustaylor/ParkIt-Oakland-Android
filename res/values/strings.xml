@@ -4,7 +4,7 @@
     <string name="menu_add">Add</string>
     <string name="menu_alarm">Alarm</string>
     <string name="menu_refresh">Sync Points</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_help">Help</string>
     <string name="info_name">Information</string>
     <string name="info_edit">Edit</string>
     <string name="info_goto">Go to...</string>
@@ -23,7 +23,6 @@
     <string name="payment_type">Payment Type: </string>
     <string name="time_limit">Time Limit: </string>
     
-
     <string name="edit_local">Save only to phone</string>
     <string name="edit_remote">Save to server</string>
     <string name="timer1">Time on meter:</string>
@@ -35,6 +34,9 @@
     <string name="add_title">Tap map to add point</string>
     <string name="type_prompt">Select the type of parking:</string>
     <string name="payment_prompt">Select the type of payment:</string>
+    <string name="disclaimer">DISCLAIMER: By using this app, you agree that we, the developers of ParkIt, 
+        are not liable for any damages done to your vehicle while using this app. This app is primarily meant
+        for a passenger to use so that the driver can focus on the road.</string>
     <string-array name="park_type">
         <item>Meter</item>
         <item>Parking Garage</item>

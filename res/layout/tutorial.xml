@@ -3,45 +3,46 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button android:id="@+id/skip_button"
-    	android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:text="Skip Tutorial"
-		android:onClick="skip"
-		android:layout_centerHorizontal="true"/>
+    android:layout_height="match_parent"
+    android:background="#dddddd">
 
     <ImageView
     	android:id="@+id/tut_image"
-    	android:src="@drawable/tut_0"
+    	android:src="@drawable/legend"
     	android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:adjustViewBounds="true"
-		android:gravity="center"
-		android:layout_below="@id/skip_button"/>
+		android:gravity="center"/>
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/button_bar"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_alignParentBottom="true"
 		style="@android:style/ButtonBar">
 		
 		<Button android:id="@+id/back_button"
-			android:layout_height="match_parent"
-			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_width="0dp"
 			android:text="Back"
 			android:layout_weight="1"
 			android:paddingLeft="20px"
 			android:paddingRight="20px"
 			/>
 
+		<Button android:id="@+id/skip_button"
+	    	android:layout_height="wrap_content"
+			android:layout_width="0dp"
+			android:text="Skip Tutorial"
+			android:layout_weight="2"
+			android:onClick="skip"
+			android:paddingLeft="20px"
+			android:paddingRight="20px"/>
+
 		<Button android:id="@+id/next_button"
-			android:layout_height="match_parent"
-			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_width="0dp"
 			android:text="Next"
 			android:layout_weight="1"
 			android:paddingLeft="20px"

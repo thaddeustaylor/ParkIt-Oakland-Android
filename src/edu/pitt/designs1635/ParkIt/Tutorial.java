@@ -41,19 +41,19 @@ public class Tutorial extends SherlockActivity
 					counter++;
 				switch (counter){
 					case 1:
-						tutImage.setImageResource(R.drawable.tut_1);
+						tutImage.setImageResource(R.drawable.tut_0);
 						break;
 					case 2:
-						tutImage.setImageResource(R.drawable.tut_2);
+						tutImage.setImageResource(R.drawable.tut_1);
 						break;
 					case 3:
-						tutImage.setImageResource(R.drawable.tut_3);
+						tutImage.setImageResource(R.drawable.tut_2);
 						break;
 					case 4:
-						tutImage.setImageResource(R.drawable.tut_4);
+						tutImage.setImageResource(R.drawable.tut_3);
 						break;
 					case 5:
-						tutImage.setImageResource(R.drawable.tut_5);
+						tutImage.setImageResource(R.drawable.tut_4);
 						btnNext.setText("Finish");
 						break;
 					case 6:
@@ -74,19 +74,19 @@ public class Tutorial extends SherlockActivity
 				switch (counter){
 					case 0:
 						btnBack.setEnabled(false);
-						tutImage.setImageResource(R.drawable.tut_0);
+						tutImage.setImageResource(R.drawable.legend);
 						break;
 					case 1:
-						tutImage.setImageResource(R.drawable.tut_1);
+						tutImage.setImageResource(R.drawable.tut_0);
 						break;
 					case 2:
-						tutImage.setImageResource(R.drawable.tut_2);
+						tutImage.setImageResource(R.drawable.tut_1);
 						break;
 					case 3:
-						tutImage.setImageResource(R.drawable.tut_3);
+						tutImage.setImageResource(R.drawable.tut_2);
 						break;
 					case 4:
-						tutImage.setImageResource(R.drawable.tut_4);
+						tutImage.setImageResource(R.drawable.tut_3);
 						btnNext.setText("Next");
 						break;
 					default:

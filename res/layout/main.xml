@@ -7,7 +7,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:clickable="true"
-		android:apiKey="0iJ2TAqQUCA49rQL6zbstPhFhAHOWp4Amg--iOw" />
+		android:apiKey="0jNFRty6Fs9u6tgyUTXI2Su1E1G2c0COMzTB6GQ" />
 	<Button android:id="@+id/map_recenter" 
 		android:layout_width="50dp" 
 		android:layout_height="50dp" 
@@ -16,7 +16,7 @@
 		android:layout_alignParentTop="true" 
 		android:layout_alignParentRight="true" 
 		android:background="@drawable/recenter_icon" 
-		android:alpha="0.8"
+		android:alpha="0.9"
 		android:onClick="recenterMap" /> 
 </RelativeLayout>
 
