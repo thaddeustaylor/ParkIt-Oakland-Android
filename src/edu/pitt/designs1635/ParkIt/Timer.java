@@ -44,12 +44,22 @@ public class Timer extends Activity
 		meterMins.setCyclic(true);
 
 		
+		
+		
 		final WheelView alarmHours = (WheelView) findViewById(R.id.alarm_hour);
 		alarmHours.setViewAdapter(new NumericWheelAdapter(this, 0, 23));
 	
 		final WheelView alarmMins = (WheelView) findViewById(R.id.alarm_mins);
 		alarmMins.setViewAdapter(new NumericWheelAdapter(this, 0, 59, "%02d"));
 		alarmMins.setCyclic(true);
+		
+		
+		//start at 2 hours as a default
+		meterHours.setCurrentItem(2);
+		
+		//start at 20 mins as a default
+		alarmMins.setCurrentItem(20);
+				
 		
 		/*
 		OnWheelClickedListener click = new OnWheelClickedListener() {
@@ -59,6 +69,8 @@ public class Timer extends Activity
             }
         };
         */
+		
+		
 		
 		OnWheelScrollListener scrollListener = new OnWheelScrollListener() {
 			public void onScrollingStarted(WheelView wheel) {

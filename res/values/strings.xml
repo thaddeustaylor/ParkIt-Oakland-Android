@@ -30,7 +30,7 @@
     <string name="alarm_meter_title">Time on meter:</string>
     <string name="alarm_alert_title">Alert before expiration:</string>
     <string name="alarm_start_button">Start</string>
-    <string name="alarm_hours_label">Hour</string>
+    <string name="alarm_hours_label">Hours</string>
     <string name="alarm_min_label">Min</string>
     <string name="alarm_remind_title">Remind me every </string>
     <!-- End Alarm Activity -->
